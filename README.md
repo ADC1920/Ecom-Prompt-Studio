@@ -1,6 +1,6 @@
-# ecom-prompt-skills
+# ecom-prompt-sop
 
-电商 AI 生图提示词技能合集（ZCode / Claude Code 兼容）。仓库内每个子目录即一个独立技能，可直接拷入本地技能目录使用。
+电商 AI 生图提示词技能合集（ZCode / Claude Code 兼容）：34 篇品类 SOP 全库 + 主图导演 + 详情页导演。仓库内每个子目录即一个独立技能，可直接拷入本地技能目录使用。
 
 > **版权与传播声明**：本仓库内容归仓库所有者所有，为私有存档用途。在版权归属确认并发布公开许可之前，请勿克隆、转载或公开传播本仓库内容。
 
@@ -12,6 +12,24 @@
 | `ecom-main-image-prompts` | 全平台电商主图生图提示词导演：基于产品图动态规划整套主图方案，内置产品锁定、平台合规、模特人脸、图内文字、信息真实性硬规则 | 1 SKILL.md + 平台规则 |
 | `ecom-detail-page-prompts` | 全平台电商详情页生图提示词导演：按品类与决策链路规划详情页页面结构与逐页提示词（默认淘宝，其他平台可在输入中指定） | 1 SKILL.md |
 
+## 仓库结构
+
+```text
+ecom-prompt-sop/
+├─ SKILL.md                     # 路由：按「品类 / 产物 / 动作」定位到对应 SOP
+└─ references/
+   ├─ 01_通用主图详情页/          # 8 篇：整套主图/详情页、跨境、五点卖点、买家秀、场景图、白底图
+   ├─ 02_爆款反推与风格拆解/      # 6 篇：主图/详情页反推、对标场景、旧图翻新、SKU 复刻、风格拆解
+   ├─ 03_品类专项/               # 10 篇：服饰、3C 数码、美妆日化、美食、家具、包包、海产、杯壶、檀木
+   ├─ 04_SKU批量与跨平台处理/     # 5 篇：多数量/多 SKU 批量、多产品替换、比例转换、图内文字翻译
+   └─ 05_模特与视频生成/          # 5 篇：电商视频生成、模特换头换装、视频反推（含故事板）
+
+ecom-main-image-prompts/         # 主图导演：SKILL.md + references/platform-rules.md
+ecom-detail-page-prompts/        # 详情页导演：SKILL.md
+```
+
+`ecom-prompt-sop` 的 SKILL.md 只做路由，提示词原文均在 references 各文档中；不含品类的裸主图/裸详情页需求，分别转交两个导演技能承接。
+
 ## 安装
 
 把想要的技能目录整体拷入本地技能目录即可，路径形如 `<技能目录>/<技能名>/SKILL.md`：
@@ -22,8 +40,8 @@
 以 `ecom-prompt-sop` 为例：
 
 ```bash
-git clone https://github.com/A2194008525/ecom-prompt-skills.git
-cp -r ecom-prompt-skills/ecom-prompt-sop ~/.agents/skills/
+git clone https://github.com/ADC1920/ecom-prompt-sop.git ecom-prompt-sop-repo
+cp -r ecom-prompt-sop-repo/ecom-prompt-sop ~/.agents/skills/
 ```
 
 新开会话后技能自动被发现；触发方式为自然语言命中（如「给这件卫衣出详情页提示词」「把这批 3:4 主图转 1:1」）。
