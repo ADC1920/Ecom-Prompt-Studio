@@ -97,15 +97,3 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
 ```
 
 需要 Node.js 22 或更高版本。`evals/README.md` 记录了 promptfoo 的选型理由、skill-up 的评估结论和真实跑分基线。
-
-## 维护与同步
-
-本仓库是本地技能目录的存档镜像，同步方向为本地到仓库。技能更新后，把对应技能目录重新复制到仓库并提交：
-
-```bash
-cp -r ~/.agents/skills/ecom-prompt-sop .
-git add ecom-prompt-sop
-git commit -m "feat(ecom-prompt-sop): 更新说明"
-```
-
-不要在仓库内直接修改技能再反向覆盖本地目录。
