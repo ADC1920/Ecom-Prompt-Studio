@@ -5,8 +5,9 @@
 1. frontmatter：name/description 必填，name 与目录名一致，description 长度合规
 2. 引用链接：SKILL.md 中引用的 references/ 路径必须存在
 3. 路由覆盖：ecom-prompt-sop 的 SOP 文件与 SKILL.md 路由表双向一致
-4. 规模预算：SKILL.md 超过 500 行给出警告
-5. 密钥扫描：全库文本无常见密钥模式
+4. 规模预算：SKILL.md 正文超预算给出警告，超硬上限判错误
+5. 占位符闭合：全库 Markdown 的【】、[]、{{}} 逐行配对，不闭合判错误
+6. 密钥扫描：全库文本无常见密钥模式
 
 用法: python tools/lint_skills.py [仓库根]（默认为脚本上级目录）
 0 错误退出码 0，否则 1；警告不阻断。
@@ -27,6 +28,13 @@ SECRETS = [
 ]
 
 REF_RE = re.compile(r"references/[^`|\]\n]+?\.md")
+
+# SKILL.md 正文（不含 frontmatter）预算：超软线提醒，超硬线阻断。
+# 硬线对齐 Agent Skills 生态惯例（SKILL.md 不超过 500 行），软线留出提前拆分的余量。
+SKILL_LINE_WARN = 300
+SKILL_LINE_MAX = 500
+SKILL_CHAR_WARN = 12000
+SKILL_CHAR_MAX = 20000
 
 
 def read(p: Path) -> str:
@@ -62,9 +70,46 @@ def check_skill(root: Path, name: str, problems: list, warnings: list) -> None:
         if not (skill_dir / ref).exists():
             problems.append(f"[{name}] 引用不存在: {ref}")
 
-    n = text.count("\n") + 1
-    if n > 500:
-        warnings.append(f"[{name}] SKILL.md {n} 行超 500，建议拆到 references/")
+    body = text[m.end():] if m else text
+    lines = body.count("\n") + 1
+    chars = len(body)
+    if lines > SKILL_LINE_MAX or chars > SKILL_CHAR_MAX:
+        problems.append(
+            f"[{name}] SKILL.md 正文超硬上限：{lines} 行 / {chars} 字符"
+            f"（上限 {SKILL_LINE_MAX} 行 / {SKILL_CHAR_MAX} 字符），必须拆到 references/"
+        )
+    elif lines > SKILL_LINE_WARN or chars > SKILL_CHAR_WARN:
+        warnings.append(
+            f"[{name}] SKILL.md 正文接近上限：{lines} 行 / {chars} 字符"
+            f"（软线 {SKILL_LINE_WARN} 行 / {SKILL_CHAR_WARN} 字符），建议拆分"
+        )
+
+
+def check_placeholders(root: Path, problems: list) -> None:
+    """逐行检查占位符是否闭合。
+
+    覆盖本库实际使用的三种占位形态：【中文占位】、[中文占位]、{{模板变量}}。
+    先剥离行内代码与转义括号，避免把代码示例里的方括号算进来。
+    """
+    for p in sorted(root.rglob("*.md")):
+        if ".git" in p.parts:
+            continue
+        for lineno, line in enumerate(read(p).splitlines(), 1):
+            s = re.sub(r"`[^`]*`", "", line)
+            s = s.replace("\\[", "").replace("\\]", "")
+            where = f"{p.relative_to(root).as_posix()}:{lineno}"
+            if s.count("【") != s.count("】"):
+                problems.append(f"[placeholder] {where}: 【】不闭合")
+            if s.count("{{") != s.count("}}"):
+                problems.append(f"[placeholder] {where}: {{{{}}}}不闭合")
+            depth = 0
+            for ch in s:
+                if ch == "[":
+                    depth += 1
+                elif ch == "]":
+                    depth = max(0, depth - 1)
+            if depth:
+                problems.append(f"[placeholder] {where}: []不闭合")
 
 
 def check_route_coverage(root: Path, problems: list, warnings: list) -> None:
@@ -99,6 +144,7 @@ def main() -> int:
     for name in SKILLS:
         check_skill(root, name, problems, warnings)
     check_route_coverage(root, problems, warnings)
+    check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:
         print(f"警告: {w}")
