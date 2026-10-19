@@ -3,12 +3,16 @@ description: 文本质量抽检——真实读 SOP 原文生成提示词，用�
 tags:
   suite: quality-sampling
 
-# 生成与评分共用同一个 OpenAI 兼容端点；密钥只走环境变量。
+# 生成与评分都走 DeepSeek 官方 provider，密钥只走环境变量或 CI Secret。
+# 默认 deepseek-flash；关闭 thinking 让生成的提示词与评分 JSON 都保持稳定。
 providers:
-  - id: openai:chat:{{ env.EVAL_MODEL or 'gpt-4o-mini' }}
+  - id: deepseek:deepseek-flash
     config:
       temperature: 0.2
       max_tokens: 2000
+      passthrough:
+        thinking:
+          type: disabled
 
 prompts:
   - file://./quality-prompt.js
@@ -17,7 +21,12 @@ tests: file://./quality-tests.js
 
 defaultTest:
   options:
-    provider: openai:chat:{{ env.EVAL_JUDGE_MODEL or env.EVAL_MODEL or 'gpt-4o-mini' }}
+    provider:
+      id: deepseek:deepseek-flash
+      config:
+        passthrough:
+          thinking:
+            type: disabled
 
 evaluateOptions:
   maxConcurrency: 2

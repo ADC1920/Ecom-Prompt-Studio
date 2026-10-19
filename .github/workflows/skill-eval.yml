@@ -67,19 +67,16 @@ jobs:
           node-version: "22"
       - name: 检查模型凭据
         env:
-          KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
+          KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           if [ -z "$KEY" ]; then
-            echo "::error::未配置 EVAL_API_KEY 或 OPENAI_API_KEY，触发回归无法执行。请在仓库 Settings → Secrets 添加后再跑。"
+            echo "::error::未配置 DEEPSEEK_API_KEY，触发回归无法执行。请在仓库 Settings → Secrets 添加后再跑。"
             exit 1
           fi
       - name: 运行触发回归
         env:
-          OPENAI_API_KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
-          EVAL_MODEL: ${{ vars.EVAL_MODEL || 'gpt-4o-mini' }}
-          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
-          if [ -n "$EVAL_BASE_URL" ]; then export OPENAI_BASE_URL="$EVAL_BASE_URL"; fi
           npx --yes promptfoo@$PROMPTFOO_VERSION eval \
             -c evals/promptfooconfig.yaml \
             --no-progress-bar \
@@ -107,20 +104,16 @@ jobs:
           node-version: "22"
       - name: 检查模型凭据
         env:
-          KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
+          KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           if [ -z "$KEY" ]; then
-            echo "::error::未配置 EVAL_API_KEY 或 OPENAI_API_KEY，质量抽检无法执行。"
+            echo "::error::未配置 DEEPSEEK_API_KEY，质量抽检无法执行。"
             exit 1
           fi
       - name: 运行质量抽检
         env:
-          OPENAI_API_KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
-          EVAL_MODEL: ${{ vars.EVAL_MODEL || 'gpt-4o-mini' }}
-          EVAL_JUDGE_MODEL: ${{ vars.EVAL_JUDGE_MODEL }}
-          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
-          if [ -n "$EVAL_BASE_URL" ]; then export OPENAI_BASE_URL="$EVAL_BASE_URL"; fi
           npx --yes promptfoo@$PROMPTFOO_VERSION eval \
             -c evals/promptfooconfig.quality.yaml \
             --no-progress-bar \

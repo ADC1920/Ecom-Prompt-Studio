@@ -61,14 +61,13 @@ evals/                           # 触发回归与质量抽检：promptfoo 配�
 2. **触发回归**（每次 push / PR）：promptfoo 跑 22 条提示，断言返回的技能名和 SOP 路径。提示词从三个 `SKILL.md` 实时读取，路由表改了评测输入立刻跟着变。
 3. **文本质量抽检**（每周一 + 手动触发）：读取指定 SOP 原文生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分。图片输出不自动评分，仍人工看。
 
-模型通过标准 OpenAI 兼容环境变量接入，密钥不写进仓库或评测配置：
+模型通过 DeepSeek 官方 provider 接入，密钥不写进仓库或评测配置：
 
 | 名称 | 类型 | 说明 |
 |---|---|---|
-| `EVAL_API_KEY` 或 `OPENAI_API_KEY` | Secret | 必填。未配置时触发回归任务直接失败并给出提示，不会出现「没跑测试却全绿」 |
-| `EVAL_BASE_URL` | Variable | 可选，兼容 OpenAI 协议的第三方端点 |
-| `EVAL_MODEL` | Variable | 可选，默认 `gpt-4o-mini` |
-| `EVAL_JUDGE_MODEL` | Variable | 可选，质量抽检的评分模型，默认同 `EVAL_MODEL` |
+| `DEEPSEEK_API_KEY` | Secret | 必填。未配置时触发回归任务直接失败并给出提示，不会出现「没跑测试却全绿」 |
+
+两份配置都用 `deepseek:deepseek-flash` 并关闭了 `thinking`，让路由 JSON 和评分结果保持稳定。想换 `deepseek-v4-pro` 或开启思考模式，直接改 `evals/*.yaml` 里对应的一行。
 
 本地跑法：
 
