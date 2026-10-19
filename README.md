@@ -47,7 +47,7 @@ evals/                           # 触发回归与质量抽检：promptfoo 配�
 | 工具 | 用途 |
 |---|---|
 | `tools/lint_skills.py` | 技能库静态检查：frontmatter 合规、引用文件存在性、路由表与 34 篇 SOP 双向覆盖、SKILL.md 长度预算、占位符闭合（【】/[]/{{}}）、密钥扫描。零依赖，`python tools/lint_skills.py` 全绿通过 |
-| `tools/trigger-cases.md` | 22 条触发与路由回归用例的人类可读视图，改版前后对照 |
+| `tools/trigger-cases.md` | 23 条触发与路由回归用例的人类可读视图，改版前后对照 |
 | `evals/cases.json` | 同一批用例的机器可读源，promptfoo 从这里生成测试 |
 | `evals/check_cases.py` | 校验 cases.json 与 trigger-cases.md 一致，并确认预期 SOP 路径真实存在 |
 | `evals/promptfooconfig.yaml` | 触发回归：断言每条提示命中的技能名与 SOP 路径 |
@@ -58,7 +58,7 @@ evals/                           # 触发回归与质量抽检：promptfoo 配�
 触发回归的主判据是「技能选得对不对」，因为技能选错是用户最先感知的问题。CI 分三层：
 
 1. **静态检查**（每次 push / PR）：`tools/lint_skills.py` + `evals/check_cases.py` + promptfoo 配置结构校验。无需密钥。
-2. **触发回归**（每次 push / PR）：promptfoo 跑 22 条提示，断言返回的技能名和 SOP 路径。提示词从三个 `SKILL.md` 实时读取，路由表改了评测输入立刻跟着变。
+2. **触发回归**（每次 push / PR）：promptfoo 跑 23 条提示，断言返回的技能名和 SOP 路径。提示词从三个 `SKILL.md` 实时读取，路由表改了评测输入立刻跟着变。
 3. **文本质量抽检**（每周一 + 手动触发）：读取指定 SOP 原文生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分。图片输出不自动评分，仍人工看。
 
 模型通过 DeepSeek 官方 provider 接入，密钥不写进仓库或评测配置：

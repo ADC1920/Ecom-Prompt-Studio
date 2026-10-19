@@ -1,5 +1,5 @@
 name: ecom-skill-routing
-description: 电商提示词技能触发回归——断言 22 条提示各自命中正确的技能与 SOP
+description: 电商提示词技能触发回归——断言 23 条提示各自命中正确的技能与 SOP
 tags:
   suite: trigger-routing
 

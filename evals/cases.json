@@ -120,7 +120,7 @@
       "id": 20,
       "group": "技能分流",
       "input": "做主图，常规白底就行",
-      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "01_通用主图详情页/02 全品类主图通用 SOP" }
+      "expect": { "skill": "ecom-main-image-prompts" }
     },
     {
       "id": 21,
@@ -133,6 +133,12 @@
       "group": "负例",
       "input": "写一个 Python 爬虫脚本",
       "expect": { "skill": "none" }
+    },
+    {
+      "id": 23,
+      "group": "篇号优先",
+      "input": "用 02 号 SOP 出一套常规白底主图",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "01_通用主图详情页/02 全品类主图通用 SOP" }
     }
   ]
 }
