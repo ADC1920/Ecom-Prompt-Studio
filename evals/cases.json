@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "note": "触发回归用例的机器可读源。新增或修改用例只改这里，tools/trigger-cases.md 是人类可读视图，evals/check_cases.py 会校验两边一致。",
+  "cases": [
+    {
+      "id": 1,
+      "group": "品类专项",
+      "input": "给这个保温杯出详情页提示词",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/百货杯壶类" }
+    },
+    {
+      "id": 2,
+      "group": "品类专项",
+      "input": "这套蓝牙耳机帮我做主图",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/3C数码类" }
+    },
+    {
+      "id": 3,
+      "group": "品类专项",
+      "input": "口红的详情页提示词出一套",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/美妆日化类" }
+    },
+    {
+      "id": 4,
+      "group": "品类专项",
+      "input": "这个包的整套主图和详情页方案",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/包包类" }
+    },
+    {
+      "id": 5,
+      "group": "品类专项",
+      "input": "海参出主图提示词",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/海产品类" }
+    },
+    {
+      "id": 6,
+      "group": "品类专项",
+      "input": "檀木手串的详情页怎么做",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/老檀木串珠线香类" }
+    },
+    {
+      "id": 7,
+      "group": "品类专项",
+      "input": "这个零食礼盒做主图加详情页",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "03_品类专项/美食类" }
+    },
+    {
+      "id": 8,
+      "group": "反推与翻新",
+      "input": "把这张爆款详情页反推一下，出我们自己的提示词",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "02_爆款反推与风格拆解/03 爆品详情页反推" }
+    },
+    {
+      "id": 9,
+      "group": "反推与翻新",
+      "input": "这张图太土了，翻新成高级感",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "02_爆款反推与风格拆解/小白图翻新成大师图" }
+    },
+    {
+      "id": 10,
+      "group": "反推与翻新",
+      "input": "把自家产品放进这个爆款的 SKU 版式里",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "02_爆款反推与风格拆解/爆款 SKU 复刻替换" }
+    },
+    {
+      "id": 11,
+      "group": "批量处理",
+      "input": "把这批 3:4 主图转成 1:1",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "04_SKU批量与跨平台处理/批量3：4主图转1：1" }
+    },
+    {
+      "id": 12,
+      "group": "批量处理",
+      "input": "把这几张图上的文字翻译成英文",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "04_SKU批量与跨平台处理/批量翻译电商图文字" }
+    },
+    {
+      "id": 13,
+      "group": "批量处理",
+      "input": "批量出 5 件套的 SKU 图",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "04_SKU批量与跨平台处理/同产品不同数量的sku图批量生成" }
+    },
+    {
+      "id": 14,
+      "group": "通用与视频",
+      "input": "出这个产品同一场景的真实手机买家秀",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "01_通用主图详情页/上传产品批量生成相同场景真实手机买家秀" }
+    },
+    {
+      "id": 15,
+      "group": "通用与视频",
+      "input": "拆解这个视频的镜头提示词",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "05_模特与视频生成/视频反推SOP-无需产品" }
+    },
+    {
+      "id": 16,
+      "group": "篇号优先",
+      "input": "用 04 号 SOP 帮我反推主图",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "02_爆款反推与风格拆解/04 爆品主图反推" }
+    },
+    {
+      "id": 17,
+      "group": "技能分流",
+      "input": "给这个产品做主图",
+      "expect": { "skill": "ecom-main-image-prompts" }
+    },
+    {
+      "id": 18,
+      "group": "技能分流",
+      "input": "出一套详情页方案",
+      "expect": { "skill": "ecom-detail-page-prompts" }
+    },
+    {
+      "id": 19,
+      "group": "技能分流",
+      "input": "做主图，要模特出镜，跨境平台",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "01_通用主图详情页/07 全平台品类主图提示词 SOP" }
+    },
+    {
+      "id": 20,
+      "group": "技能分流",
+      "input": "做主图，常规白底就行",
+      "expect": { "skill": "ecom-prompt-sop", "doc_contains": "01_通用主图详情页/02 全品类主图通用 SOP" }
+    },
+    {
+      "id": 21,
+      "group": "负例",
+      "input": "帮我翻译这段英文邮件",
+      "expect": { "skill": "none" }
+    },
+    {
+      "id": 22,
+      "group": "负例",
+      "input": "写一个 Python 爬虫脚本",
+      "expect": { "skill": "none" }
+    }
+  ]
+}

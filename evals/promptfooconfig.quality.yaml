@@ -1,0 +1,24 @@
+name: ecom-skill-quality
+description: 文本质量抽检——真实读 SOP 原文生成提示词，用模型按该 SOP 硬规则评分；图片输出仍人工看
+tags:
+  suite: quality-sampling
+
+# 生成与评分共用同一个 OpenAI 兼容端点；密钥只走环境变量。
+providers:
+  - id: openai:chat:{{ env.EVAL_MODEL or 'gpt-4o-mini' }}
+    config:
+      temperature: 0.2
+      max_tokens: 2000
+
+prompts:
+  - file://./quality-prompt.js
+
+tests: file://./quality-tests.js
+
+defaultTest:
+  options:
+    provider: openai:chat:{{ env.EVAL_JUDGE_MODEL or env.EVAL_MODEL or 'gpt-4o-mini' }}
+
+evaluateOptions:
+  maxConcurrency: 2
+  repeat: 1

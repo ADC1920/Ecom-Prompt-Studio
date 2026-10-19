@@ -1,0 +1,137 @@
+name: skill-eval
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ecom-prompt-sop/**"
+      - "ecom-main-image-prompts/**"
+      - "ecom-detail-page-prompts/**"
+      - "evals/**"
+      - "tools/**"
+      - ".github/workflows/skill-eval.yml"
+  pull_request:
+    paths:
+      - "ecom-prompt-sop/**"
+      - "ecom-main-image-prompts/**"
+      - "ecom-detail-page-prompts/**"
+      - "evals/**"
+      - "tools/**"
+      - ".github/workflows/skill-eval.yml"
+  schedule:
+    # 每周一 09:00（UTC+8）跑一次文本质量抽检
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-eval-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROMPTFOO_VERSION: "0.124.1"
+
+jobs:
+  static:
+    name: 静态检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: frontmatter / 引用 / 路由覆盖 / 长度预算 / 占位符 / 密钥
+        run: python tools/lint_skills.py
+      - name: 触发用例与 Markdown 视图一致性
+        run: python evals/check_cases.py
+      - name: promptfoo 配置结构
+        run: |
+          npx --yes promptfoo@$PROMPTFOO_VERSION validate config \
+            -c evals/promptfooconfig.yaml \
+            -c evals/promptfooconfig.quality.yaml
+
+  routing:
+    name: 触发回归（断言技能名与 SOP）
+    needs: static
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 检查模型凭据
+        env:
+          KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::未配置 EVAL_API_KEY 或 OPENAI_API_KEY，触发回归无法执行。请在仓库 Settings → Secrets 添加后再跑。"
+            exit 1
+          fi
+      - name: 运行触发回归
+        env:
+          OPENAI_API_KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL || 'gpt-4o-mini' }}
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+        run: |
+          if [ -n "$EVAL_BASE_URL" ]; then export OPENAI_BASE_URL="$EVAL_BASE_URL"; fi
+          npx --yes promptfoo@$PROMPTFOO_VERSION eval \
+            -c evals/promptfooconfig.yaml \
+            --no-progress-bar \
+            -o "$RUNNER_TEMP/routing.json" \
+            -o "$RUNNER_TEMP/routing.junit.xml"
+      - name: 上传报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: routing-report
+          path: |
+            ${{ runner.temp }}/routing.json
+            ${{ runner.temp }}/routing.junit.xml
+          if-no-files-found: ignore
+
+  quality:
+    name: 文本质量抽检（模型评分）
+    needs: static
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 检查模型凭据
+        env:
+          KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::未配置 EVAL_API_KEY 或 OPENAI_API_KEY，质量抽检无法执行。"
+            exit 1
+          fi
+      - name: 运行质量抽检
+        env:
+          OPENAI_API_KEY: ${{ secrets.EVAL_API_KEY || secrets.OPENAI_API_KEY }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL || 'gpt-4o-mini' }}
+          EVAL_JUDGE_MODEL: ${{ vars.EVAL_JUDGE_MODEL }}
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+        run: |
+          if [ -n "$EVAL_BASE_URL" ]; then export OPENAI_BASE_URL="$EVAL_BASE_URL"; fi
+          npx --yes promptfoo@$PROMPTFOO_VERSION eval \
+            -c evals/promptfooconfig.quality.yaml \
+            --no-progress-bar \
+            -o "$RUNNER_TEMP/quality.json" \
+            -o "$RUNNER_TEMP/quality.junit.xml"
+      - name: 上传报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: |
+            ${{ runner.temp }}/quality.json
+            ${{ runner.temp }}/quality.junit.xml
+          if-no-files-found: ignore

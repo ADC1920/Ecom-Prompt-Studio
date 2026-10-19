@@ -26,7 +26,9 @@ ecom-prompt-sop/
 
 ecom-main-image-prompts/         # 主图导演：SKILL.md + references/（平台规则、工具适配）
 ecom-detail-page-prompts/        # 详情页导演：SKILL.md + references/（工具适配）
-tools/                           # 仓库辅助：静态检查脚本与触发回归用例
+tools/                           # 仓库辅助：静态检查脚本与触发回归用例（人类可读视图）
+evals/                           # 触发回归与质量抽检：promptfoo 配置、机器可读用例、断言脚本
+.github/workflows/skill-eval.yml # CI：静态检查 + 触发回归 + 周度文本质量抽检
 ```
 
 `ecom-prompt-sop` 的 SKILL.md 只做路由，提示词原文均在 references 各文档中；不含品类的裸主图/裸详情页需求，分别转交两个导演技能承接。
@@ -44,8 +46,40 @@ tools/                           # 仓库辅助：静态检查脚本与触发回
 
 | 工具 | 用途 |
 |---|---|
-| `tools/lint_skills.py` | 技能库静态检查：frontmatter 合规、引用文件存在性、路由表与 34 篇 SOP 双向覆盖、SKILL.md 行数预算、密钥扫描。零依赖，`python tools/lint_skills.py` 全绿通过 |
-| `tools/trigger-cases.md` | 22 条触发与路由回归用例（含负例），技能或路由改版前后冒烟对照 |
+| `tools/lint_skills.py` | 技能库静态检查：frontmatter 合规、引用文件存在性、路由表与 34 篇 SOP 双向覆盖、SKILL.md 长度预算、占位符闭合（【】/[]/{{}}）、密钥扫描。零依赖，`python tools/lint_skills.py` 全绿通过 |
+| `tools/trigger-cases.md` | 22 条触发与路由回归用例的人类可读视图，改版前后对照 |
+| `evals/cases.json` | 同一批用例的机器可读源，promptfoo 从这里生成测试 |
+| `evals/check_cases.py` | 校验 cases.json 与 trigger-cases.md 一致，并确认预期 SOP 路径真实存在 |
+| `evals/promptfooconfig.yaml` | 触发回归：断言每条提示命中的技能名与 SOP 路径 |
+| `evals/promptfooconfig.quality.yaml` | 文本质量抽检：真实读 SOP 原文生成提示词，模型按硬规则评分（图片输出仍人工看） |
+
+## 评测与 CI
+
+触发回归的主判据是「技能选得对不对」，因为技能选错是用户最先感知的问题。CI 分三层：
+
+1. **静态检查**（每次 push / PR）：`tools/lint_skills.py` + `evals/check_cases.py` + promptfoo 配置结构校验。无需密钥。
+2. **触发回归**（每次 push / PR）：promptfoo 跑 22 条提示，断言返回的技能名和 SOP 路径。提示词从三个 `SKILL.md` 实时读取，路由表改了评测输入立刻跟着变。
+3. **文本质量抽检**（每周一 + 手动触发）：读取指定 SOP 原文生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分。图片输出不自动评分，仍人工看。
+
+模型通过标准 OpenAI 兼容环境变量接入，密钥不写进仓库或评测配置：
+
+| 名称 | 类型 | 说明 |
+|---|---|---|
+| `EVAL_API_KEY` 或 `OPENAI_API_KEY` | Secret | 必填。未配置时触发回归任务直接失败并给出提示，不会出现「没跑测试却全绿」 |
+| `EVAL_BASE_URL` | Variable | 可选，兼容 OpenAI 协议的第三方端点 |
+| `EVAL_MODEL` | Variable | 可选，默认 `gpt-4o-mini` |
+| `EVAL_JUDGE_MODEL` | Variable | 可选，质量抽检的评分模型，默认同 `EVAL_MODEL` |
+
+本地跑法：
+
+```bash
+python tools/lint_skills.py
+python evals/check_cases.py
+npx promptfoo@0.124.1 eval -c evals/promptfooconfig.yaml
+npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
+```
+
+`evals/README.md` 记录了为什么选 promptfoo、以及 skill-up 的评估结论。
 
 ## 安装
 

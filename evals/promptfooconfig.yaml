@@ -1,0 +1,21 @@
+name: ecom-skill-routing
+description: 电商提示词技能触发回归——断言 22 条提示各自命中正确的技能与 SOP
+tags:
+  suite: trigger-routing
+
+# 模型通过标准 OpenAI 兼容环境变量接入：OPENAI_API_KEY / OPENAI_BASE_URL / EVAL_MODEL。
+# 这样密钥不会写进配置，也不会随评测结果导出。
+providers:
+  - id: openai:chat:{{ env.EVAL_MODEL or 'gpt-4o-mini' }}
+    config:
+      temperature: 0
+      max_tokens: 400
+
+prompts:
+  - file://./router.js
+
+tests: file://./gen_tests.js
+
+evaluateOptions:
+  maxConcurrency: 4
+  repeat: 1
