@@ -70,6 +70,19 @@ cp -r ecom-prompt-sop/ecom-prompt-sop ~/.agents/skills/
 | `evals/check_cases.py` | 校验 `cases.json` 与 `trigger-cases.md` 一致，并确认预期 SOP 路径存在 |
 | `evals/promptfooconfig.yaml` | 触发回归：断言每条提示命中的技能名与 SOP 路径 |
 | `evals/promptfooconfig.quality.yaml` | 文本质量抽检：读取 SOP 原文生成提示词，按硬规则评分；图片输出仍由人工检查 |
+| `tools/qwen_image.py` | 命令行出图通道：提示词直接投喂 Qwen-Image 2.1 Pro，支持文生图与最多 10 张参考图的图生图 |
+
+## 云端出图（Qwen-Image 2.1 Pro）
+
+`tools/qwen_image.py` 走阿里云百炼 DashScope 同步接口，把 SOP 产出的提示词直接变成图片，省去手工复制到网页端。密钥只从环境变量 `DASHSCOPE_API_KEY` 或 `--key-file` 读取，不写入仓库任何文件：
+
+```bash
+export DASHSCOPE_API_KEY="sk-..."
+python tools/qwen_image.py -p "提示词" --size 1024*1024 -o out
+python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg -n 2 --seed 42
+```
+
+图生图用于产品锁定和翻新：把产品实拍图作为参考图，提示词里写清保留清单与改动清单。提示词默认按原文投喂、不做模型改写，SOP 里的硬规则不会被稀释；只有提示词很短、希望模型自行扩写时才加 `--prompt-extend`。`-n` 最多 6 张，`--size` 支持 `auto` 或 `宽*高`，输出落在 `out/`（已在 `.gitignore` 中忽略）。`python tools/qwen_image.py --selftest` 可离线校验参数与响应解析。
 
 ## 评测与 CI
 

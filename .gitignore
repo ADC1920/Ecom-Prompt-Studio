@@ -4,3 +4,4 @@ node_modules/
 *.local
 __pycache__/
 memory/
+out/
