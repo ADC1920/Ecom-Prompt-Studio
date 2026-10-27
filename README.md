@@ -1,4 +1,4 @@
-# ecom-prompt-sop
+# ecom-prompt-studio
 
 面向电商 AI 视觉生产的技能合集，兼容 ZCode 与 Claude Code。一个 SOP 全库按五个工作室组织，配两个导演技能补位。仓库里每个子目录就是一个完整技能，拷入本地技能目录即可使用：
 
@@ -69,11 +69,11 @@ SOP 全库按五个工位组织，先判工位再定位篇目，34 篇原文一�
 - ZCode：`~/.agents/skills/<技能名>/`，或项目级 `<项目>/.agents/skills/<技能名>/`
 - Claude Code：`~/.claude/skills/<技能名>/`
 
-以 `ecom-prompt-sop` 为例：
+以 `ecom-prompt-sop` 这个技能为例（仓库名是 `ecom-prompt-studio`）：
 
 ```bash
-git clone https://github.com/ADC1920/ecom-prompt-sop.git
-cp -r ecom-prompt-sop/ecom-prompt-sop ~/.agents/skills/
+git clone https://github.com/ADC1920/ecom-prompt-studio.git
+cp -r ecom-prompt-studio/ecom-prompt-sop ~/.agents/skills/
 ```
 
 重开会话后技能会被自动发现。直接用自然语言触发即可，按工位举例：
