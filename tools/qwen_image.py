@@ -3,9 +3,14 @@
 
 密钥只从环境变量 DASHSCOPE_API_KEY 或 --key-file 读取，不落盘、不打印。
 
+授权闸门：本项目要求每次出图前取得用户授权（见 tools/IMAGE-GEN-AUTHORIZATION.md）。
+--authorize / --purpose / --unit-price 三项缺一不可，否则不发出请求。
+
 用法：
-    python tools/qwen_image.py -p "提示词" -o out
-    python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg --size 1024*1024
+    python tools/qwen_image.py -p "提示词" -o out \
+        --authorize "用户 2026-10-29 14:20 回复：可以" --purpose "产品A 天猫主图第2张" --unit-price 0.25
+    python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg --size 1024*1024 \
+        --authorize "..." --purpose "..." --unit-price 0.25
     python tools/qwen_image.py --selftest
 """
 
@@ -93,6 +98,50 @@ def parse_images(resp):
     return urls
 
 
+def check_authorization(authorize, purpose, unit_price, num, model, size, out_dir):
+    """出图前的授权闸门：三项齐全才放行，并打印与落盘预计花费。"""
+    missing = [
+        name
+        for name, value in (
+            ("--authorize", authorize),
+            ("--purpose", purpose),
+            ("--unit-price", unit_price),
+        )
+        if value is None or (isinstance(value, str) and not value.strip())
+    ]
+    if missing:
+        sys.exit(
+            "缺少授权参数："
+            + "、".join(missing)
+            + "\n本项目要求每次出图前取得用户授权，先向用户说明用途与预计花费。"
+            "\n规则见 tools/IMAGE-GEN-AUTHORIZATION.md"
+        )
+    if unit_price < 0:
+        sys.exit(f"--unit-price 不能为负：{unit_price}")
+
+    total = round(unit_price * num, 4)
+    record = {
+        "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "model": model,
+        "size": size,
+        "num": num,
+        "unit_price": unit_price,
+        "estimated_cost": total,
+        "purpose": purpose.strip(),
+        "authorize": authorize.strip(),
+    }
+    print(
+        f"[授权确认] 模型={model} 张数={num} 单价={unit_price}元 预计花费={total}元\n"
+        f"           用途={record['purpose']}\n"
+        f"           授权={record['authorize']}",
+        file=sys.stderr,
+    )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with open(out_dir / "authorization.log", "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    return record
+
+
 def request(payload, key, timeout):
     req = urllib.request.Request(
         API_URL,
@@ -120,6 +169,8 @@ def download(url, out_dir, index):
 
 
 def selftest():
+    import tempfile
+
     assert normalize_size("1024*1024") == "1024*1024"
     assert normalize_size("1024x1536") == "1024*1536"
     assert normalize_size("auto") == "auto"
@@ -137,9 +188,33 @@ def selftest():
     # 默认必须关闭改写：长 SOP 原文投喂时不能被模型重写
     defaults = {action.dest: action.default for action in build_parser()._actions}
     assert defaults["prompt_extend"] is False, "prompt_extend 默认应为 False"
+    assert defaults["authorize"] is None and defaults["purpose"] is None and defaults["unit_price"] is None
     fake = {"output": {"choices": [{"message": {"content": [{"image": "https://a/1.png"}]}}]}}
     assert parse_images(fake) == ["https://a/1.png"]
     assert parse_images({"output": {"results": [{"url": "x", "image": "https://a/2.png"}]}}) == ["https://a/2.png"]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp)
+        # 授权三项缺任一都必须拦住，且不写日志
+        for kwargs in (
+            {"authorize": None, "purpose": "用途", "unit_price": 0.2},
+            {"authorize": "用户同意", "purpose": None, "unit_price": 0.2},
+            {"authorize": "用户同意", "purpose": "用途", "unit_price": None},
+            {"authorize": "  ", "purpose": "用途", "unit_price": 0.2},
+        ):
+            try:
+                check_authorization(kwargs["authorize"], kwargs["purpose"], kwargs["unit_price"], 1, DEFAULT_MODEL, "1024*1024", out)
+            except SystemExit:
+                pass
+            else:
+                raise AssertionError(f"应拒绝未授权参数：{kwargs}")
+        assert not (out / "authorization.log").exists(), "未授权时不应写审计日志"
+        # 三项齐全时放行，花费按 张数 × 单价 计算并落盘
+        rec = check_authorization("用户 2026-10-29 同意", "产品A 天猫主图", 0.25, 4, DEFAULT_MODEL, "1024*1536", out)
+        assert rec["estimated_cost"] == 1.0, rec
+        logged = (out / "authorization.log").read_text(encoding="utf-8").splitlines()
+        assert len(logged) == 1
+        assert json.loads(logged[0])["purpose"] == "产品A 天猫主图"
     print("selftest ok")
 
 
@@ -155,6 +230,9 @@ def build_parser():
     ap.add_argument("--watermark", action="store_true", help="添加水印，默认不加")
     ap.add_argument("--model", default=DEFAULT_MODEL, help=f"模型名，默认 {DEFAULT_MODEL}")
     ap.add_argument("--key-file", help="API key 文件路径；不传则读 DASHSCOPE_API_KEY")
+    ap.add_argument("--authorize", help="用户授权凭证（用户原话或带日期说明），必填；见 tools/IMAGE-GEN-AUTHORIZATION.md")
+    ap.add_argument("--purpose", help="这批图的用途与落点（产品/平台/页面位置），必填")
+    ap.add_argument("--unit-price", type=float, help="每张单价（元，取官方页面当时数值），必填")
     ap.add_argument("-o", "--out", default="out", help="输出目录，默认 out")
     ap.add_argument("--timeout", type=int, default=300, help="请求超时秒数，默认 300")
     ap.add_argument("--selftest", action="store_true", help="离线自检，不调用 API")
@@ -177,6 +255,17 @@ def main():
         sys.exit(f"参考图最多 {MAX_IMAGES} 张，当前 {len(args.image)} 张")
     if not 1 <= args.num <= 6:
         sys.exit("--num 取值范围 1 到 6")
+
+    # 授权闸门在读取密钥和发请求之前，未授权不会产生任何 API 调用
+    check_authorization(
+        args.authorize,
+        args.purpose,
+        args.unit_price,
+        args.num,
+        args.model,
+        normalize_size(args.size),
+        Path(args.out),
+    )
 
     key = read_key(args.key_file)
     payload = build_payload(

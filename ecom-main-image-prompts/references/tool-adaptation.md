@@ -50,14 +50,20 @@
 
 ## 五、本仓库命令行出图通道（Qwen-Image 2.1 Pro）
 
+> **调用前必须取得用户授权**：本项目限制任何图片生成模型在调用前都要先说明用途与预计花费并取得同意，Qwen-Image 全系同样适用。规则见仓库 `tools/IMAGE-GEN-AUTHORIZATION.md`。脚本缺 `--authorize` / `--purpose` / `--unit-price` 会直接拒绝，不发出请求。
+
 仓库内 `tools/qwen_image.py` 提供文生图与图生图命令行通道，走阿里云百炼 DashScope 同步接口，模型 `qwen-image-2.1-pro`。密钥只从环境变量 `DASHSCOPE_API_KEY` 或 `--key-file` 读取，不写入任何文件。
 
 ```bash
 export DASHSCOPE_API_KEY="sk-..."   # 也可用 --key-file 指向密钥文件
-python tools/qwen_image.py -p "提示词" -o out
-python tools/qwen_image.py -f prompt.txt -i product_front.jpg -i product_detail.jpg --size 1024*1024
+python tools/qwen_image.py -p "提示词" -o out \
+  --authorize "用户 2026-10-29 14:20 回复：可以" --purpose "产品A 天猫主图第 2 张" --unit-price 0.25
+python tools/qwen_image.py -f prompt.txt -i product_front.jpg -i product_detail.jpg --size 1024*1024 \
+  --authorize "..." --purpose "..." --unit-price 0.25
 ```
 
 参数要点：`--size` 用 `宽*高`（也接受 `宽x高`）或 `auto`；`-n` 支持 1 到 6 张；`--seed` 固定随机种子；`-i` 可重复，最多 10 张参考图。提示词默认按原文投喂、不做模型改写，需要模型按简单描述扩写时加 `--prompt-extend`。输出默认落在 `out/`，该目录不进版本库。提示词含大量引号或换行时用 `-f` 传文件，避免命令行转义问题。
+
+授权三项：`--authorize` 填用户原话或带日期的授权说明，不得自行编造；`--purpose` 具体到产品、平台、页面位置；`--unit-price` 填官方页面当时的每张单价，拿不到就先问用户。脚本会打印「张数 × 单价 = 预计花费」并写入 `out/authorization.log`，只留本机。
 
 脚本只存在于仓库与镜像工作区，单独安装技能目录时不带 `tools/`。
