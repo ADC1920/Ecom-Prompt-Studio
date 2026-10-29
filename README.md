@@ -95,18 +95,25 @@ cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
 | `evals/promptfooconfig.yaml` | 触发回归：断言每条提示命中的技能名与 SOP 路径 |
 | `evals/promptfooconfig.quality.yaml` | 文本质量抽检：读取 SOP 原文生成提示词，按硬规则评分；图片输出仍由人工检查 |
 | `tools/qwen_image.py` | 命令行出图通道：提示词直接投喂 Qwen-Image 2.1 Pro，支持文生图与最多 10 张参考图的图生图 |
+| `tools/IMAGE-GEN-AUTHORIZATION.md` | **出图授权规则（硬性）**：任何图片生成模型调用前须取得用户授权，说明用途与预计花费 |
 
 ## 云端出图（Qwen-Image 2.1 Pro）
+
+> **出图先授权**：本项目限制任何图片生成模型（Qwen-Image 全系、wan/万相、Seedream、Gemini/Nano Banana、GPT-Image、FLUX、z-image 等，含 MCP 工具与网页端代操作）在调用前必须取得用户授权，并说明用途、模型、张数与预计花费。规则与记录字段见 [`tools/IMAGE-GEN-AUTHORIZATION.md`](tools/IMAGE-GEN-AUTHORIZATION.md)。`tools/qwen_image.py` 已内置闸门，缺 `--authorize` / `--purpose` / `--unit-price` 直接拒绝，不发出请求。
 
 `tools/qwen_image.py` 走阿里云百炼 DashScope 同步接口，把 SOP 产出的提示词直接变成图片，省去手工复制到网页端。密钥只从环境变量 `DASHSCOPE_API_KEY` 或 `--key-file` 读取，不写入仓库任何文件：
 
 ```bash
 export DASHSCOPE_API_KEY="sk-..."
-python tools/qwen_image.py -p "提示词" --size 1024*1024 -o out
-python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg -n 2 --seed 42
+python tools/qwen_image.py -p "提示词" --size 1024*1024 -o out \
+  --authorize "用户 2026-10-29 14:20 回复：可以" --purpose "产品A 天猫主图第 2 张" --unit-price 0.25
+python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg -n 2 --seed 42 \
+  --authorize "用户 2026-10-29 14:20 回复：可以" --purpose "产品A 主图组" --unit-price 0.25
 ```
 
-图生图用于产品锁定和翻新：把产品实拍图作为参考图，提示词里写清保留清单与改动清单。提示词默认按原文投喂、不做模型改写，SOP 里的硬规则不会被稀释；只有提示词很短、希望模型自行扩写时才加 `--prompt-extend`。`-n` 最多 6 张，`--size` 支持 `auto` 或 `宽*高`，输出落在 `out/`（已在 `.gitignore` 中忽略）。`python tools/qwen_image.py --selftest` 可离线校验参数与响应解析。
+脚本在发请求前打印「张数 × 单价 = 预计花费」并追加写入 `out/authorization.log`（已在 `.gitignore` 中忽略，只留本机）。单价按官方页面当时数值填写，拿不到确切单价就先问用户，不猜数字。
+
+图生图用于产品锁定和翻新：把产品实拍图作为参考图，提示词里写清保留清单与改动清单。提示词默认按原文投喂、不做模型改写，SOP 里的硬规则不会被稀释；只有提示词很短、希望模型自行扩写时才加 `--prompt-extend`。`-n` 最多 6 张，`--size` 支持 `auto` 或 `宽*高`，输出落在 `out/`（已在 `.gitignore` 中忽略）。`python tools/qwen_image.py --selftest` 可离线校验参数、授权闸门与响应解析。
 
 ## 评测与 CI
 
