@@ -11,7 +11,7 @@ module.exports = async function () {
       id: c.id,
       group: c.group,
       expected_skill: c.expect.skill,
-      expected_doc: c.expect.doc_contains || '',
+      expected_atom: c.expect.atom || '',
     },
     assert: [
       {
@@ -19,7 +19,8 @@ module.exports = async function () {
         value: 'file://./assert_route.js',
         config: {
           skill: c.expect.skill,
-          doc_contains: c.expect.doc_contains || '',
+          // assert_route 用包含匹配，传原子编号即可（模型输出 `_atoms/a21.json` 也能命中）
+          doc_contains: c.expect.atom || '',
         },
         metric: '路由命中',
       },

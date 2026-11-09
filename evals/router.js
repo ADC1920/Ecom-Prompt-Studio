@@ -40,7 +40,7 @@ module.exports = async function ({ vars }) {
     '只输出一个 JSON 对象，不要 markdown 代码块，不要解释文字：',
     '{"skill": "...", "doc": "...", "reason": "..."}',
     'skill 取值：ecom-prompt-sop | ecom-main-image-prompts | ecom-detail-page-prompts | none',
-    'doc：命中 ecom-prompt-sop 时照抄路由表里的 references/ 相对路径；其他情况填空字符串。',
+    'doc：命中 ecom-prompt-sop 时填路由表里指向的原子编号（如 _atoms/a21.json）；其他情况填空字符串。',
     '',
     '===== 技能一：ecom-prompt-sop =====',
     'description: ' + router.description,

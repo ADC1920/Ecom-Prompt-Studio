@@ -8,8 +8,8 @@
 1. cases.json 与 trigger-cases.md 的用例编号集合一致
 2. 两边同一编号的输入文本一致
 3. 两边对技能归属的判定一致（ecom-prompt-sop / 两个导演 / 不触发）
-4. expect.doc_contains 至少命中一个真实 SOP 文件
-5. 负例必须是 skill=none，且不带 doc_contains
+4. 两边对原子编号的断言一致；expect.atom 指向真实存在的原子文件
+5. 负例必须是 skill=none，且不带 atom
 
 用法: python evals/check_cases.py [仓库根]，退出码 0 通过，1 失败。
 """
@@ -36,6 +36,12 @@ def expected_skill_from_cell(cell: str) -> str:
     return ""
 
 
+def atom_from_cell(cell: str) -> str:
+    """从人类视图的预期列里取原子编号，如 `_atoms/a21.json` → a21。"""
+    m = re.search(r"_atoms/(a\d{2})\.json", cell)
+    return m.group(1) if m else ""
+
+
 def load_markdown_cases() -> dict:
     rows = {}
     for line in CASES_MD.read_text(encoding="utf-8").splitlines():
@@ -45,7 +51,11 @@ def load_markdown_cases() -> dict:
         num, text, expected = m.groups()
         if not num.isdigit():
             continue
-        rows[int(num)] = {"input": text.strip(), "skill": expected_skill_from_cell(expected)}
+        rows[int(num)] = {
+            "input": text.strip(),
+            "skill": expected_skill_from_cell(expected),
+            "atom": atom_from_cell(expected),
+        }
     return rows
 
 
@@ -66,24 +76,26 @@ def main() -> int:
             problems.append(f"#{cid} 输入不一致：cases.json「{c['input']}」 vs trigger-cases.md「{md['input']}」")
         if c["expect"]["skill"] != md["skill"]:
             problems.append(f"#{cid} 技能判定不一致：cases.json {c['expect']['skill']} vs trigger-cases.md {md['skill'] or '(未识别)'}")
+        if c["expect"].get("atom", "") != md.get("atom", ""):
+            problems.append(f"#{cid} 原子不一致：cases.json {c['expect'].get('atom') or '(空)'} vs trigger-cases.md {md.get('atom') or '(空)'}")
 
+    atoms_dir = SOP_ROOT / "references" / "_atoms"
     for cid, c in sorted(cases.items()):
         expect = c["expect"]
-        doc = expect.get("doc_contains", "")
+        atom = expect.get("atom", "")
         if expect["skill"] == "none":
-            if doc:
-                problems.append(f"#{cid} 负例不应带 doc_contains")
+            if atom:
+                problems.append(f"#{cid} 负例不应带 atom")
             continue
         if expect["skill"] != "ecom-prompt-sop":
-            if doc:
-                problems.append(f"#{cid} 转交导演技能时不应断言 SOP 路径")
+            if atom:
+                problems.append(f"#{cid} 转交导演技能时不应断言原子")
             continue
-        if not doc:
-            problems.append(f"#{cid} 命中 SOP 库但缺少 doc_contains")
+        if not atom:
+            problems.append(f"#{cid} 命中 SOP 库但缺少 atom")
             continue
-        matched = list(SOP_ROOT.rglob(f"*{Path(doc).name}*.md"))
-        if not matched:
-            problems.append(f"#{cid} doc_contains 找不到对应 SOP：{doc}")
+        if not (atoms_dir / f"{atom}.json").exists():
+            problems.append(f"#{cid} atom {atom} 不存在（{atoms_dir / (atom + '.json')}）")
 
     for p in problems:
         print(f"错误: {p}")

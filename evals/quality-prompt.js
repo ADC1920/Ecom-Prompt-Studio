@@ -1,11 +1,18 @@
-// 质量抽检的提示词构造器：把指定 SOP 原文完整放进上下文，让模型按原文执行。
+// 质量抽检的提示词构造器：把指定原子的原文全文放进上下文，让模型按原文执行。
+// v3 起从原子读 source_text，不再依赖 references 下的 SOP 文件。
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 
 module.exports = async function ({ vars }) {
-  const sop = fs.readFileSync(path.join(ROOT, vars.sop), 'utf8');
+  const id = String(vars.atom || '').trim();
+  const file = path.join(ROOT, 'ecom-prompt-sop', 'references', '_atoms', `${id}.json`);
+  const atom = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const sop = atom.source_text || '';
+  if (!sop) {
+    throw new Error(`原子 ${id} 没有 source_text，无法做质量抽检`);
+  }
   return [
     {
       role: 'system',
