@@ -56,6 +56,10 @@ jobs:
           python tools/slop_check.py --selftest
           python tools/compose_prompt.py --selftest
           python tools/run_loop.py --selftest
+          python tools/rules_engine.py --selftest
+          python tools/visual_audit.py --selftest
+          python tools/corpus.py --selftest
+          python tools/fix_stats.py --selftest
       - name: promptfoo 配置结构
         run: |
           npx --yes promptfoo@$PROMPTFOO_VERSION validate config \
