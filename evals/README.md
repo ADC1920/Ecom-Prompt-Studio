@@ -16,7 +16,7 @@
 
 | 文件 | 作用 |
 |---|---|
-| `cases.json` | 23 条用例的唯一数据源 |
+| `cases.json` | 30 条用例的唯一数据源（含越界、注入与同类篇目分流） |
 | `router.js` | 从仓库读取三个 SKILL.md，拼装路由提示词 |
 | `assert_route.js` | 解析模型输出，比对技能与 SOP；兼容 JSON 与纯文本两种返回 |
 | `gen_tests.js` | 把 cases.json 展开为 promptfoo 测试 |
