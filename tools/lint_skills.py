@@ -134,6 +134,29 @@ def check_atoms(root: Path, problems: list, warnings: list) -> None:
             problems.append(f"[atoms] {aid} 缺 source.sha，无法判断是否与原文同步")
 
 
+ATOM_REF = re.compile(r"_atoms/(a\d{2})\.json")
+
+
+def check_atom_refs(root: Path, problems: list, warnings: list) -> None:
+    """SKILL.md 必须指向真实存在的原子，且 34 个原子都要被路由表覆盖到。
+
+    原文归档之后，这是「每篇都能被找到」的唯一保证。
+    """
+    skill_dir = root / "ecom-prompt-sop"
+    f = skill_dir / "SKILL.md"
+    if not f.exists():
+        return
+    text = read(f)
+    atoms_dir = skill_dir / "references" / "_atoms"
+    referenced = set(ATOM_REF.findall(text))
+    existing = {p.stem for p in atoms_dir.glob("a*.json")} if atoms_dir.exists() else set()
+
+    for aid in sorted(referenced - existing):
+        problems.append(f"[atoms] SKILL.md 引用了不存在的原子 {aid}")
+    for aid in sorted(existing - referenced):
+        warnings.append(f"[atoms] 原子 {aid} 未被 SKILL.md 路由表引用")
+
+
 def check_placeholders(root: Path, problems: list) -> None:
     """逐行检查占位符是否闭合。
 
@@ -228,14 +251,29 @@ def check_index(root: Path, problems: list, warnings: list) -> None:
     disk = sop_files(skill_dir)
     paths = [it.get("path", "") for it in items if isinstance(it, dict)]
 
+    # 原文可以归档：归档后必须由原子（含 source_text）承载同一篇内容
+    atoms = {}
+    for f in (skill_dir / "references" / "_atoms").glob("a*.json"):
+        try:
+            a = json.loads(read(f))
+        except json.JSONDecodeError:
+            problems.append(f"[atoms] {f.name} 解析失败")
+            continue
+        if a.get("path"):
+            atoms[a["path"]] = a
+
     for p in sorted(disk - set(paths)):
         problems.append(f"[index] 原文未收录: {p}")
     for p in sorted(set(paths) - disk):
-        problems.append(f"[index] 指向不存在的文件: {p}")
+        a = atoms.get(p)
+        if not a:
+            problems.append(f"[index] 原文不存在且无原子承载: {p}")
+        elif not a.get("source_text"):
+            problems.append(f"[atoms] {p} 的原子缺 source_text，脱离原文后内容会丢")
     for p in sorted({p for p in paths if paths.count(p) > 1}):
         problems.append(f"[index] 重复条目: {p}")
-    if len(items) != len(disk):
-        problems.append(f"[index] 条目数 {len(items)} 与原文数 {len(disk)} 不一致")
+    if atoms and len(items) != len(atoms):
+        problems.append(f"[index] 条目数 {len(items)} 与原子数 {len(atoms)} 不一致")
 
     for it in items:
         if not isinstance(it, dict):
@@ -323,6 +361,7 @@ def main() -> int:
     check_eval(root, problems, warnings)
     check_rules(root, problems, warnings)
     check_atoms(root, problems, warnings)
+    check_atom_refs(root, problems, warnings)
     check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:
