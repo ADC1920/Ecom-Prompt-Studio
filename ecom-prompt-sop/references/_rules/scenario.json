@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "note": "场景判据：场景决定必填槽位与画面禁项；平台决定阈值与法律义务。两者正交，规则引擎会分别校验再交叉检查冲突。",
+  "scenarios": {
+    "首图": {
+      "slot_required": ["subject", "constraints"],
+      "slot_recommended": ["scene", "usecase"],
+      "text_allowed": false,
+      "forbid": ["促销角标", "边框", "水印", "多图拼接", "无关道具"],
+      "notes": "平台货架首图；背景、占比、文字三项以平台规则为准"
+    },
+    "辅图": {
+      "slot_required": ["subject", "usecase"],
+      "slot_recommended": ["scene", "details", "constraints"],
+      "text_allowed": true,
+      "forbid": ["绝对化用语", "未证实功效"],
+      "notes": "可场景化、可少量真实卖点文字"
+    },
+    "场景图": {
+      "slot_required": ["scene", "subject", "constraints"],
+      "slot_recommended": ["details", "usecase"],
+      "text_allowed": true,
+      "forbid": ["产品与环境比例失调", "多主体抢焦点"],
+      "notes": "场景服务于产品理解，不能压过产品"
+    },
+    "白底图": {
+      "slot_required": ["subject", "constraints"],
+      "slot_recommended": ["scene"],
+      "text_allowed": false,
+      "forbid": ["投影过重", "背景渐变", "道具"],
+      "notes": "纯白背景 + 自然接触影；产品完整不裁切"
+    },
+    "买家秀": {
+      "slot_required": ["scene", "subject", "constraints"],
+      "slot_recommended": ["details", "usecase"],
+      "text_allowed": false,
+      "forbid": ["影棚感", "过度修图", "模特脸可识别（未授权时）"],
+      "notes": "刻意保留手机实拍质感：轻微噪点、自然光、非对称构图"
+    },
+    "详情页单屏": {
+      "slot_required": ["scene", "subject", "details", "usecase", "constraints"],
+      "slot_recommended": [],
+      "text_allowed": true,
+      "forbid": ["纯色空背景", "单一居中主体", "长段文字"],
+      "min_info_blocks": 3,
+      "notes": "每屏至少 3 个信息层级；产品占画面 35%-55%"
+    },
+    "详情页长图": {
+      "slot_required": ["scene", "subject", "details", "usecase", "constraints"],
+      "slot_recommended": [],
+      "text_allowed": true,
+      "forbid": ["跨屏重复模块", "屏序无递进"],
+      "min_info_blocks": 3,
+      "notes": "先锚定首屏再展开；整屏拼合后检查上下承接"
+    },
+    "A+模块": {
+      "slot_required": ["scene", "subject", "usecase"],
+      "slot_recommended": ["details", "constraints"],
+      "text_allowed": true,
+      "forbid": ["跨模块产品形变", "模块间风格漂移"],
+      "notes": "每个模块挂同一份风格锁；hero band 与 feature grid 用同一色板"
+    },
+    "SKU变体": {
+      "slot_required": ["subject", "details", "constraints"],
+      "slot_recommended": ["usecase"],
+      "text_allowed": false,
+      "forbid": ["改款式", "改结构", "改版式比例"],
+      "notes": "只允许改数量、颜色、组合与版式；主体与原图一致"
+    },
+    "模特图": {
+      "slot_required": ["scene", "subject", "usecase"],
+      "slot_recommended": ["details", "constraints"],
+      "text_allowed": false,
+      "forbid": ["人脸漂移", "换款换色", "明星脸", "儿童可识别人脸"],
+      "notes": "同一系列内人脸与身体特征不漂移；服装款式与产品一致"
+    },
+    "视频镜头": {
+      "slot_required": ["scene", "subject", "usecase"],
+      "slot_recommended": ["constraints"],
+      "text_allowed": false,
+      "forbid": ["静态图描述充数", "无时间轴", "运镜方向矛盾"],
+      "notes": "每镜头写时间戳、镜头语言、物体动作；运镜要能执行"
+    }
+  }
+}

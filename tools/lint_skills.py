@@ -125,12 +125,19 @@ def check_placeholders(root: Path, problems: list) -> None:
 
 
 def sop_files(skill_dir: Path) -> set:
-    """SOP 原文文件集合。`_` 开头的是索引与规范文档（_index.json / _prompt-slots.md），不算原文。"""
-    return {
-        p.relative_to(skill_dir).as_posix()
-        for p in (skill_dir / "references").rglob("*.md")
-        if not p.name.startswith("_")
-    }
+    """SOP 原文文件集合。
+
+    `_` 开头的是索引、规范、规则与语料（_index.json / _prompt-slots.md / _rules/ / _corpus/），
+    不算原文。判断看整条路径——目录名带下划线时，里面的 README 也不能当 SOP。
+    """
+    ref_root = skill_dir / "references"
+    out = set()
+    for p in ref_root.rglob("*.md"):
+        parts = p.relative_to(ref_root).parts
+        if any(part.startswith("_") for part in parts):
+            continue
+        out.add(p.relative_to(skill_dir).as_posix())
+    return out
 
 
 def check_route_coverage(root: Path, problems: list, warnings: list) -> None:
@@ -230,6 +237,43 @@ def check_eval(root: Path, problems: list, warnings: list) -> None:
             problems.append(f"[{name}] SKILL.md 引用了 EVAL.md：答案键不能出现在被评 agent 的入口里")
 
 
+def check_rules(root: Path, problems: list, warnings: list) -> None:
+    """判据规则与语料库：规则文件必须可解析且非空，语料每行必须是带 id/title/prompt 的合法 JSON。"""
+    skill_dir = root / "ecom-prompt-sop"
+    rdir = skill_dir / "references" / "_rules"
+    if not rdir.exists():
+        warnings.append("[ecom-prompt-sop] 缺少判据规则目录 _rules/")
+    else:
+        for name, key in [("platform", "platforms"), ("category", "categories"), ("scenario", "scenarios")]:
+            p = rdir / f"{name}.json"
+            if not p.exists():
+                problems.append(f"[rules] 缺少 {name}.json")
+                continue
+            try:
+                data = json.loads(read(p))
+            except json.JSONDecodeError as e:
+                problems.append(f"[rules] {name}.json 解析失败: {e}")
+                continue
+            if not (data.get(key) or {}):
+                problems.append(f"[rules] {name}.json 的 {key} 为空")
+
+    cpath = skill_dir / "references" / "_corpus" / "entries.jsonl"
+    if not cpath.exists():
+        warnings.append("[ecom-prompt-sop] 语料库为空（_corpus/entries.jsonl 不存在）")
+        return
+    for i, line in enumerate(read(cpath).splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            problems.append(f"[corpus] 第 {i} 行不是合法 JSON")
+            continue
+        for field in ("id", "title", "prompt"):
+            if not entry.get(field):
+                problems.append(f"[corpus] 第 {i} 行缺字段 {field}")
+
+
 def main() -> int:
     root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
     problems: list = []
@@ -240,6 +284,7 @@ def main() -> int:
     check_index(root, problems, warnings)
     check_tool_refs(root, problems)
     check_eval(root, problems, warnings)
+    check_rules(root, problems, warnings)
     check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:
