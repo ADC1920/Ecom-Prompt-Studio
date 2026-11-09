@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "note": "34 篇 SOP 的机器可读索引：供路由检索、评测断言、槽位组装与静态校验使用。path 相对 ecom-prompt-sop/，与 SKILL.md 篇目表一一对应；slots 标出该篇主要产出哪几个提示词槽位（规范见 references/prompt-slots.md）。改篇目、改路由或改槽位映射时同批更新本文件。",
+  "version": 3,
+  "note": "34 篇 SOP 的机器可读索引：供路由检索、评测断言、槽位组装与静态校验使用。path 是原文的历史路径——原文已拆解归档，正文在 _atoms/aNN.json 的 source_text 里，path 只用于溯源与原子定位，路由与执行一律读原子。slots 标出该篇主要产出哪几个提示词槽位（规范见 references/_prompt-slots.md）。改篇目、改路由或改槽位映射时同批更新本文件，并重跑 tools/atomize.py merge 与 check。",
   "items": [
     {"no": "00", "path": "references/01_通用主图详情页/00 全平台品类主图详情页通用 SOP（含跨境）.md", "stations": ["主图台", "详情页台"], "slots": ["scene", "subject", "details", "usecase", "constraints"], "categories": [], "outputs": ["主图", "详情页"], "triggers": ["主图详情页一起做", "一套连做", "跨境"], "shared": true},
     {"no": "01", "path": "references/01_通用主图详情页/01 全平台品类详情页生成（含跨境电商）.md", "stations": ["详情页台"], "slots": ["scene", "subject", "details", "usecase", "constraints"], "categories": [], "outputs": ["详情页"], "triggers": ["详情页整套", "长图", "跨境详情页"], "shared": false},

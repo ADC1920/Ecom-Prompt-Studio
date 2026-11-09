@@ -7,11 +7,15 @@
 拆解的本义就是把这一次分拣做掉：模板原文完整保留，规则句带上行号抽出来，验收项单列，
 占位符收成变量清单——之后无论是路由、组装、校验还是评测，都不用再读整篇。
 
-三个子命令：
-  extract  机械层：标题树、代码块、正文规则句、占位符，写到 _atoms/_mech/
+原子是自包含的：每个 aNN.json 里带 `source_text`（原文全文），所以原文 .md 删掉之后，
+模板、规则、清单、上下文全都还在，`check` 也只校验原子内部是否自洽，不读磁盘原文。
+
+子命令：
+  extract  从原文提取机械层（原文移除后这步不可用；原子已含全文，直接改原子即可）
   summary  输出紧凑摘要，供人写语义层（task / tags）
-  merge    机械层 + _index.json（工位/槽位/产物）+ semantic.json → _atoms/aNN.json 与 index.json
-  check    覆盖率校验：原文每个代码块都要被收录，否则报漏
+  merge    机械层 + _index.json + semantic.json → _atoms/aNN.json 与 index.json
+  check    自包含校验：看原子内部是否自洽（不读原文）
+  restore  从原子的 source_text 还原原文（应急用）
 
 用法：
   python tools/atomize.py extract
@@ -132,9 +136,11 @@ def extract_checklists(lines, blocks, headings):
     return out
 
 
-def parse(path):
-    """把一篇 markdown 解析成结构：标题、代码块、正文段、占位符。"""
-    text = Path(path).read_text(encoding="utf-8")
+def parse_text(text, name=""):
+    """把 markdown 文本解析成结构：标题、代码块、裸段落模板、规则句、清单、占位符。
+
+    输入是文本而不是路径——这样从原文解析和从原子自带的 source_text 校验，走的是同一套逻辑。
+    """
     lines = text.splitlines()
     headings, blocks, prose = [], [], []
     i, in_code, cur = 0, False, None
@@ -184,7 +190,7 @@ def parse(path):
                 rules.append({"text": s, "line": p["line"]})
 
     return {
-        "title": headings[0]["text"] if headings else Path(path).stem,
+        "title": headings[0]["text"] if headings else (name or "未命名"),
         "line_count": len(lines),
         "headings": headings,
         "code_blocks": blocks,
@@ -193,7 +199,13 @@ def parse(path):
         "prose_rules": rules,
         "placeholders": sorted({m.group(1).strip() for m in PH_RE.finditer(text)}),
         "sha": sha(text),
+        "source_text": text,
     }
+
+
+def parse(path):
+    p = Path(path)
+    return parse_text(p.read_text(encoding="utf-8"), p.stem)
 
 
 def load_index():
@@ -284,6 +296,8 @@ def cmd_merge(_args):
             "checklists": m.get("checklists", []),
             "placeholders": m["placeholders"],
             "source": {"line_count": m["line_count"], "sha": m["source_sha"]},
+            # 原文全文：原子的自包含载体。原文删掉之后，模板、规则、上下文全在这里。
+            "source_text": m["source_text"],
         }
         (ATOM_DIR / f"{aid}.json").write_text(
             json.dumps(atom, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
@@ -306,32 +320,48 @@ def cmd_merge(_args):
 
 
 def cmd_check(_args):
+    """自包含校验：不读磁盘原文，只看原子自己的 source_text 是否自洽。
+
+    原文删掉之后，这是唯一能保证「模板没丢、规则没少」的手段。
+    """
     items = load_index()
     problems = []
+    archived = 0
     for i, item in enumerate(items, 1):
         aid = atom_id(i)
-        mp, ap = MECH_DIR / f"{aid}.json", ATOM_DIR / f"{aid}.json"
+        ap = ATOM_DIR / f"{aid}.json"
         if not ap.exists():
             problems.append(f"{aid} 原子缺失")
             continue
         atom = json.loads(ap.read_text(encoding="utf-8"))
-        src = REF_ROOT.parent / atom["path"] if not atom["path"].startswith("references/") else REF_ROOT.parent / atom["path"]
-        if not src.exists():
-            problems.append(f"{aid} 原文不存在：{atom['path']}")
+        text = atom.get("source_text") or ""
+        if not text:
+            problems.append(f"{aid} 缺 source_text，无法脱离原文工作")
             continue
-        parsed = parse(src)
-        if atom["source"]["sha"] != parsed["sha"]:
-            problems.append(f"{aid} 原文已变（sha 不一致），需重跑 extract 与 merge")
+        if sha(text) != atom.get("source", {}).get("sha"):
+            problems.append(f"{aid} source_text 与记录的 sha 不一致（被手工改过？）")
+        if not (REF_ROOT.parent / atom.get("path", "")).exists():
+            archived += 1
+
+        parsed = parse_text(text)
         fenced = [t for t in atom["templates"] if t.get("kind") == "fenced"]
         loose = [t for t in atom["templates"] if t.get("kind") == "loose"]
         if len(fenced) != len(parsed["code_blocks"]):
-            problems.append(f"{aid} fenced 模板 {len(fenced)} ≠ 原文代码块 {len(parsed['code_blocks'])}")
+            problems.append(f"{aid} fenced 模板 {len(fenced)} ≠ 自解析代码块 {len(parsed['code_blocks'])}")
         if len(loose) != len(parsed["loose_templates"]):
-            problems.append(f"{aid} loose 模板 {len(loose)} ≠ 原文裸段落 {len(parsed['loose_templates'])}")
+            problems.append(f"{aid} loose 模板 {len(loose)} ≠ 自解析裸段落 {len(parsed['loose_templates'])}")
         if not atom["templates"] and not atom.get("checklists"):
-            problems.append(f"{aid} 未拆出模板与清单（可能是通篇说明，需人工确认）")
+            problems.append(f"{aid} 未拆出模板与清单")
+        for t in atom["templates"]:
+            body = t.get("text") or ""
+            if not body:
+                continue
+            # 围栏模板是精确切片，可整段比对；裸段落是行拼接后 strip 的，用前 60 字探测就够
+            probe = body if t.get("kind") == "fenced" else body[:60]
+            if probe not in text:
+                problems.append(f"{aid} 模板 {t.get('index')} 在 source_text 里找不到")
         if len(atom["rules"]) != len(parsed["prose_rules"]):
-            problems.append(f"{aid} 规则数 {len(atom['rules'])} ≠ 原文规则句 {len(parsed['prose_rules'])}")
+            problems.append(f"{aid} 规则数 {len(atom['rules'])} ≠ 自解析 {len(parsed['prose_rules'])}")
         if not atom.get("task"):
             problems.append(f"{aid} 缺 task（语义层没写）")
 
@@ -340,7 +370,30 @@ def cmd_check(_args):
             print("错误:", p)
         print(f"check: 不通过（{len(problems)} 项）")
         return 1
-    print(f"check: {len(items)} 个原子的模板与规则全覆盖，原文 sha 一致")
+    total = len(items)
+    status = f"原文已移除 {archived}/{total} 篇" if archived else "原文仍在（仅作溯源，原子不依赖）"
+    print(f"check: {total} 个原子自包含校验通过（source_text、模板、规则、清单自洽）· {status}")
+    return 0
+
+
+def cmd_restore(args):
+    """从原子还原原文：应急用。原子里的 source_text 是原文全文。"""
+    items = load_index()
+    restored = skipped = 0
+    for i, _item in enumerate(items, 1):
+        ap = ATOM_DIR / f"{atom_id(i)}.json"
+        if not ap.exists():
+            print(f"{atom_id(i)} 原子缺失，跳过", file=sys.stderr)
+            continue
+        atom = json.loads(ap.read_text(encoding="utf-8"))
+        target = REF_ROOT.parent / atom.get("path", "")
+        if target.exists() and not getattr(args, "force", False):
+            skipped += 1
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(atom.get("source_text", ""), encoding="utf-8", newline="\n")
+        restored += 1
+    print(f"restore: 还原 {restored} 篇，跳过已存在 {skipped} 篇（--force 覆盖）")
     return 0
 
 
@@ -394,6 +447,12 @@ def selftest():
         elif "裸段落识别" not in r2["loose_templates"][0]["text"]:
             fails.append("裸段落内容提取错误")
 
+        # 自包含：source_text 必须原样保留，原子才不依赖外部原文
+        if r.get("source_text") != sample:
+            fails.append("source_text 未完整保留原文")
+        if len(r.get("sha", "")) != 12:
+            fails.append(f"sha 计算异常：{r.get('sha')}")
+
     if fails:
         for f in fails:
             print("FAIL", f)
@@ -405,15 +464,17 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser(description="SOP 原子化")
     sub = ap.add_subparsers(dest="cmd")
-    for name in ["extract", "summary", "merge", "check"]:
+    for name in ["extract", "summary", "merge", "check", "restore"]:
         sub.add_parser(name)
+    ap.add_argument("--force", action="store_true", help="restore 时覆盖已存在的原文")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
 
     if args.selftest:
         return selftest()
 
-    handler = {"extract": cmd_extract, "summary": cmd_summary, "merge": cmd_merge, "check": cmd_check}.get(args.cmd)
+    handler = {"extract": cmd_extract, "summary": cmd_summary, "merge": cmd_merge,
+               "check": cmd_check, "restore": cmd_restore}.get(args.cmd)
     if not handler:
         ap.print_help()
         return 0
