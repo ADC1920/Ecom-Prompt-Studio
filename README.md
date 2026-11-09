@@ -95,6 +95,8 @@ cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
 | `tools/trigger-cases.md` | 30 条触发与路由回归用例的人类可读视图，便于改版前后对照 |
 | `tools/check_image.py` | 出图后平台机检：白底纯度、主体占比、比例、分辨率、文件大小、透明通道、OCR 文字；`--fix` 自动归一白底、补比例、放大。仅依赖 Pillow，OCR 可选 |
 | `tools/slop_check.py` | 提示词定稿前自查：SD 时代堆词、绝对化用语、虚假促销、功效宣称、认证背书、AI 痕迹特征。零依赖 |
+| `tools/compose_prompt.py` | 五槽位组装器：槽位 JSON 编译成成品提示词（保真段 → 场景 → 主体 → 细节 → 用途 → 约束），自动补平台约束并跑必填与反 AI 感校验。零依赖 |
+| `tools/run_loop.py` | 出图闭环：生成 → 平台机检 → 把修复句写回提示词 → 重跑，到轮次上限为止，每轮落盘并给 manifest；离线 `--dry-run` 不出图只推演修复句 |
 | `evals/cases.json` | 30 条用例的机器可读源 |
 | `evals/check_cases.py` | 校验 `cases.json` 与 `trigger-cases.md` 一致，并确认预期 SOP 路径存在 |
 | `evals/promptfooconfig.yaml` | 触发回归：断言每条提示命中的技能名与 SOP 路径 |
@@ -124,9 +126,11 @@ python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg -n 2 --seed 
 
 触发回归主要判断「技能选得对不对」，因为选错技能是用户最容易感知的问题。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：运行 `tools/lint_skills.py`（含索引覆盖与工具引用校验）、`evals/check_cases.py`、`check_image.py --selftest`、`slop_check.py --selftest` 和 promptfoo 配置结构校验，不需要密钥。
+1. **静态检查**（每次 push / PR）：运行 `tools/lint_skills.py`（含索引覆盖、槽位名合法性与工具引用校验）、`evals/check_cases.py`、`check_image.py` / `slop_check.py` / `compose_prompt.py` / `run_loop.py` 四个脚本的离线自检，以及 promptfoo 配置结构校验，不需要密钥。
 2. **触发回归**（每次 push / PR）：用 promptfoo 跑 30 条提示，断言返回的技能名和 SOP 路径。评测输入直接读取三个 `SKILL.md`，路由表改动会立即生效。
 3. **文本质量抽检**（每周一和手动触发）：读取指定 SOP 原文生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分，图片输出不做自动评分。
+
+三个技能各带一份 `EVAL.md` 答案键（能力边界题 / 生产决策题 / 应用任务 + 评分口径），供人工或独立评测流程使用。答案键不链接进 `SKILL.md`，`lint_skills.py` 会校验它存在且未被入口引用，避免被评 agent 直接读到答案。
 
 模型通过 DeepSeek 官方 provider 接入，密钥不写入仓库或评测配置：
 
