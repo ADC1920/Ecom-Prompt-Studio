@@ -35,6 +35,9 @@ REF_RE = re.compile(r"references/[^`|\]\n]+?\.md")
 # 五工位名，与 SKILL.md 工位表一致；索引里的 stations 必须是这五个之一
 STATIONS = {"主图台", "详情页台", "SKU台", "模特与视频台", "反推台"}
 
+# 五槽位名，与 references/_prompt-slots.md 一致；索引里的 slots 必须是这五个之一
+SLOTS = {"scene", "subject", "details", "usecase", "constraints"}
+
 # SKILL.md 里点名的工具文件，用于校验脚本是否真实存在
 TOOL_REF = re.compile(r"tools/([A-Za-z0-9_.\-]+\.(?:py|md|json))")
 
@@ -121,13 +124,22 @@ def check_placeholders(root: Path, problems: list) -> None:
                 problems.append(f"[placeholder] {where}: []不闭合")
 
 
+def sop_files(skill_dir: Path) -> set:
+    """SOP 原文文件集合。`_` 开头的是索引与规范文档（_index.json / _prompt-slots.md），不算原文。"""
+    return {
+        p.relative_to(skill_dir).as_posix()
+        for p in (skill_dir / "references").rglob("*.md")
+        if not p.name.startswith("_")
+    }
+
+
 def check_route_coverage(root: Path, problems: list, warnings: list) -> None:
     skill_dir = root / "ecom-prompt-sop"
     if not (skill_dir / "SKILL.md").exists():
         return
     text = read(skill_dir / "SKILL.md")
-    on_disk = {p.relative_to(skill_dir).as_posix() for p in (skill_dir / "references").rglob("*.md")}
-    in_route = set(REF_RE.findall(text))
+    on_disk = sop_files(skill_dir)
+    in_route = {p for p in set(REF_RE.findall(text)) if not Path(p).name.startswith("_")}
     for p in sorted(on_disk - in_route):
         warnings.append(f"[ecom-prompt-sop] SOP 未进路由表: {p}")
     for p in sorted(in_route - on_disk):
@@ -169,7 +181,7 @@ def check_index(root: Path, problems: list, warnings: list) -> None:
         problems.append("[index] items 为空或不是数组")
         return
 
-    disk = {p.relative_to(skill_dir).as_posix() for p in (skill_dir / "references").rglob("*.md")}
+    disk = sop_files(skill_dir)
     paths = [it.get("path", "") for it in items if isinstance(it, dict)]
 
     for p in sorted(disk - set(paths)):
@@ -187,6 +199,9 @@ def check_index(root: Path, problems: list, warnings: list) -> None:
         for st in it.get("stations", []):
             if st not in STATIONS:
                 problems.append(f"[index] 未知工位「{st}」: {it.get('path')}")
+        for slot in it.get("slots", []):
+            if slot not in SLOTS:
+                problems.append(f"[index] 未知槽位「{slot}」: {it.get('path')}")
         if not it.get("triggers"):
             warnings.append(f"[index] 缺触发词: {it.get('path')}")
 
@@ -202,6 +217,19 @@ def check_tool_refs(root: Path, problems: list) -> None:
                 problems.append(f"[{name}] 引用了不存在的工具: tools/{ref}")
 
 
+def check_eval(root: Path, problems: list, warnings: list) -> None:
+    """EVAL.md 是评测答案键：必须存在，且不得被 SKILL.md 引用（否则被评 agent 直接看到答案）。"""
+    for name in SKILLS:
+        skill_dir = root / name
+        if not (skill_dir / "SKILL.md").exists():
+            continue
+        if not (skill_dir / "EVAL.md").exists():
+            warnings.append(f"[{name}] 缺少 EVAL.md 答案键")
+            continue
+        if "EVAL.md" in read(skill_dir / "SKILL.md"):
+            problems.append(f"[{name}] SKILL.md 引用了 EVAL.md：答案键不能出现在被评 agent 的入口里")
+
+
 def main() -> int:
     root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
     problems: list = []
@@ -211,6 +239,7 @@ def main() -> int:
     check_route_coverage(root, problems, warnings)
     check_index(root, problems, warnings)
     check_tool_refs(root, problems)
+    check_eval(root, problems, warnings)
     check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:
