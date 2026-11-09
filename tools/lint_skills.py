@@ -8,10 +8,13 @@
 4. 规模预算：SKILL.md 正文超预算给出警告，超硬上限判错误
 5. 占位符闭合：全库 Markdown 的【】、[]、{{}} 逐行配对，不闭合判错误
 6. 密钥扫描：全库文本无常见密钥模式
+7. 索引覆盖：references/_index.json 与 34 篇原文双向一致，工位名合法
+8. 工具引用：SKILL.md 提到的 tools/ 脚本必须真实存在
 
 用法: python tools/lint_skills.py [仓库根]（默认为脚本上级目录）
 0 错误退出码 0，否则 1；警告不阻断。
 """
+import json
 import re
 import sys
 from pathlib import Path
@@ -28,6 +31,15 @@ SECRETS = [
 ]
 
 REF_RE = re.compile(r"references/[^`|\]\n]+?\.md")
+
+# 五工位名，与 SKILL.md 工位表一致；索引里的 stations 必须是这五个之一
+STATIONS = {"主图台", "详情页台", "SKU台", "模特与视频台", "反推台"}
+
+# 五槽位名，与 references/_prompt-slots.md 一致；索引里的 slots 必须是这五个之一
+SLOTS = {"scene", "subject", "details", "usecase", "constraints"}
+
+# SKILL.md 里点名的工具文件，用于校验脚本是否真实存在
+TOOL_REF = re.compile(r"tools/([A-Za-z0-9_.\-]+\.(?:py|md|json))")
 
 # SKILL.md 正文（不含 frontmatter）预算：超软线提醒，超硬线阻断。
 # 硬线对齐 Agent Skills 生态惯例（SKILL.md 不超过 500 行），软线留出提前拆分的余量。
@@ -85,6 +97,66 @@ def check_skill(root: Path, name: str, problems: list, warnings: list) -> None:
         )
 
 
+def check_atoms(root: Path, problems: list, warnings: list) -> None:
+    """拆解原子：结构与索引一一对应。内容是否与原文同步由 `python tools/atomize.py check` 负责。"""
+    skill_dir = root / "ecom-prompt-sop"
+    idx_p = skill_dir / "references" / "_atoms" / "index.json"
+    if not idx_p.exists():
+        warnings.append("[ecom-prompt-sop] 缺少 _atoms/index.json（跑 python tools/atomize.py merge 生成）")
+        return
+    try:
+        atoms = json.loads(read(idx_p))
+        ref_items = json.loads(read(skill_dir / "references" / "_index.json"))["items"]
+    except json.JSONDecodeError as e:
+        problems.append(f"[atoms] 索引解析失败: {e}")
+        return
+
+    items = atoms.get("items") or []
+    if len(items) != len(ref_items):
+        problems.append(f"[atoms] 原子数 {len(items)} 与篇目索引 {len(ref_items)} 不一致")
+    ref_paths = {it["path"] for it in ref_items}
+    for it in items:
+        aid = it.get("id") or "?"
+        p = skill_dir / "references" / "_atoms" / f"{aid}.json"
+        if not p.exists():
+            problems.append(f"[atoms] 缺少原子文件 {aid}.json")
+            continue
+        try:
+            atom = json.loads(read(p))
+        except json.JSONDecodeError:
+            problems.append(f"[atoms] {aid}.json 解析失败")
+            continue
+        if atom.get("path") not in ref_paths:
+            problems.append(f"[atoms] {aid} 的 path 不在篇目索引里：{atom.get('path')}")
+        if not atom.get("templates") and not atom.get("checklists"):
+            problems.append(f"[atoms] {aid} 既无模板也无清单")
+        if not atom.get("source", {}).get("sha"):
+            problems.append(f"[atoms] {aid} 缺 source.sha，无法判断是否与原文同步")
+
+
+ATOM_REF = re.compile(r"_atoms/(a\d{2})\.json")
+
+
+def check_atom_refs(root: Path, problems: list, warnings: list) -> None:
+    """SKILL.md 必须指向真实存在的原子，且 34 个原子都要被路由表覆盖到。
+
+    原文归档之后，这是「每篇都能被找到」的唯一保证。
+    """
+    skill_dir = root / "ecom-prompt-sop"
+    f = skill_dir / "SKILL.md"
+    if not f.exists():
+        return
+    text = read(f)
+    atoms_dir = skill_dir / "references" / "_atoms"
+    referenced = set(ATOM_REF.findall(text))
+    existing = {p.stem for p in atoms_dir.glob("a*.json")} if atoms_dir.exists() else set()
+
+    for aid in sorted(referenced - existing):
+        problems.append(f"[atoms] SKILL.md 引用了不存在的原子 {aid}")
+    for aid in sorted(existing - referenced):
+        warnings.append(f"[atoms] 原子 {aid} 未被 SKILL.md 路由表引用")
+
+
 def check_placeholders(root: Path, problems: list) -> None:
     """逐行检查占位符是否闭合。
 
@@ -112,13 +184,29 @@ def check_placeholders(root: Path, problems: list) -> None:
                 problems.append(f"[placeholder] {where}: []不闭合")
 
 
+def sop_files(skill_dir: Path) -> set:
+    """SOP 原文文件集合。
+
+    `_` 开头的是索引、规范、规则与语料（_index.json / _prompt-slots.md / _rules/ / _corpus/），
+    不算原文。判断看整条路径——目录名带下划线时，里面的 README 也不能当 SOP。
+    """
+    ref_root = skill_dir / "references"
+    out = set()
+    for p in ref_root.rglob("*.md"):
+        parts = p.relative_to(ref_root).parts
+        if any(part.startswith("_") for part in parts):
+            continue
+        out.add(p.relative_to(skill_dir).as_posix())
+    return out
+
+
 def check_route_coverage(root: Path, problems: list, warnings: list) -> None:
     skill_dir = root / "ecom-prompt-sop"
     if not (skill_dir / "SKILL.md").exists():
         return
     text = read(skill_dir / "SKILL.md")
-    on_disk = {p.relative_to(skill_dir).as_posix() for p in (skill_dir / "references").rglob("*.md")}
-    in_route = set(REF_RE.findall(text))
+    on_disk = sop_files(skill_dir)
+    in_route = {p for p in set(REF_RE.findall(text)) if not Path(p).name.startswith("_")}
     for p in sorted(on_disk - in_route):
         warnings.append(f"[ecom-prompt-sop] SOP 未进路由表: {p}")
     for p in sorted(in_route - on_disk):
@@ -137,6 +225,130 @@ def check_secrets(root: Path, problems: list) -> None:
                 problems.append(f"[secrets] {p.relative_to(root).as_posix()}: 疑似密钥 {str(hit)[:12]}...")
 
 
+def check_index(root: Path, problems: list, warnings: list) -> None:
+    """索引与原文双向覆盖：漏收、指向不存在、重复、工位名拼错都算错误。
+
+    索引是路由表的机器可读镜像，两边漂移会让检索与评测同时跑偏，所以卡在静态检查里。
+    """
+    skill_dir = root / "ecom-prompt-sop"
+    if not (skill_dir / "SKILL.md").exists():
+        return
+    idx = skill_dir / "references" / "_index.json"
+    if not idx.exists():
+        warnings.append("[ecom-prompt-sop] 缺少机器可读索引 references/_index.json")
+        return
+    try:
+        data = json.loads(read(idx))
+    except json.JSONDecodeError as e:
+        problems.append(f"[index] JSON 解析失败: {e}")
+        return
+
+    items = data.get("items") or []
+    if not isinstance(items, list) or not items:
+        problems.append("[index] items 为空或不是数组")
+        return
+
+    disk = sop_files(skill_dir)
+    paths = [it.get("path", "") for it in items if isinstance(it, dict)]
+
+    # 原文可以归档：归档后必须由原子（含 source_text）承载同一篇内容
+    atoms = {}
+    for f in (skill_dir / "references" / "_atoms").glob("a*.json"):
+        try:
+            a = json.loads(read(f))
+        except json.JSONDecodeError:
+            problems.append(f"[atoms] {f.name} 解析失败")
+            continue
+        if a.get("path"):
+            atoms[a["path"]] = a
+
+    for p in sorted(disk - set(paths)):
+        problems.append(f"[index] 原文未收录: {p}")
+    for p in sorted(set(paths) - disk):
+        a = atoms.get(p)
+        if not a:
+            problems.append(f"[index] 原文不存在且无原子承载: {p}")
+        elif not a.get("source_text"):
+            problems.append(f"[atoms] {p} 的原子缺 source_text，脱离原文后内容会丢")
+    for p in sorted({p for p in paths if paths.count(p) > 1}):
+        problems.append(f"[index] 重复条目: {p}")
+    if atoms and len(items) != len(atoms):
+        problems.append(f"[index] 条目数 {len(items)} 与原子数 {len(atoms)} 不一致")
+
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        for st in it.get("stations", []):
+            if st not in STATIONS:
+                problems.append(f"[index] 未知工位「{st}」: {it.get('path')}")
+        for slot in it.get("slots", []):
+            if slot not in SLOTS:
+                problems.append(f"[index] 未知槽位「{slot}」: {it.get('path')}")
+        if not it.get("triggers"):
+            warnings.append(f"[index] 缺触发词: {it.get('path')}")
+
+
+def check_tool_refs(root: Path, problems: list) -> None:
+    """SKILL.md 里点名的 tools/ 文件必须存在，避免文档指向已删除的脚本。"""
+    for name in SKILLS:
+        f = root / name / "SKILL.md"
+        if not f.exists():
+            continue
+        for ref in sorted(set(TOOL_REF.findall(read(f)))):
+            if not (root / "tools" / ref).exists():
+                problems.append(f"[{name}] 引用了不存在的工具: tools/{ref}")
+
+
+def check_eval(root: Path, problems: list, warnings: list) -> None:
+    """EVAL.md 是评测答案键：必须存在，且不得被 SKILL.md 引用（否则被评 agent 直接看到答案）。"""
+    for name in SKILLS:
+        skill_dir = root / name
+        if not (skill_dir / "SKILL.md").exists():
+            continue
+        if not (skill_dir / "EVAL.md").exists():
+            warnings.append(f"[{name}] 缺少 EVAL.md 答案键")
+            continue
+        if "EVAL.md" in read(skill_dir / "SKILL.md"):
+            problems.append(f"[{name}] SKILL.md 引用了 EVAL.md：答案键不能出现在被评 agent 的入口里")
+
+
+def check_rules(root: Path, problems: list, warnings: list) -> None:
+    """判据规则与语料库：规则文件必须可解析且非空，语料每行必须是带 id/title/prompt 的合法 JSON。"""
+    skill_dir = root / "ecom-prompt-sop"
+    rdir = skill_dir / "references" / "_rules"
+    if not rdir.exists():
+        warnings.append("[ecom-prompt-sop] 缺少判据规则目录 _rules/")
+    else:
+        for name, key in [("platform", "platforms"), ("category", "categories"), ("scenario", "scenarios")]:
+            p = rdir / f"{name}.json"
+            if not p.exists():
+                problems.append(f"[rules] 缺少 {name}.json")
+                continue
+            try:
+                data = json.loads(read(p))
+            except json.JSONDecodeError as e:
+                problems.append(f"[rules] {name}.json 解析失败: {e}")
+                continue
+            if not (data.get(key) or {}):
+                problems.append(f"[rules] {name}.json 的 {key} 为空")
+
+    cpath = skill_dir / "references" / "_corpus" / "entries.jsonl"
+    if not cpath.exists():
+        warnings.append("[ecom-prompt-sop] 语料库为空（_corpus/entries.jsonl 不存在）")
+        return
+    for i, line in enumerate(read(cpath).splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            problems.append(f"[corpus] 第 {i} 行不是合法 JSON")
+            continue
+        for field in ("id", "title", "prompt"):
+            if not entry.get(field):
+                problems.append(f"[corpus] 第 {i} 行缺字段 {field}")
+
+
 def main() -> int:
     root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
     problems: list = []
@@ -144,6 +356,12 @@ def main() -> int:
     for name in SKILLS:
         check_skill(root, name, problems, warnings)
     check_route_coverage(root, problems, warnings)
+    check_index(root, problems, warnings)
+    check_tool_refs(root, problems)
+    check_eval(root, problems, warnings)
+    check_rules(root, problems, warnings)
+    check_atoms(root, problems, warnings)
+    check_atom_refs(root, problems, warnings)
     check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:

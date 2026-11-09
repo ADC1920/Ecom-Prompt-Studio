@@ -1,0 +1,997 @@
+{
+ "version": 1,
+ "note": "34 篇 SOP 的拆解结果索引：每条给 id、原文路径、工位/槽位/产物、一句话任务、模板与规则数量。原子文件是同目录的 aNN.json，模板原文完整保留。改原文后重跑 atomize.py extract 与 merge。",
+ "count": 34,
+ "items": [
+  {
+   "id": "a01",
+   "no": "00",
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "path": "references/01_通用主图详情页/00 全平台品类主图详情页通用 SOP（含跨境）.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "主图加详情页要一套连做时的通用流程，含跨境平台的输入模板与默认值",
+   "tags": [
+    "主图",
+    "详情页",
+    "跨境",
+    "连做"
+   ],
+   "templates": 10,
+   "rules": 54,
+   "checklists": 2,
+   "placeholders": 0
+  },
+  {
+   "id": "a02",
+   "no": "01",
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "path": "references/01_通用主图详情页/01 全平台品类详情页生成（含跨境电商）.md",
+   "stations": [
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "详情页"
+   ],
+   "task": "只做详情页整套时的通用提示词生成，含跨境默认值与画幅规则",
+   "tags": [
+    "详情页",
+    "跨境",
+    "通用"
+   ],
+   "templates": 2,
+   "rules": 75,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a03",
+   "no": "02",
+   "title": "02 全品类主图通用 SOP",
+   "path": "references/01_通用主图详情页/02 全品类主图通用 SOP.md",
+   "stations": [
+    "主图台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "主图"
+   ],
+   "task": "国内平台常规主图整套：先实拍转白底，再白底直出 6+2 张主图",
+   "tags": [
+    "主图",
+    "白底",
+    "常规"
+   ],
+   "templates": 3,
+   "rules": 34,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a04",
+   "no": "05",
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "path": "references/01_通用主图详情页/05 带五点式卖点的电商详情页生成 SOP.md",
+   "stations": [
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "详情页"
+   ],
+   "task": "详情页带五点式卖点模块，每个卖点配小标题与短句，适合功能型产品",
+   "tags": [
+    "详情页",
+    "卖点",
+    "结构"
+   ],
+   "templates": 13,
+   "rules": 20,
+   "checklists": 3,
+   "placeholders": 20
+  },
+  {
+   "id": "a05",
+   "no": "06",
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "path": "references/01_通用主图详情页/06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）.md",
+   "stations": [
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "详情页"
+   ],
+   "task": "详情页要出镜模特但脸不能露的写法，含平台画幅与不露脸规则",
+   "tags": [
+    "详情页",
+    "模特",
+    "不露脸"
+   ],
+   "templates": 13,
+   "rules": 32,
+   "checklists": 1,
+   "placeholders": 18
+  },
+  {
+   "id": "a06",
+   "no": "07",
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "path": "references/01_通用主图详情页/07 全平台品类主图提示词 SOP（可选模特与人脸规则）.md",
+   "stations": [
+    "主图台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图"
+   ],
+   "task": "主图带模特、轮播图、平台合规与跨境场景时的主图整套写法",
+   "tags": [
+    "主图",
+    "模特",
+    "合规",
+    "跨境"
+   ],
+   "templates": 16,
+   "rules": 48,
+   "checklists": 1,
+   "placeholders": 13
+  },
+  {
+   "id": "a07",
+   "no": "买家秀",
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "path": "references/01_通用主图详情页/上传产品批量生成相同场景真实手机买家秀 SOP.md",
+   "stations": [
+    "主图台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "买家秀"
+   ],
+   "task": "同一产品同场景批量出真实手机实拍感的买家秀，刻意保留非影棚质感",
+   "tags": [
+    "买家秀",
+    "批量",
+    "实拍感"
+   ],
+   "templates": 10,
+   "rules": 23,
+   "checklists": 1,
+   "placeholders": 14
+  },
+  {
+   "id": "a08",
+   "no": "场景图",
+   "title": "产品场景图单一核心场景生成 SOP",
+   "path": "references/01_通用主图详情页/产品场景图单一核心场景生成 SOP.md",
+   "stations": [
+    "主图台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "场景图"
+   ],
+   "task": "单一核心场景到底：一个场景里出多张构图不同的产品场景图",
+   "tags": [
+    "场景图",
+    "单场景",
+    "统一风格"
+   ],
+   "templates": 11,
+   "rules": 15,
+   "checklists": 1,
+   "placeholders": 18
+  },
+  {
+   "id": "a09",
+   "no": "03-反推",
+   "title": "03 爆品详情页反推通用SOP",
+   "path": "references/02_爆款反推与风格拆解/03 爆品详情页反推通用SOP.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "详情页"
+   ],
+   "task": "拿别人的爆款详情页反推成自己的提示词，先拆版式再替换主体",
+   "tags": [
+    "反推",
+    "详情页",
+    "拆解"
+   ],
+   "templates": 2,
+   "rules": 34,
+   "checklists": 0,
+   "placeholders": 6
+  },
+  {
+   "id": "a10",
+   "no": "04-反推",
+   "title": "04 爆品主图反推通用SOP",
+   "path": "references/02_爆款反推与风格拆解/04 爆品主图反推通用SOP.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "主图"
+   ],
+   "task": "拿别人的爆款主图反推成自己的提示词，输出可直接生图的版本",
+   "tags": [
+    "反推",
+    "主图",
+    "拆解"
+   ],
+   "templates": 1,
+   "rules": 40,
+   "checklists": 0,
+   "placeholders": 14
+  },
+  {
+   "id": "a11",
+   "no": "对标场景",
+   "title": "反推对标场景并批量生成",
+   "path": "references/02_爆款反推与风格拆解/反推对标场景并批量生成.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "场景图"
+   ],
+   "task": "反推对标场景的空间光影与道具层次，再批量生成同调场景",
+   "tags": [
+    "反推",
+    "场景",
+    "批量"
+   ],
+   "templates": 1,
+   "rules": 35,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a12",
+   "no": "翻新",
+   "title": "小白图翻新成大师图 SOP",
+   "path": "references/02_爆款反推与风格拆解/小白图翻新成大师图 SOP.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "手里图太土，翻新成高级感成片，保留产品真实外观",
+   "tags": [
+    "翻新",
+    "旧图",
+    "升级"
+   ],
+   "templates": 1,
+   "rules": 2,
+   "checklists": 0,
+   "placeholders": 1
+  },
+  {
+   "id": "a13",
+   "no": "SKU复刻",
+   "title": "爆款 SKU 复刻替换提示词",
+   "path": "references/02_爆款反推与风格拆解/爆款 SKU 复刻替换提示词.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "SKU图"
+   ],
+   "task": "把自家产品放进爆款 SKU 的版式里，连带改写整套文案与信息模块",
+   "tags": [
+    "SKU",
+    "反推",
+    "版式复刻"
+   ],
+   "templates": 4,
+   "rules": 0,
+   "checklists": 1,
+   "placeholders": 5
+  },
+  {
+   "id": "a14",
+   "no": "风格反推",
+   "title": "详情页设计风格构图色彩反推提示词 SOP",
+   "path": "references/02_爆款反推与风格拆解/详情页设计风格构图色彩反推提示词 SOP.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "详情页"
+   ],
+   "task": "只继承详情页的风格、构图与色彩，不继承商品特性与文案",
+   "tags": [
+    "反推",
+    "风格",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 3,
+   "checklists": 1,
+   "placeholders": 11
+  },
+  {
+   "id": "a15",
+   "no": "3C",
+   "title": "3C数码类主图与详情页生图 SOP",
+   "path": "references/03_品类专项/3C数码类主图与详情页生图 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "3C 数码类主图与详情页：接口、按键、材质分区与白底处理",
+   "tags": [
+    "品类",
+    "3C",
+    "主图",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 1,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a16",
+   "no": "包包",
+   "title": "包包类通用主图与详情页生图 SOP",
+   "path": "references/03_品类专项/包包类通用主图与详情页生图 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "包包类全套（含目录可跳读），五金、缝线、内衬与版式要点最细",
+   "tags": [
+    "品类",
+    "包包",
+    "主图",
+    "详情页"
+   ],
+   "templates": 17,
+   "rules": 40,
+   "checklists": 3,
+   "placeholders": 7
+  },
+  {
+   "id": "a17",
+   "no": "家具主图",
+   "title": "家具类纯视觉主图生图 SOP",
+   "path": "references/03_品类专项/家具类纯视觉主图生图 SOP.md",
+   "stations": [
+    "主图台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "主图"
+   ],
+   "task": "家具类纯视觉主图，只做主图不做详情页，强调比例与结构",
+   "tags": [
+    "品类",
+    "家具",
+    "主图",
+    "纯视觉"
+   ],
+   "templates": 7,
+   "rules": 4,
+   "checklists": 2,
+   "placeholders": 0
+  },
+  {
+   "id": "a18",
+   "no": "家具详情页",
+   "title": "家具类详情页生图 SOP",
+   "path": "references/03_品类专项/家具类详情页生图 SOP.md",
+   "stations": [
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "详情页"
+   ],
+   "task": "家具类详情页：空间尺度、结构件与承重说明的页面组织",
+   "tags": [
+    "品类",
+    "家具",
+    "详情页"
+   ],
+   "templates": 7,
+   "rules": 3,
+   "checklists": 2,
+   "placeholders": 0
+  },
+  {
+   "id": "a19",
+   "no": "服饰",
+   "title": "服饰类主图与详情页生图 SOP",
+   "path": "references/03_品类专项/服饰类主图与详情页生图 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "服饰类主图与详情页：面料纹理、版型剪裁与模特穿着一致性",
+   "tags": [
+    "品类",
+    "服饰",
+    "主图",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 1,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a20",
+   "no": "海产",
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "path": "references/03_品类专项/海产品类主图与详情页生图提示词 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "海产品类：形态真实与货不对板风险控制，规格与产地表述",
+   "tags": [
+    "品类",
+    "海产",
+    "主图",
+    "详情页"
+   ],
+   "templates": 12,
+   "rules": 14,
+   "checklists": 1,
+   "placeholders": 1
+  },
+  {
+   "id": "a21",
+   "no": "杯壶",
+   "title": "百货杯壶类主图与详情页生图 SOP",
+   "path": "references/03_品类专项/百货杯壶类主图与详情页生图 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "百货杯壶类：杯盖结构、旋纹、容量与内胆质感的表现",
+   "tags": [
+    "品类",
+    "杯壶",
+    "主图",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 1,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a22",
+   "no": "美妆",
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "path": "references/03_品类专项/美妆日化类主图与详情页生图 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "美妆日化类：质地特写、包装还原与功效宣称禁忌",
+   "tags": [
+    "品类",
+    "美妆",
+    "主图",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 27,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a23",
+   "no": "美食",
+   "title": "美食类主图与详情页生图 SOP",
+   "path": "references/03_品类专项/美食类主图与详情页生图 SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "美食类：食物形态、油脂光泽与配料营养的合规表述",
+   "tags": [
+    "品类",
+    "美食",
+    "主图",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 1,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a24",
+   "no": "檀木",
+   "title": "老檀木串珠线香类主图与详情页生图 SOP",
+   "path": "references/03_品类专项/老檀木串珠线香类主图与详情页生图SOP.md",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "檀木串珠线香类：棕眼油线、串法细节与合规表述边界",
+   "tags": [
+    "品类",
+    "檀木",
+    "主图",
+    "详情页"
+   ],
+   "templates": 7,
+   "rules": 2,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a25",
+   "no": "SKU数量",
+   "title": "同产品不同数量的sku图批量生成",
+   "path": "references/04_SKU批量与跨平台处理/同产品不同数量的sku图批量生成.md",
+   "stations": [
+    "SKU台"
+   ],
+   "slots": [
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "SKU图"
+   ],
+   "task": "同款产品出 3/5/8 件套等不同数量的 SKU 图，数量与排版对齐",
+   "tags": [
+    "SKU",
+    "数量",
+    "批量"
+   ],
+   "templates": 5,
+   "rules": 7,
+   "checklists": 1,
+   "placeholders": 1
+  },
+  {
+   "id": "a26",
+   "no": "多SKU",
+   "title": "多SKU产品图以及详情页生成SOP",
+   "path": "references/04_SKU批量与跨平台处理/多SKU产品图以及详情页生成SOP.md",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "SKU图",
+    "详情页"
+   ],
+   "task": "同款多色的 SKU 图与对应详情页，先把多色实拍统一成白底",
+   "tags": [
+    "SKU",
+    "多色",
+    "详情页"
+   ],
+   "templates": 6,
+   "rules": 6,
+   "checklists": 0,
+   "placeholders": 6
+  },
+  {
+   "id": "a27",
+   "no": "多产品替换",
+   "title": "多产品替换流程（含提示词创作过程）",
+   "path": "references/04_SKU批量与跨平台处理/多产品替换流程（含提示词创作过程）.md",
+   "stations": [
+    "SKU台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "SKU图"
+   ],
+   "task": "在已有场景里替换或新增产品，写清被替换项与新增项的位置关系",
+   "tags": [
+    "SKU",
+    "替换",
+    "多产品"
+   ],
+   "templates": 1,
+   "rules": 0,
+   "checklists": 0,
+   "placeholders": 2
+  },
+  {
+   "id": "a28",
+   "no": "比例转换",
+   "title": "批量3：4主图转1：1",
+   "path": "references/04_SKU批量与跨平台处理/批量3：4主图转1：1.md",
+   "stations": [
+    "SKU台"
+   ],
+   "slots": [
+    "subject",
+    "constraints"
+   ],
+   "outputs": [
+    "主图"
+   ],
+   "task": "已有主图换比例（3:4 与 1:1 双向），不裁切不拉伸不重绘",
+   "tags": [
+    "比例",
+    "转换",
+    "主图"
+   ],
+   "templates": 2,
+   "rules": 18,
+   "checklists": 0,
+   "placeholders": 5
+  },
+  {
+   "id": "a29",
+   "no": "图翻译",
+   "title": "批量翻译电商图文字为目标语言",
+   "path": "references/04_SKU批量与跨平台处理/批量翻译电商图文字为目标语言.md",
+   "stations": [
+    "SKU台"
+   ],
+   "slots": [
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "主图",
+    "详情页"
+   ],
+   "task": "图内文字批量翻译成目标语言，产品与版式一律不动",
+   "tags": [
+    "翻译",
+    "多语言",
+    "文字"
+   ],
+   "templates": 1,
+   "rules": 0,
+   "checklists": 0,
+   "placeholders": 1
+  },
+  {
+   "id": "a30",
+   "no": "视频生成",
+   "title": "全品类产品电商视频生成sop",
+   "path": "references/05_模特与视频生成/全品类产品电商视频生成sop.md",
+   "stations": [
+    "模特与视频台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "usecase"
+   ],
+   "outputs": [
+    "视频"
+   ],
+   "task": "产品图到电商视频的分板块提示词，7 个必备板块加 6 个增强板块按产品特性选配",
+   "tags": [
+    "视频",
+    "板块",
+    "分镜"
+   ],
+   "templates": 0,
+   "rules": 3,
+   "checklists": 2,
+   "placeholders": 0
+  },
+  {
+   "id": "a31",
+   "no": "模特换装",
+   "title": "模特换头换装&批量不同姿势模特图教程",
+   "path": "references/05_模特与视频生成/模特换头换装&批量不同姿势模特图教程.md",
+   "stations": [
+    "模特与视频台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "details",
+    "constraints"
+   ],
+   "outputs": [
+    "模特图"
+   ],
+   "task": "模特换头换装与多姿势批量，人脸与服装款式不漂移",
+   "tags": [
+    "模特",
+    "换装",
+    "多姿势"
+   ],
+   "templates": 5,
+   "rules": 1,
+   "checklists": 0,
+   "placeholders": 1
+  },
+  {
+   "id": "a32",
+   "no": "视频反推",
+   "title": "视频反推SOP-无需产品",
+   "path": "references/05_模特与视频生成/视频反推SOP-无需产品.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "usecase"
+   ],
+   "outputs": [
+    "视频"
+   ],
+   "task": "拆解一段视频的镜头语言与物体动作，产出可复用的镜头提示词",
+   "tags": [
+    "视频",
+    "反推",
+    "分镜"
+   ],
+   "templates": 1,
+   "rules": 3,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a33",
+   "no": "视频反推替换",
+   "title": "视频反推提示词替换产品SOP",
+   "path": "references/05_模特与视频生成/视频反推提示词替换产品SOP.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "视频"
+   ],
+   "task": "视频反推后替换成自家产品，简版不要故事板",
+   "tags": [
+    "视频",
+    "反推",
+    "替换"
+   ],
+   "templates": 1,
+   "rules": 3,
+   "checklists": 0,
+   "placeholders": 0
+  },
+  {
+   "id": "a34",
+   "no": "视频反推故事板",
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "path": "references/05_模特与视频生成/视频反推提示词替换产品SOP（带故事板）.md",
+   "stations": [
+    "反推台"
+   ],
+   "slots": [
+    "scene",
+    "subject",
+    "usecase",
+    "constraints"
+   ],
+   "outputs": [
+    "视频"
+   ],
+   "task": "视频反推带故事板：先出分镜再替换产品，适合长片与多镜头",
+   "tags": [
+    "视频",
+    "反推",
+    "故事板"
+   ],
+   "templates": 2,
+   "rules": 21,
+   "checklists": 0,
+   "placeholders": 0
+  }
+ ]
+}

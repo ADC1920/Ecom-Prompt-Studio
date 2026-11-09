@@ -67,3 +67,22 @@ python tools/qwen_image.py -f prompt.txt -i product_front.jpg -i product_detail.
 授权三项：`--authorize` 填用户原话或带日期的授权说明，不得自行编造；`--purpose` 具体到产品、平台、页面位置；`--unit-price` 填官方页面当时的每张单价，拿不到就先问用户。脚本会打印「张数 × 单价 = 预计花费」并写入 `out/authorization.log`，只留本机。
 
 脚本只存在于仓库与镜像工作区，单独安装技能目录时不带 `tools/`。
+
+## 六、产出前后两道自查
+
+提示词定稿后、出图之前先查文字层：
+
+```bash
+python tools/slop_check.py prompt.txt --strict
+```
+
+查 SD 时代堆词（8k / masterpiece / hyperrealistic）、绝对化用语、虚假促销、功效宣称与 AI 痕迹特征。error 必改；warn 逐条判断，有真实证据的可保留，但要在交付里说明依据。
+
+出图之后按目标平台机检：
+
+```bash
+python tools/check_image.py out/main-01.png --platform amazon
+python tools/check_image.py out/main-01.png --platform amazon --fix
+```
+
+机检覆盖白底纯度、主体占比、比例、分辨率、文件大小与图内文字；模特造型、AI 标注义务、货不对板只能人工核对。两个脚本都只在仓库里，单独安装技能目录时不带，按本文件与 `platform-rules.md` 对应章节的人工清单执行。

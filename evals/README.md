@@ -16,7 +16,7 @@
 
 | 文件 | 作用 |
 |---|---|
-| `cases.json` | 23 条用例的唯一数据源 |
+| `cases.json` | 30 条用例的唯一数据源（含越界、注入与同类篇目分流） |
 | `router.js` | 从仓库读取三个 SKILL.md，拼装路由提示词 |
 | `assert_route.js` | 解析模型输出，比对技能与 SOP；兼容 JSON 与纯文本两种返回 |
 | `gen_tests.js` | 把 cases.json 展开为 promptfoo 测试 |
@@ -29,9 +29,11 @@
 
 1. 在 `cases.json` 加一条，`id` 递增，写清 `input` 与 `expect`。
 2. 在 `tools/trigger-cases.md` 对应分组加同编号同文本的一行。
-3. 跑 `python evals/check_cases.py`，它会同时检查两边是否一致、预期 SOP 路径是否存在。
+3. 跑 `python evals/check_cases.py`，它会同时检查两边是否一致、`expect.atom` 指向的原子是否存在。
 
-`expect.doc_contains` 用路径片段即可，例如 `03_品类专项/百货杯壶类`；比较语义是包含，重命名文件名后缀不会误报，但选错分类目录一定会失败。
+`expect.atom` 填原子编号，例如 `a21`（对应 `ecom-prompt-sop/references/_atoms/a21.json`，百货杯壶）。断言语义是包含匹配，所以模型输出 `_atoms/a21.json` 或 `a21` 都能命中；选错原子会直接失败。原子编号与原标题的对应关系见 `_atoms/index.json`。
+
+> 实现细节：`gen_tests.js` 把这个原子编号通过 `doc_contains` 这个键传给 `assert_route.js`，脚本内部沿用旧键名，对外一律叫 `atom`。
 
 ## 关于 skill-up
 
