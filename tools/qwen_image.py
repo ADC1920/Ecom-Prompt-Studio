@@ -185,7 +185,7 @@ def selftest():
     assert p["parameters"] == {"size": "1024*1024", "n": 1, "prompt_extend": False, "watermark": False, "seed": 7}
     assert p["input"]["messages"][0]["content"][0] == {"text": "测试"}
     assert p["input"]["messages"][0]["content"][1] == {"image": "data:image/png;base64,AA"}
-    # 默认必须关闭改写：长 SOP 原文投喂时不能被模型重写
+    # 默认必须关闭改写：长 SOP 内容投喂时不能被模型重写
     defaults = {action.dest: action.default for action in build_parser()._actions}
     assert defaults["prompt_extend"] is False, "prompt_extend 默认应为 False"
     assert defaults["authorize"] is None and defaults["purpose"] is None and defaults["unit_price"] is None
@@ -226,7 +226,7 @@ def build_parser():
     ap.add_argument("--size", default="1024*1024", help="auto 或 宽*高，默认 1024*1024")
     ap.add_argument("-n", "--num", type=int, default=1, help="出图数量 1 到 6，默认 1")
     ap.add_argument("--seed", type=int, help="随机种子，固定后结果相对稳定")
-    ap.add_argument("--prompt-extend", action="store_true", help="开启提示词智能改写，默认关闭（SOP 原文直接投喂时保原样）")
+    ap.add_argument("--prompt-extend", action="store_true", help="开启提示词智能改写，默认关闭（SOP 内容直接投喂时保原样）")
     ap.add_argument("--watermark", action="store_true", help="添加水印，默认不加")
     ap.add_argument("--model", default=DEFAULT_MODEL, help=f"模型名，默认 {DEFAULT_MODEL}")
     ap.add_argument("--key-file", help="API key 文件路径；不传则读 DASHSCOPE_API_KEY")

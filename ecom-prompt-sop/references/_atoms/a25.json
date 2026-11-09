@@ -1,7 +1,6 @@
 {
  "id": "a25",
  "no": "SKU数量",
- "path": "references/04_SKU批量与跨平台处理/同产品不同数量的sku图批量生成.md",
  "title": "同产品不同数量的sku图批量生成",
  "stations": [
   "SKU台"

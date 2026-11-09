@@ -1,13 +1,13 @@
 ---
 name: ecom-prompt-sop
-description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU 批量与跨平台台 / 模特与视频台 / 图片反推台）：34 篇电商生图提示词 SOP 的拆解库，按工位路由到对应原子，取出可直接投喂生图工具的中文提示词与分步操作指引。主图台做全平台主图/首图/轮播/白底/买家秀/场景图；详情页台做详情页长图与逐页策划；SKU 台做多色多件套批量、多产品替换、3:4 转 1:1、图内文字批量翻译；模特与视频台做模特换头换装、多姿势模特图、电商视频生成；反推台做爆款图与视频反推、对标场景复刻、旧图翻新、SKU 版式替换。覆盖跨境与国内平台、品类专项（服饰/3C 数码/美妆日化/美食/家具/包包/海产品/百货杯壶/檀木串珠线香）、视频反推故事板。当用户要为产品生成电商图提示词、做主图或详情页方案、反推对标图与对标视频、翻新旧图、批量处理 SKU 或图内文字、生成模特图或产品视频提示词时使用——用户未点名『SOP』也要用。English keywords: e-commerce image prompt SOP library, main image studio, detail page studio, SKU batch studio, model and video studio, reverse engineering studio, product hero image prompt, white background photo, buyer show, benchmark reverse engineering, SKU batch, image text translation, AI model swap, product video prompt, video reverse engineering storyboard."
+description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU 批量与跨平台台 / 模特与视频台 / 图片反推台）：电商生图提示词 SOP 的拆解库，按工位路由到对应原子，取出可直接投喂生图工具的中文提示词与分步操作指引。主图台做全平台主图/首图/轮播/白底/买家秀/场景图；详情页台做详情页长图与逐页策划；SKU 台做多色多件套批量、多产品替换、3:4 转 1:1、图内文字批量翻译；模特与视频台做模特换头换装、多姿势模特图、电商视频生成；反推台做爆款图与视频反推、对标场景复刻、旧图翻新、SKU 版式替换。覆盖跨境与国内平台、品类专项（服饰/3C 数码/美妆日化/美食/家具/包包/海产品/百货杯壶/檀木串珠线香）、视频反推故事板。当用户要为产品生成电商图提示词、做主图或详情页方案、反推对标图与对标视频、翻新旧图、批量处理 SKU 或图内文字、生成模特图或产品视频提示词时使用——用户未点名『SOP』也要用。English keywords: e-commerce image prompt SOP library, main image studio, detail page studio, SKU batch studio, model and video studio, reverse engineering studio, product hero image prompt, white background photo, buyer show, benchmark reverse engineering, SKU batch, image text translation, AI model swap, product video prompt, video reverse engineering storyboard."
 ---
 
 # 电商视觉五工作室
 
-本技能是 34 篇电商生图提示词 SOP 的**拆解库**，按五个工位组织。工作方式是**先判工位，再定位唯一一篇，读对应原子执行**。
+本技能是电商生图提示词 SOP 的**拆解库**，按五个工位组织。工作方式是**先判工位，再定位唯一一个原子，读对应原子执行**。
 
-每篇的提示词模板、规则条款、检查清单、占位符已经分开装好，原文全文也在原子里（`source_text`），所以不需要另找原始文档：模板直接投喂，规则用来自查，清单用来验收。
+每条的提示词模板、规则条款、检查清单、占位符已经分开装好，完整内容也在原子里（`source_text`），所以不需要另找外部文档：模板直接投喂，规则用来自查，清单用来验收。
 
 ## 五工位总览
 
@@ -27,12 +27,12 @@ description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU �
 
 | 字段 | 内容 | 怎么用 |
 |---|---|---|
-| `templates` | 提示词模板原文，代码块型与裸段落型都收，带原文行号 | 直接取 `text` 投喂；多模板时按 `heading` 选 |
+| `templates` | 提示词模板，代码块型与裸段落型都收，带行号 | 直接取 `text` 投喂；多模板时按 `heading` 选 |
 | `rules` | 正文里的规则条款（必须/禁止/不得这类），带行号 | 自查用，交付前逐条对 |
 | `checklists` | 验收清单、必备板块这类编号条目 | 验收用，可逐条打勾 |
 | `placeholders` | 需要替换的占位符清单 | 交付前确认每个都替换了 |
 | `steps` | 步骤标题 | 知道这一篇的执行顺序 |
-| `source_text` | 原文全文 | 需要上下文、示例与解释时读 |
+| `source_text` | 完整内容 | 需要上下文、示例与解释时读 |
 
 `references/_index.json` 是篇目级索引（篇号、工位、品类、产物、触发词、槽位）；两个索引都由 `tools/atomize.py` 维护，改完跑 `merge` 与 `check`。
 
@@ -49,13 +49,13 @@ description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU �
    - **其余视觉素材生成** → 工位一。
 3. **裸需求第一判据**：请求是「裸主图方案」或「裸详情页方案」——没有任何品类专项命中，不涉及反推/翻新/复刻/SKU 批量/比例转换/图内文字翻译/买家秀/场景图/模特换装/视频，也未点名本库 SOP——则**不进本库**：主图方案转 `ecom-main-image-prompts` 技能，详情页方案转 `ecom-detail-page-prompts` 技能。其余情形继续第 4 步。
 4. 在该工位的篇目表定位**唯一最匹配**的原子。裁决顺序：用户点名篇号 > 品类专项 > 通用篇；用户点名篇号（如「02 号 SOP」「爆款反推里的 04」）按篇目名里的篇号前缀匹配（篇号与目录号 01-05 重合时，以用户描述的内容意图为准，拿不准先问）；两篇都可能匹配时按判据列裁决，仍拿不准就先问用户，不要凭感觉挑。
-5. 读 `references/_atoms/aNN.json`（篇目表给出编号），取 `templates` 的模板、`rules` 的规则、`checklists` 的验收项；需要原文上下文时读同一原子的 `source_text`，不必再找外部文档。
+5. 读 `references/_atoms/aNN.json`（篇目表给出编号），取 `templates` 的模板、`rules` 的规则、`checklists` 的验收项；需要上下文与示例时读同一原子的 `source_text`，不必再找外部文档。
 6. 严格按原子里的模板与步骤执行，并按该工位的门禁自查；原子里的硬规则（产品外观锁定、信息真实性、不露脸等）不得删减或弱化。
 7. 原子未覆盖的边缘品类，选最接近的品类专项或通用篇，并向用户说明选择依据。
 
 ## 与既有技能的分工
 
-裸主图/裸详情页的通用方案由 `ecom-main-image-prompts`、`ecom-detail-page-prompts` 承接（第 3 步第一判据）。本技能的价值在**拆解后的模板与细分场景**：品类专项规则、爆款反推、SKU 批量、图翻译、模特与视频等，以及用户点名要 SOP 原文时。
+裸主图/裸详情页的通用方案由 `ecom-main-image-prompts`、`ecom-detail-page-prompts` 承接（第 3 步第一判据）。本技能的价值在**拆解后的模板与细分场景**：品类专项规则、爆款反推、SKU 批量、图翻译、模特与视频等，以及用户点名要完整 SOP 时。
 
 ---
 

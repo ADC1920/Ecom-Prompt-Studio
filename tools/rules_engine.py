@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""判据规则引擎：用可校验的规则代替「读原文记规则」。
+"""判据规则引擎：用可校验的规则代替「读 SOP 记规则」。
 
 三个规则文件在 ecom-prompt-sop/references/_rules/：
 - platform.json  平台阈值、文字与模特政策、AI 标注义务、文案禁项

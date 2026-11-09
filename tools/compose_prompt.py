@@ -2,7 +2,7 @@
 """五槽位提示词组装器：把结构化槽位编译成可直接投喂的提示词。
 
 槽位规范见 ecom-prompt-sop/references/prompt-slots.md。
-本脚本只负责顺序、完整度校验与平台约束补充，内容仍由 SOP 原文与用户产品信息决定。
+本脚本只负责顺序、完整度校验与平台约束补充，内容仍由 SOP 与用户产品信息决定。
 
 用法：
   python tools/compose_prompt.py --template > slots.json
