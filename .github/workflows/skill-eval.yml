@@ -38,11 +38,11 @@ jobs:
     name: 静态检查
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: frontmatter / 引用 / 路由覆盖 / 长度预算 / 占位符 / 密钥
@@ -61,8 +61,8 @@ jobs:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: 检查模型凭据
@@ -84,7 +84,7 @@ jobs:
             -o "$RUNNER_TEMP/routing.junit.xml"
       - name: 上传报告
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: routing-report
           path: |
@@ -98,8 +98,8 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: 检查模型凭据
@@ -121,7 +121,7 @@ jobs:
             -o "$RUNNER_TEMP/quality.junit.xml"
       - name: 上传报告
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: quality-report
           path: |
