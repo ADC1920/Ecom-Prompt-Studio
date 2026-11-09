@@ -37,6 +37,11 @@ slop_check = None
 if _slop_spec:
     from slop_check import check as slop_check
 
+try:
+    from visual_audit import audit as visual_audit_fn
+except ImportError:  # 视觉验收是增强项，缺了不影响几何机检
+    visual_audit_fn = None
+
 # 机检项 → 追加到提示词的修复句。只写正向要求，不堆负面词。
 FIXES = {
     "background": "背景为纯白 RGB(255,255,255)，产品底部保留自然接触阴影，不要灰底、渐变底或环境色。",
@@ -231,18 +236,24 @@ def main(argv=None):
             "skipped": [c["id"] for c in checks if c["status"] == "skipped"],
             "metrics": metrics,
         })
+        # 视觉验收只记录不判定：一致度与 AI 感是启发式，不能替代人看
+        if args.ref and visual_audit_fn:
+            try:
+                entry["visual"] = visual_audit_fn(image, args.ref[0])
+            except Exception as e:  # 审计失败不该中断闭环
+                entry["visual"] = {"error": str(e)[:160]}
         rounds.append(entry)
 
         if not failed:
             result = "passed"
             break
 
-        fixes = [FIXES[c["id"]] for c in failed if c["id"] in FIXES]
-        entry["fixes"] = fixes
-        if not fixes:
+        fix_list = [{"id": c["id"], "text": FIXES[c["id"]]} for c in failed if c["id"] in FIXES]
+        entry["fixes"] = fix_list
+        if not fix_list:
             break
         # 下一轮：原提示词 + 修复句。累积写，保留每一轮改过什么，便于回看。
-        current = current + "\n" + "".join(fixes)
+        current = current + "\n" + "".join(f["text"] for f in fix_list)
 
     manifest = {
         "tool": "run_loop.py",
@@ -267,6 +278,11 @@ def main(argv=None):
             line += f"  修复句 {len(r['fixes'])} 条"
         if r.get("cost"):
             line += f"  花费 {r['cost']}"
+        v = r.get("visual") or {}
+        if v.get("consistency"):
+            line += f"  一致度 {v['consistency']['score']}"
+        if v.get("ai_smell"):
+            line += f"  AI感 {v['ai_smell']['score']}"
         print(line)
     print(f"  manifest: {loop_dir / 'manifest.json'}")
     print(f"  final:    {loop_dir / 'final-prompt.txt'}")

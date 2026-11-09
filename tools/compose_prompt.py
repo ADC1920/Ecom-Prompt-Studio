@@ -30,6 +30,11 @@ try:
 except ImportError:
     slop_check = None
 
+try:
+    from rules_engine import load_rules, validate as rules_validate
+except ImportError:
+    rules_validate = None
+
 REQUIRED = ["subject", "constraints"]
 OPTIONAL = ["scene", "details", "usecase"]
 SEGMENT_LABEL = {
@@ -167,6 +172,9 @@ def main():
     ap.add_argument("slots", nargs="?", help="槽位 JSON 文件；不传读 stdin")
     ap.add_argument("--template", action="store_true", help="输出空白模板 JSON")
     ap.add_argument("--platform", help="平台名，自动补比例与白底约束")
+    ap.add_argument("--scenario", help="场景名（首图/辅图/详情页单屏等），配 --rules 用来校验必填槽位")
+    ap.add_argument("--category", help="品类名，配 --rules 用来校验禁用宣称")
+    ap.add_argument("--rules", action="store_true", help="组装后跑判据规则校验（_rules/ 下的三个规则文件）")
     ap.add_argument("--json", action="store_true", help="输出 JSON（含提示词、警告、自查结果）")
     ap.add_argument("--check", action="store_true", help="组装后跑反 AI 感自查，error 即失败")
     ap.add_argument("--selftest", action="store_true", help="离线自检")
@@ -198,8 +206,26 @@ def main():
         if any(i["level"] == "error" for i in issues):
             warnings.append("自查命中 error 级问题，必须先改完再交付")
 
+    rule_issues = []
+    if args.rules:
+        if not rules_validate:
+            warnings.append("rules_engine 不可用，跳过判据校验")
+        else:
+            try:
+                rule_issues = rules_validate(
+                    slots,
+                    load_rules(),
+                    args.platform or slots.get("platform") or "generic",
+                    args.scenario,
+                    args.category,
+                )
+                for i in rule_issues:
+                    warnings.append(f"[{i['level']}] {i['detail']}" + (f" → {i['hint']}" if i.get("hint") else ""))
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                warnings.append(f"规则文件读取失败，跳过判据校验：{e}")
+
     if args.json:
-        print(json.dumps({"prompt": text, "warnings": warnings, "issues": issues}, ensure_ascii=False, indent=2))
+        print(json.dumps({"prompt": text, "warnings": warnings, "issues": issues, "rules": rule_issues}, ensure_ascii=False, indent=2))
     else:
         print(text)
         for w in warnings:
@@ -208,7 +234,8 @@ def main():
             if i["level"] == "error":
                 print(f"[ERROR] {i['category']}：{i['match']} → {i['hint']}", file=sys.stderr)
 
-    return 1 if any(i["level"] == "error" for i in issues) else 0
+    has_error = any(i["level"] == "error" for i in issues) or any(i["level"] == "error" for i in rule_issues)
+    return 1 if has_error else 0
 
 
 if __name__ == "__main__":
