@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "note": "触发回归用例的机器可读源。v3 把断言目标从 SOP 文件路径改为拆解原子编号（aNN），原文归档后仍可校验。tools/trigger-cases.md 是人类可读视图，evals/check_cases.py 校验两边一致与原子存在。",
+  "note": "触发回归用例的机器可读源。v3 把断言目标从 SOP 文件路径改为拆解原子编号（aNN），原子化后仍可校验。tools/trigger-cases.md 是人类可读视图，evals/check_cases.py 校验两边一致与原子存在。",
   "cases": [
     {
       "id": 1,

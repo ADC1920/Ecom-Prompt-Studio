@@ -8,7 +8,7 @@
 4. 规模预算：SKILL.md 正文超预算给出警告，超硬上限判错误
 5. 占位符闭合：全库 Markdown 的【】、[]、{{}} 逐行配对，不闭合判错误
 6. 密钥扫描：全库文本无常见密钥模式
-7. 索引覆盖：references/_index.json 与 34 篇原文双向一致，工位名合法
+7. 索引覆盖：references/_index.json 与原子按编号对齐，工位名合法
 8. 工具引用：SKILL.md 提到的 tools/ 脚本必须真实存在
 
 用法: python tools/lint_skills.py [仓库根]（默认为脚本上级目录）
@@ -98,7 +98,7 @@ def check_skill(root: Path, name: str, problems: list, warnings: list) -> None:
 
 
 def check_atoms(root: Path, problems: list, warnings: list) -> None:
-    """拆解原子：结构与索引一一对应。内容是否与原文同步由 `python tools/atomize.py check` 负责。"""
+    """拆解原子：结构与索引一一对应。内容自洽性由 `python tools/atomize.py check` 负责。"""
     skill_dir = root / "ecom-prompt-sop"
     idx_p = skill_dir / "references" / "_atoms" / "index.json"
     if not idx_p.exists():
@@ -114,7 +114,7 @@ def check_atoms(root: Path, problems: list, warnings: list) -> None:
     items = atoms.get("items") or []
     if len(items) != len(ref_items):
         problems.append(f"[atoms] 原子数 {len(items)} 与篇目索引 {len(ref_items)} 不一致")
-    ref_paths = {it["path"] for it in ref_items}
+    ref_nos = {it.get("no") for it in ref_items}
     for it in items:
         aid = it.get("id") or "?"
         p = skill_dir / "references" / "_atoms" / f"{aid}.json"
@@ -126,21 +126,21 @@ def check_atoms(root: Path, problems: list, warnings: list) -> None:
         except json.JSONDecodeError:
             problems.append(f"[atoms] {aid}.json 解析失败")
             continue
-        if atom.get("path") not in ref_paths:
-            problems.append(f"[atoms] {aid} 的 path 不在篇目索引里：{atom.get('path')}")
+        if atom.get("no") not in ref_nos:
+            problems.append(f"[atoms] {aid} 的编号不在篇目索引里：{atom.get('no')}")
         if not atom.get("templates") and not atom.get("checklists"):
             problems.append(f"[atoms] {aid} 既无模板也无清单")
         if not atom.get("source", {}).get("sha"):
-            problems.append(f"[atoms] {aid} 缺 source.sha，无法判断是否与原文同步")
+            problems.append(f"[atoms] {aid} 缺 source.sha，无法判断内容是否被改过")
 
 
 ATOM_REF = re.compile(r"_atoms/(a\d{2})\.json")
 
 
 def check_atom_refs(root: Path, problems: list, warnings: list) -> None:
-    """SKILL.md 必须指向真实存在的原子，且 34 个原子都要被路由表覆盖到。
+    """SKILL.md 必须指向真实存在的原子，且每个原子都要被路由表覆盖到。
 
-    原文归档之后，这是「每篇都能被找到」的唯一保证。
+    这是「每个原子都能被找到」的唯一保证。
     """
     skill_dir = root / "ecom-prompt-sop"
     f = skill_dir / "SKILL.md"
@@ -184,35 +184,6 @@ def check_placeholders(root: Path, problems: list) -> None:
                 problems.append(f"[placeholder] {where}: []不闭合")
 
 
-def sop_files(skill_dir: Path) -> set:
-    """SOP 原文文件集合。
-
-    `_` 开头的是索引、规范、规则与语料（_index.json / _prompt-slots.md / _rules/ / _corpus/），
-    不算原文。判断看整条路径——目录名带下划线时，里面的 README 也不能当 SOP。
-    """
-    ref_root = skill_dir / "references"
-    out = set()
-    for p in ref_root.rglob("*.md"):
-        parts = p.relative_to(ref_root).parts
-        if any(part.startswith("_") for part in parts):
-            continue
-        out.add(p.relative_to(skill_dir).as_posix())
-    return out
-
-
-def check_route_coverage(root: Path, problems: list, warnings: list) -> None:
-    skill_dir = root / "ecom-prompt-sop"
-    if not (skill_dir / "SKILL.md").exists():
-        return
-    text = read(skill_dir / "SKILL.md")
-    on_disk = sop_files(skill_dir)
-    in_route = {p for p in set(REF_RE.findall(text)) if not Path(p).name.startswith("_")}
-    for p in sorted(on_disk - in_route):
-        warnings.append(f"[ecom-prompt-sop] SOP 未进路由表: {p}")
-    for p in sorted(in_route - on_disk):
-        problems.append(f"[ecom-prompt-sop] 路由表指向不存在的文件: {p}")
-
-
 def check_secrets(root: Path, problems: list) -> None:
     for p in root.rglob("*.md"):
         if ".git" in p.parts:
@@ -226,7 +197,7 @@ def check_secrets(root: Path, problems: list) -> None:
 
 
 def check_index(root: Path, problems: list, warnings: list) -> None:
-    """索引与原文双向覆盖：漏收、指向不存在、重复、工位名拼错都算错误。
+    """索引与原子按编号对齐：漏收、重复、工位名拼错都算错误。
 
     索引是路由表的机器可读镜像，两边漂移会让检索与评测同时跑偏，所以卡在静态检查里。
     """
@@ -248,44 +219,39 @@ def check_index(root: Path, problems: list, warnings: list) -> None:
         problems.append("[index] items 为空或不是数组")
         return
 
-    disk = sop_files(skill_dir)
-    paths = [it.get("path", "") for it in items if isinstance(it, dict)]
-
-    # 原文可以归档：归档后必须由原子（含 source_text）承载同一篇内容
-    atoms = {}
+    atom_by_no = {}
     for f in (skill_dir / "references" / "_atoms").glob("a*.json"):
         try:
             a = json.loads(read(f))
         except json.JSONDecodeError:
             problems.append(f"[atoms] {f.name} 解析失败")
             continue
-        if a.get("path"):
-            atoms[a["path"]] = a
+        if not a.get("source_text"):
+            problems.append(f"[atoms] {f.stem} 缺 source_text，原子不自包含")
+        atom_by_no[a.get("no")] = a
 
-    for p in sorted(disk - set(paths)):
-        problems.append(f"[index] 原文未收录: {p}")
-    for p in sorted(set(paths) - disk):
-        a = atoms.get(p)
-        if not a:
-            problems.append(f"[index] 原文不存在且无原子承载: {p}")
-        elif not a.get("source_text"):
-            problems.append(f"[atoms] {p} 的原子缺 source_text，脱离原文后内容会丢")
-    for p in sorted({p for p in paths if paths.count(p) > 1}):
-        problems.append(f"[index] 重复条目: {p}")
-    if atoms and len(items) != len(atoms):
-        problems.append(f"[index] 条目数 {len(items)} 与原子数 {len(atoms)} 不一致")
+    nos = [it.get("no") for it in items if isinstance(it, dict)]
+    for no in sorted({n for n in nos if nos.count(n) > 1}):
+        problems.append(f"[index] 编号重复: {no}")
+    for no in sorted(set(nos) - set(atom_by_no)):
+        problems.append(f"[index] 条目 {no} 没有对应原子")
+    for no in sorted(set(atom_by_no) - set(nos)):
+        problems.append(f"[atoms] 原子 {no} 未进索引")
+    if len(items) != len(atom_by_no):
+        problems.append(f"[index] 条目数 {len(items)} 与原子数 {len(atom_by_no)} 不一致")
 
     for it in items:
         if not isinstance(it, dict):
             continue
+        label = it.get("no")
         for st in it.get("stations", []):
             if st not in STATIONS:
-                problems.append(f"[index] 未知工位「{st}」: {it.get('path')}")
+                problems.append(f"[index] 未知工位「{st}」: {label}")
         for slot in it.get("slots", []):
             if slot not in SLOTS:
-                problems.append(f"[index] 未知槽位「{slot}」: {it.get('path')}")
+                problems.append(f"[index] 未知槽位「{slot}」: {label}")
         if not it.get("triggers"):
-            warnings.append(f"[index] 缺触发词: {it.get('path')}")
+            warnings.append(f"[index] 缺触发词: {label}")
 
 
 def check_tool_refs(root: Path, problems: list) -> None:
@@ -355,7 +321,6 @@ def main() -> int:
     warnings: list = []
     for name in SKILLS:
         check_skill(root, name, problems, warnings)
-    check_route_coverage(root, problems, warnings)
     check_index(root, problems, warnings)
     check_tool_refs(root, problems)
     check_eval(root, problems, warnings)

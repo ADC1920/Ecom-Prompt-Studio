@@ -1,4 +1,4 @@
-// 质量抽检的提示词构造器：把指定原子的原文全文放进上下文，让模型按原文执行。
+// 质量抽检的提示词构造器：把指定原子的完整内容放进上下文，让模型照做。
 // v3 起从原子读 source_text，不再依赖 references 下的 SOP 文件。
 const fs = require('fs');
 const path = require('path');
@@ -17,12 +17,12 @@ module.exports = async function ({ vars }) {
     {
       role: 'system',
       content: [
-        '你是电商生图提示词执行助手。严格按下述 SOP 原文产出提示词，不得删减或弱化其中的硬规则。',
+        '你是电商生图提示词执行助手。严格按下述 SOP 内容产出提示词，不得删减或弱化其中的硬规则。',
         '只输出最终提示词或最终交付内容，不要解释你做了什么。',
         '',
-        '===== SOP 原文开始 =====',
+        '===== SOP 内容开始 =====',
         sop,
-        '===== SOP 原文结束 =====',
+        '===== SOP 内容结束 =====',
       ].join('\n'),
     },
     { role: 'user', content: String(vars.task) },
