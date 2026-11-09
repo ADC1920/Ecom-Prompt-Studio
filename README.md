@@ -65,6 +65,26 @@ SOP 全库按五个工位组织，先判工位再定位篇目，34 篇原文一�
 - 反 AI 感双层过滤：文字层清掉 8k / masterpiece 这类堆词，视觉层避开过度光滑、塑料高光、完美对称、悬浮无投影等八类 AI 痕迹
 - 生成后机检：出图后按目标平台检查白底纯度、主体占比、比例、分辨率与图内文字，机检不过的不上架
 
+## 原文拆解（原子）
+
+34 篇原文里混着五样东西：解释、提示词模板、规则条款、检查清单、占位符。`tools/atomize.py` 把它们分开：
+
+- `ecom-prompt-sop/references/_atoms/index.json`：34 篇的拆解索引（编号、一句话任务、模板/规则/清单数量）
+- `ecom-prompt-sop/references/_atoms/aNN.json`：每篇一个原子，含
+  - `templates`：提示词模板原文，代码块型（```）与裸段落型（跟在提示词小标题下的纯文本）都收，带行号
+  - `rules`：正文里的规则句（带「必须 / 禁止 / 不得 / 一律」等，带行号），模板内的不重复抽
+  - `checklists`：验收清单、板块要求这类编号条目
+  - `placeholders`：需要替换的占位符清单
+  - `source`：原文行数与 sha，用来判断原子是否已过期
+
+拆出来之后，路由与检索读索引，取提示词读 `templates`，查合规判据读 `rules`，验收读 `checklists`——不用再读整篇散文。
+
+```bash
+python tools/atomize.py extract   # 从原文重新提取机械层
+python tools/atomize.py merge     # 合并语义层，生成原子与索引
+python tools/atomize.py check     # 校验模板与规则是否全覆盖、原文是否变过
+```
+
 ## 判据规则与语料
 
 34 篇 SOP 给的是「方法」，`_rules/` 与 `_corpus/` 给的是「判据与范例」——后两者可以脱离原文单独工作：
@@ -101,6 +121,7 @@ cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
 | 工具 | 用途 |
 |---|---|
 | `tools/lint_skills.py` | 静态检查：frontmatter 合规、引用文件存在性、路由表与 34 篇 SOP 双向覆盖、34 篇机器可读索引一致、SKILL.md 点名的工具脚本存在、`SKILL.md` 长度预算、占位符闭合（【】/[]/{{}}）和密钥扫描。零第三方依赖 |
+| `tools/atomize.py` | 原文拆解器：把 34 篇拆成模板（代码块型与裸段落型）、正文规则句、检查清单、占位符，带原文行号与 sha；`check` 校验模板与规则是否全覆盖 |
 | `tools/trigger-cases.md` | 30 条触发与路由回归用例的人类可读视图，便于改版前后对照 |
 | `tools/check_image.py` | 出图后平台机检：白底纯度、主体占比、比例、分辨率、文件大小、透明通道、OCR 文字；`--fix` 自动归一白底、补比例、放大。仅依赖 Pillow，OCR 可选 |
 | `tools/slop_check.py` | 提示词定稿前自查：SD 时代堆词、绝对化用语、虚假促销、功效宣称、认证背书、AI 痕迹特征。零依赖 |
@@ -139,7 +160,7 @@ python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg -n 2 --seed 
 
 触发回归主要判断「技能选得对不对」，因为选错技能是用户最容易感知的问题。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：运行 `tools/lint_skills.py`（含索引覆盖、槽位名合法性、规则文件与语料合法性、工具引用、EVAL 完整性）、`evals/check_cases.py`、八个工具脚本的离线自检，以及 promptfoo 配置结构校验，不需要密钥。
+1. **静态检查**（每次 push / PR）：运行 `tools/lint_skills.py`（含索引覆盖、槽位名合法性、规则与语料合法性、原子结构、工具引用、EVAL 完整性）、`evals/check_cases.py`、`tools/atomize.py check`（原子与原文是否同步）、九个工具脚本的离线自检，以及 promptfoo 配置结构校验，不需要密钥。
 2. **触发回归**（每次 push / PR）：用 promptfoo 跑 30 条提示，断言返回的技能名和 SOP 路径。评测输入直接读取三个 `SKILL.md`，路由表改动会立即生效。
 3. **文本质量抽检**（每周一和手动触发）：读取指定 SOP 原文生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分，图片输出不做自动评分。
 
