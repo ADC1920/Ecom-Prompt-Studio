@@ -8,10 +8,13 @@
 4. 规模预算：SKILL.md 正文超预算给出警告，超硬上限判错误
 5. 占位符闭合：全库 Markdown 的【】、[]、{{}} 逐行配对，不闭合判错误
 6. 密钥扫描：全库文本无常见密钥模式
+7. 索引覆盖：references/_index.json 与 34 篇原文双向一致，工位名合法
+8. 工具引用：SKILL.md 提到的 tools/ 脚本必须真实存在
 
 用法: python tools/lint_skills.py [仓库根]（默认为脚本上级目录）
 0 错误退出码 0，否则 1；警告不阻断。
 """
+import json
 import re
 import sys
 from pathlib import Path
@@ -28,6 +31,12 @@ SECRETS = [
 ]
 
 REF_RE = re.compile(r"references/[^`|\]\n]+?\.md")
+
+# 五工位名，与 SKILL.md 工位表一致；索引里的 stations 必须是这五个之一
+STATIONS = {"主图台", "详情页台", "SKU台", "模特与视频台", "反推台"}
+
+# SKILL.md 里点名的工具文件，用于校验脚本是否真实存在
+TOOL_REF = re.compile(r"tools/([A-Za-z0-9_.\-]+\.(?:py|md|json))")
 
 # SKILL.md 正文（不含 frontmatter）预算：超软线提醒，超硬线阻断。
 # 硬线对齐 Agent Skills 生态惯例（SKILL.md 不超过 500 行），软线留出提前拆分的余量。
@@ -137,6 +146,62 @@ def check_secrets(root: Path, problems: list) -> None:
                 problems.append(f"[secrets] {p.relative_to(root).as_posix()}: 疑似密钥 {str(hit)[:12]}...")
 
 
+def check_index(root: Path, problems: list, warnings: list) -> None:
+    """索引与原文双向覆盖：漏收、指向不存在、重复、工位名拼错都算错误。
+
+    索引是路由表的机器可读镜像，两边漂移会让检索与评测同时跑偏，所以卡在静态检查里。
+    """
+    skill_dir = root / "ecom-prompt-sop"
+    if not (skill_dir / "SKILL.md").exists():
+        return
+    idx = skill_dir / "references" / "_index.json"
+    if not idx.exists():
+        warnings.append("[ecom-prompt-sop] 缺少机器可读索引 references/_index.json")
+        return
+    try:
+        data = json.loads(read(idx))
+    except json.JSONDecodeError as e:
+        problems.append(f"[index] JSON 解析失败: {e}")
+        return
+
+    items = data.get("items") or []
+    if not isinstance(items, list) or not items:
+        problems.append("[index] items 为空或不是数组")
+        return
+
+    disk = {p.relative_to(skill_dir).as_posix() for p in (skill_dir / "references").rglob("*.md")}
+    paths = [it.get("path", "") for it in items if isinstance(it, dict)]
+
+    for p in sorted(disk - set(paths)):
+        problems.append(f"[index] 原文未收录: {p}")
+    for p in sorted(set(paths) - disk):
+        problems.append(f"[index] 指向不存在的文件: {p}")
+    for p in sorted({p for p in paths if paths.count(p) > 1}):
+        problems.append(f"[index] 重复条目: {p}")
+    if len(items) != len(disk):
+        problems.append(f"[index] 条目数 {len(items)} 与原文数 {len(disk)} 不一致")
+
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        for st in it.get("stations", []):
+            if st not in STATIONS:
+                problems.append(f"[index] 未知工位「{st}」: {it.get('path')}")
+        if not it.get("triggers"):
+            warnings.append(f"[index] 缺触发词: {it.get('path')}")
+
+
+def check_tool_refs(root: Path, problems: list) -> None:
+    """SKILL.md 里点名的 tools/ 文件必须存在，避免文档指向已删除的脚本。"""
+    for name in SKILLS:
+        f = root / name / "SKILL.md"
+        if not f.exists():
+            continue
+        for ref in sorted(set(TOOL_REF.findall(read(f)))):
+            if not (root / "tools" / ref).exists():
+                problems.append(f"[{name}] 引用了不存在的工具: tools/{ref}")
+
+
 def main() -> int:
     root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
     problems: list = []
@@ -144,6 +209,8 @@ def main() -> int:
     for name in SKILLS:
         check_skill(root, name, problems, warnings)
     check_route_coverage(root, problems, warnings)
+    check_index(root, problems, warnings)
+    check_tool_refs(root, problems)
     check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:
