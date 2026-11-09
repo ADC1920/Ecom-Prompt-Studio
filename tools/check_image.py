@@ -12,10 +12,12 @@
 
 退出码：0 无 fail；1 有 fail（--strict 时 warn 也算失败）；2 缺 Pillow，只能做结构检查。
 仅依赖 Pillow；OCR 另需 pytesseract 与 tesseract，缺失时明确标 skipped，不算通过。
+tesseract 不在 PATH 时脚本会自己扫常见安装路径；默认 tessdata 缺中文时去找用户级 tessdata。
 """
 import argparse
 import json
 import os
+import shutil
 import struct
 import sys
 import warnings
@@ -128,6 +130,53 @@ def corner_background(small):
     if not pixels:
         return (255, 255, 255)
     return (_median(p[0] for p in pixels), _median(p[1] for p in pixels), _median(p[2] for p in pixels))
+
+
+TESSERACT_CANDIDATES = (
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+    r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe",
+    "/usr/bin/tesseract",
+    "/usr/local/bin/tesseract",
+    "/opt/homebrew/bin/tesseract",
+)
+
+TESSDATA_CANDIDATES = (
+    r"%LOCALAPPDATA%\tesseract\tessdata",
+    r"%APPDATA%\tesseract\tessdata",
+    "/usr/local/share/tessdata",
+    "/opt/homebrew/share/tessdata",
+)
+
+
+def resolve_ocr_env():
+    """pytesseract 只认 PATH 与 tesseract 自带 tessdata，Windows 装机版常两处都不到位。
+
+    这里做一次兜底解析：先 PATH，再扫常见安装路径；默认 tessdata 缺中文时，
+    去找用户级的带中文 tessdata。显式设过 TESSDATA_PREFIX 就不覆盖。
+    返回 (二进制路径, tessdata 目录或 None)；二进制找不到时返回 (None, None)。
+    """
+    exe = shutil.which("tesseract")
+    if not exe:
+        for cand in TESSERACT_CANDIDATES:
+            path = os.path.expandvars(cand)
+            if os.path.isfile(path):
+                exe = path
+                break
+    if not exe:
+        return None, None
+
+    if os.environ.get("TESSDATA_PREFIX"):
+        return exe, None
+
+    default_tessdata = os.path.join(os.path.dirname(exe), "tessdata")
+    if os.path.isfile(os.path.join(default_tessdata, "chi_sim.traineddata")):
+        return exe, None
+    for cand in TESSDATA_CANDIDATES:
+        path = os.path.expandvars(cand)
+        if os.path.isfile(os.path.join(path, "chi_sim.traineddata")):
+            return exe, path
+    return exe, None
 
 
 def analyze(path, spec, white_tol=None):
@@ -262,6 +311,13 @@ def analyze(path, spec, white_tol=None):
         try:
             import pytesseract
 
+            exe, tessdata = resolve_ocr_env()
+            if not exe:
+                raise ImportError("tesseract 二进制未找到")
+            pytesseract.pytesseract.tesseract_cmd = exe
+            if tessdata:
+                os.environ["TESSDATA_PREFIX"] = tessdata
+
             text = pytesseract.image_to_string(im, lang="chi_sim+eng").strip()
             visible = [line for line in text.splitlines() if line.strip() and len(line.strip()) > 1]
             ocr = {"status": "done", "lines": len(visible), "sample": visible[:3]}
@@ -274,6 +330,9 @@ def analyze(path, spec, white_tol=None):
                 add("text", "pass", "未检出图内文字")
         except ImportError:
             add("text", "skipped", "OCR 不可用，图内文字未检查", "pip install pytesseract 并安装 tesseract；skipped 不等于通过")
+        except Exception as exc:
+            ocr = {"status": "skipped", "reason": f"OCR 执行失败: {exc}"}
+            add("text", "skipped", f"OCR 执行失败：{exc}", "检查 tesseract 与 chi_sim+eng 语言包是否可用")
         metrics["ocr"] = ocr
 
     return checks, metrics

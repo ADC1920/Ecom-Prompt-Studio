@@ -188,7 +188,7 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
 - **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度这些判据，还没用真实的好图 / AI 图批次标定过，当提示用，不当结论
 - **语料库只有 2 条种子**：检索质量取决于样本量，现在属于「能用但不够准」
 - **`run_loop.py --generate` 未实跑**：需要授权与 API 余额，闭环逻辑只在 `--dry-run` 下验证过
-- **OCR 依赖未装**：图内文字检查在缺 pytesseract 时走 skipped，不会误报通过
+- **OCR 需要本地装 tesseract**：缺 pytesseract 或 tesseract 时这项走 skipped，不会误报通过。装了就能用——脚本会自己扫常见安装路径，默认 tessdata 缺中文时去找用户级 tessdata；CI 环境没装，所以云端不检查图内文字
 - **模板覆盖有少量噪声**：7 篇没有围栏代码块的 SOP 用裸段落规则抽取，其中 6 篇各保留 1 段可能偏宽的片段，未逐篇人工复核
 
 ## 许可
