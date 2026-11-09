@@ -56,11 +56,14 @@ SOP 全库按五个工位组织，先判工位再定位篇目，34 篇原文一�
 ## 主要能力
 
 - 参考图产品锁定：以产品图为主，输出保留/改动清单，文字锁定作为兜底
-- 套图风格锁：整套图复用同一组色板、光影、字体和版式，避免风格漂移
+- 套图风格锁（10 字段）：色板、光影、背景系统、镜头、构图、文字层级、材质处理、道具白名单、品牌调性、通用边界，整套图原样复用，交付前做漂移自检
 - 证据账本：卖点按「已确认 / 有依据 / 待补证 / 禁止」分级，避免编造宣称
+- 资料不足先出卖点信息大纲：只给产品图或零散规格时，先交付卖点池与四态准入（可直接用/需核实/仅类目教育/禁用），用户确认后再写提示词
 - 平台 AI 标注合规：覆盖 Amazon `contains-synthetic-performer` 元数据、TikTok Shop AI 披露和国内双标识等要求
 - 工具适配：为不同生图工具提供写法变体、中文文字渲染技巧和多轮编辑脚本
 - 输出边界：用自然语言描述禁止项，替代简单堆砌负面词
+- 反 AI 感双层过滤：文字层清掉 8k / masterpiece 这类堆词，视觉层避开过度光滑、塑料高光、完美对称、悬浮无投影等八类 AI 痕迹
+- 生成后机检：出图后按目标平台检查白底纯度、主体占比、比例、分辨率与图内文字，机检不过的不上架
 
 ## 安装
 
@@ -88,9 +91,11 @@ cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
 
 | 工具 | 用途 |
 |---|---|
-| `tools/lint_skills.py` | 静态检查：frontmatter 合规、引用文件存在性、路由表与 34 篇 SOP 双向覆盖、`SKILL.md` 长度预算、占位符闭合（【】/[]/{{}}）和密钥扫描。零第三方依赖 |
-| `tools/trigger-cases.md` | 23 条触发与路由回归用例的人类可读视图，便于改版前后对照 |
-| `evals/cases.json` | 23 条用例的机器可读源 |
+| `tools/lint_skills.py` | 静态检查：frontmatter 合规、引用文件存在性、路由表与 34 篇 SOP 双向覆盖、34 篇机器可读索引一致、SKILL.md 点名的工具脚本存在、`SKILL.md` 长度预算、占位符闭合（【】/[]/{{}}）和密钥扫描。零第三方依赖 |
+| `tools/trigger-cases.md` | 30 条触发与路由回归用例的人类可读视图，便于改版前后对照 |
+| `tools/check_image.py` | 出图后平台机检：白底纯度、主体占比、比例、分辨率、文件大小、透明通道、OCR 文字；`--fix` 自动归一白底、补比例、放大。仅依赖 Pillow，OCR 可选 |
+| `tools/slop_check.py` | 提示词定稿前自查：SD 时代堆词、绝对化用语、虚假促销、功效宣称、认证背书、AI 痕迹特征。零依赖 |
+| `evals/cases.json` | 30 条用例的机器可读源 |
 | `evals/check_cases.py` | 校验 `cases.json` 与 `trigger-cases.md` 一致，并确认预期 SOP 路径存在 |
 | `evals/promptfooconfig.yaml` | 触发回归：断言每条提示命中的技能名与 SOP 路径 |
 | `evals/promptfooconfig.quality.yaml` | 文本质量抽检：读取 SOP 原文生成提示词，按硬规则评分；图片输出仍由人工检查 |
@@ -119,8 +124,8 @@ python tools/qwen_image.py -f prompt.txt -i front.jpg -i detail.jpg -n 2 --seed 
 
 触发回归主要判断「技能选得对不对」，因为选错技能是用户最容易感知的问题。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：运行 `tools/lint_skills.py`、`evals/check_cases.py` 和 promptfoo 配置结构校验，不需要密钥。
-2. **触发回归**（每次 push / PR）：用 promptfoo 跑 23 条提示，断言返回的技能名和 SOP 路径。评测输入直接读取三个 `SKILL.md`，路由表改动会立即生效。
+1. **静态检查**（每次 push / PR）：运行 `tools/lint_skills.py`（含索引覆盖与工具引用校验）、`evals/check_cases.py`、`check_image.py --selftest`、`slop_check.py --selftest` 和 promptfoo 配置结构校验，不需要密钥。
+2. **触发回归**（每次 push / PR）：用 promptfoo 跑 30 条提示，断言返回的技能名和 SOP 路径。评测输入直接读取三个 `SKILL.md`，路由表改动会立即生效。
 3. **文本质量抽检**（每周一和手动触发）：读取指定 SOP 原文生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分，图片输出不做自动评分。
 
 模型通过 DeepSeek 官方 provider 接入，密钥不写入仓库或评测配置：
