@@ -97,6 +97,43 @@ def check_skill(root: Path, name: str, problems: list, warnings: list) -> None:
         )
 
 
+def check_atoms(root: Path, problems: list, warnings: list) -> None:
+    """拆解原子：结构与索引一一对应。内容是否与原文同步由 `python tools/atomize.py check` 负责。"""
+    skill_dir = root / "ecom-prompt-sop"
+    idx_p = skill_dir / "references" / "_atoms" / "index.json"
+    if not idx_p.exists():
+        warnings.append("[ecom-prompt-sop] 缺少 _atoms/index.json（跑 python tools/atomize.py merge 生成）")
+        return
+    try:
+        atoms = json.loads(read(idx_p))
+        ref_items = json.loads(read(skill_dir / "references" / "_index.json"))["items"]
+    except json.JSONDecodeError as e:
+        problems.append(f"[atoms] 索引解析失败: {e}")
+        return
+
+    items = atoms.get("items") or []
+    if len(items) != len(ref_items):
+        problems.append(f"[atoms] 原子数 {len(items)} 与篇目索引 {len(ref_items)} 不一致")
+    ref_paths = {it["path"] for it in ref_items}
+    for it in items:
+        aid = it.get("id") or "?"
+        p = skill_dir / "references" / "_atoms" / f"{aid}.json"
+        if not p.exists():
+            problems.append(f"[atoms] 缺少原子文件 {aid}.json")
+            continue
+        try:
+            atom = json.loads(read(p))
+        except json.JSONDecodeError:
+            problems.append(f"[atoms] {aid}.json 解析失败")
+            continue
+        if atom.get("path") not in ref_paths:
+            problems.append(f"[atoms] {aid} 的 path 不在篇目索引里：{atom.get('path')}")
+        if not atom.get("templates") and not atom.get("checklists"):
+            problems.append(f"[atoms] {aid} 既无模板也无清单")
+        if not atom.get("source", {}).get("sha"):
+            problems.append(f"[atoms] {aid} 缺 source.sha，无法判断是否与原文同步")
+
+
 def check_placeholders(root: Path, problems: list) -> None:
     """逐行检查占位符是否闭合。
 
@@ -285,6 +322,7 @@ def main() -> int:
     check_tool_refs(root, problems)
     check_eval(root, problems, warnings)
     check_rules(root, problems, warnings)
+    check_atoms(root, problems, warnings)
     check_placeholders(root, problems)
     check_secrets(root, problems)
     for w in warnings:
