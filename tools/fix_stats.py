@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """修复句效果统计：从闭环跑出来的 manifest 里算出哪条修复句真正管用。
 
-闭环（run_loop）每轮会记下「这次因为哪些机检项失败、追加了哪些修复句」。把多轮结果聚合起来，
+闭环每轮会记下「这次因为哪些机检项失败、追加了哪些修复句」。把多轮结果聚合起来，
 就能知道：写纯白背景那句到底让多少张图过了白底、写 1:1 那句的命中率是多少。
 以后调整修复句措辞，用这份统计判断是变好还是变坏。
 
@@ -140,7 +140,7 @@ def main():
 
     manifests = load_manifests(args.dir)
     if not manifests:
-        print(f"{args.dir} 下没有 manifest.json，先跑一次 run_loop", file=sys.stderr)
+        print(f"{args.dir} 下没有 manifest.json，先跑一次出图闭环", file=sys.stderr)
         return 1
 
     got = analyze(manifests)
@@ -150,7 +150,7 @@ def main():
                   "\n要看修复统计，用 --generate 跑真闭环（缺授权时有授权闸门拦着，不会真的花钱）。", file=sys.stderr)
         else:
             print("manifest 里有轮次但没记修复句：可能是旧格式（fixes 是字符串而非 {id, text}）。"
-                  "\n当前版本 run_loop 写的是带 id 的对象，重跑一次闭环即可。", file=sys.stderr)
+                  "\n当前版本闭环写的是带 id 的对象，重跑一次闭环即可。", file=sys.stderr)
         return 1
 
     if args.json:

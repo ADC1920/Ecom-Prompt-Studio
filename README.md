@@ -92,9 +92,9 @@ python tools/atomize.py restore   # 从原子的完整内容导出可读文本
 不是一堆零散脚本，是一条链路：
 
 ```
-拆解 ──→ 组装 ──→ 自查 ──→ 出图 ──→ 机检 ──→ 验收 ──→ 统计
-atomize  compose  slop     qwen     check    visual   fix_stats
-        prompt   _check  _image    _image   _audit
+拆解 ──→ 组装 ──→ 自查 ──→ 机检 ──→ 验收 ──→ 统计
+atomize  compose  slop     check    visual   fix_stats
+        prompt   _check  _image   _audit
 ```
 
 | 工具 | 做什么 |
@@ -103,15 +103,13 @@ atomize  compose  slop     qwen     check    visual   fix_stats
 | `tools/compose_prompt.py` | 五槽位组装：保真段 → 场景 → 主体 → 细节 → 用途 → 约束，自动补平台约束、跑必填校验 |
 | `tools/slop_check.py` | 提示词定稿前查 SD 时代堆词、绝对化用语、虚假促销、功效宣称、AI 痕迹 |
 | `tools/rules_engine.py` | 按平台、品类、场景三份判据规则校验槽位，可 `--inject` 补默认约束 |
-| `tools/qwen_image.py` | 命令行出图通道（Qwen-Image 2.1 Pro），内置授权闸门 |
 | `tools/check_image.py` | 出图后平台机检：白底纯度、主体占比、比例、分辨率、文件大小、透明通道、图内文字 |
-| `tools/run_loop.py` | 出图闭环：生成 → 机检 → 修复句回写 → 重跑，每轮落盘并给 manifest |
 | `tools/visual_audit.py` | 视觉验收：主体一致性（感知哈希 + 颜色直方图）与 AI 感启发式，只提示不判定 |
 | `tools/fix_stats.py` | 从 manifest 统计每条修复句的真实生效率，用来判断措辞要不要改 |
 | `tools/corpus.py` | 正样本语料：录入、相似度检索、编译成 few-shot 范例段 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
 
-九个工具带 `--selftest`，离线可验，不依赖密钥与网络。除 `check_image.py` 与 `visual_audit.py` 用到 Pillow 外全是标准库。
+八个工具带 `--selftest`，离线可验，不依赖密钥与网络。除 `check_image.py` 与 `visual_audit.py` 用到 Pillow 外全是标准库。
 
 `check_image.py` 的 OCR 会自己找 tesseract：不在 PATH 时扫常见安装路径，默认语言目录缺中文时去找用户级 tessdata。缺依赖就标 `skipped`，不会假装通过。
 
@@ -126,17 +124,9 @@ SOP 给的是「方法」，下面两样给的是「判据与范例」：
 
 ## 出图与授权
 
-> **出图先授权（硬性）**：任何图片生成模型（Qwen-Image 全系、wan/万相、Seedream、Gemini、GPT-Image、FLUX、z-image 等，含 MCP 工具与网页端代操作）调用前必须先取得明确授权，说明用途、模型、张数与预计花费。规则见 [`tools/IMAGE-GEN-AUTHORIZATION.md`](tools/IMAGE-GEN-AUTHORIZATION.md)。
+> **出图先授权（硬性）**：任何图片生成模型（Qwen-Image 全系、wan/万相、Seedream、Gemini、GPT-Image、FLUX、z-image 等，含 MCP 工具与网页端代操作）调用前必须先取得明确授权，说明用途、模型与张数；未获授权时只交付提示词文本，不调用任何出图模型。
 
-`tools/qwen_image.py` 内置闸门，缺 `--authorize` / `--purpose` / `--unit-price` 直接拒绝，不发出请求：
-
-```bash
-export DASHSCOPE_API_KEY="sk-..."
-python tools/qwen_image.py -p "提示词" --size 1024*1024 -o out \
-  --authorize "用户 2026-10-29 14:20 回复：可以" --purpose "产品A 天猫主图第 2 张" --unit-price 0.25
-```
-
-发请求前会打印「张数 × 单价 = 预计花费」，并追加写入 `out/authorization.log`（只留本机）。单价按官方页面当时数值填，拿不到先问，不猜。
+仓库不再内置命令行出图通道：2026-11-10 按用户指令移除 `tools/qwen_image.py`、`tools/run_loop.py` 与规则正本 `tools/IMAGE-GEN-AUTHORIZATION.md`，此后出图走用户指定的外部通道。机检与视觉验收脚本仍在 `tools/`，可对任意通道产出的图做后置校验。
 
 图生图用于产品锁定与翻新：产品实拍图作参考图，提示词里写清保留清单与改动清单。提示词默认按内容投喂、不做模型改写，硬规则不会被稀释。
 
@@ -189,6 +179,5 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
 
 - **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度这些判据，还没用真实的好图 / AI 图批次标定过，当提示用，不当结论
 - **语料库只有 2 条种子**：检索质量取决于样本量，现在属于「能用但不够准」
-- **`run_loop.py --generate` 未实跑**：需要授权与 API 余额，闭环逻辑只在 `--dry-run` 下验证过
 - **OCR 需要本地装 tesseract**：缺 pytesseract 或 tesseract 时这项走 skipped，不会误报通过；CI 环境没装，所以云端不检查图内文字
 - **模板抽取有少量噪声**：少数没有围栏代码块的篇目走裸段落规则，个别片段可能偏宽，未逐篇人工复核
