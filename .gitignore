@@ -6,3 +6,16 @@ __pycache__/
 memory/
 out/
 .tmp/
+
+# Python 字节码缓存（与 __pycache__/ 配套）
+*.pyc
+
+# 本地动工目录（改前快照与临时工作区，不随仓库分发）
+.backups/
+_work/
+
+# 项目级技能联接（README 安装节要求克隆后自建，不入库）
+.agents/skills/
+
+# ZCode 平台项目规则与本机会话缓存
+.zcode/
