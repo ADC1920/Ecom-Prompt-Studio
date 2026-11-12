@@ -14,15 +14,17 @@ Each subdirectory is a complete skill: copy it into your local skills directory 
 
 ### As a ZCode plugin (recommended)
 
-The repo root is a plugin. Add the repo directory as a local marketplace, then install:
+The plugin bundles all three skills, four slash commands, the post-generation check hook, and the MCP server in one install.
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
+cd Ecom-Prompt-Studio
+python tools/pack_plugin.py
 ```
 
-In ZCode: **Plugin Marketplace → Add → Add Plugin Marketplace**, paste the cloned directory, then install `ecom-prompt-studio` from **Personal**.
+This writes a marketplace manifest and a plugin directory into `dist/`. In ZCode: **Plugin Marketplace → Add → Add Plugin Marketplace**, paste the absolute path to `dist/`, then install `ecom-prompt-studio` from **Personal**.
 
-This installs all three skills, four slash commands, the post-generation check hook, and the MCP server in one step.
+Why pack instead of pointing at the repo root: ZCode installs a plugin by copying the whole source directory and does not consult `.gitignore`. Using the repo root directly would carry locally created `docs/`, `memory/`, and `AGENTS.md` into the install cache. `pack_plugin.py` copies only git-tracked files, so local-only content cannot leak.
 
 ### As plain skills
 
@@ -73,6 +75,8 @@ The only routing rule: **category, action, or scenario cue present → SOP atom 
 | `tools/corpus.py` | positive-sample corpus: add, similarity search, compile few-shot blocks |
 | `tools/lint_skills.py` | full static check, the first CI gate |
 | `tools/mcp_server.py` | MCP server exposing the atom library and checks as four tools |
+| `tools/check_plugin.py` | validates manifest fields, declared resources, path containment, event names |
+| `tools/pack_plugin.py` | builds a clean plugin bundle from git-tracked files only |
 
 Machine checks run against images from **any** channel. This repo deliberately does not bundle an image-generation CLI: bring your own endpoint, then verify the output here.
 

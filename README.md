@@ -14,13 +14,17 @@
 
 ### 推荐：作为 ZCode 插件安装
 
-仓库根就是插件，三个技能、四条斜杠命令、出图后自动机检、MCP server 一次装齐：
+插件形态下，三个技能、四条斜杠命令、出图后自动机检、MCP server 一次装齐。
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
+cd Ecom-Prompt-Studio
+python tools/pack_plugin.py
 ```
 
-在 ZCode 里打开 **插件市场 → 添加 → 添加插件市场**，粘贴克隆下来的目录，然后在**个人**里安装 `ecom-prompt-studio`。
+打包会在 `dist/` 生成市场清单与插件目录。在 ZCode 里打开 **插件市场 → 添加 → 添加插件市场**，粘贴 `dist/` 的**绝对路径**，然后在**个人**里安装 `ecom-prompt-studio`。
+
+为什么要打包而不是直接把仓库根当市场：ZCode 的插件安装是整目录拷贝，不问 `.gitignore`。仓库根直接作插件源时，克隆下来自建的 `docs/`、`memory/`、`AGENTS.md` 会一起进安装缓存。`pack_plugin.py` 只复制 git 跟踪的文件，本机内容天然被排除。
 
 只拷单个技能目录也能用，但那会丢掉 `tools/`：机检、规则引擎、语料检索、MCP 工具都不在技能目录里，SKILL.md 提到脚本的地方只能人工代劳。要完整能力就走插件。
 
@@ -120,6 +124,7 @@ atomize  compose  slop     check    visual   fix_stats
 | `tools/mcp_server.py` | MCP server：把原子库与判据暴露成四个可调用工具 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
 | `tools/check_plugin.py` | 插件清单自校验：字段、资源存在性、路径越界、事件名合法性 |
+| `tools/pack_plugin.py` | 打干净的插件包：只复制 git 跟踪文件，本机内容不进安装缓存 |
 
 除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。
 
