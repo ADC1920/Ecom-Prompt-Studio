@@ -12,7 +12,19 @@
 
 ## 快速开始
 
-两种运行方式，装法相同，都是把技能目录整体复制过去，保持 `<技能目录>/<技能名>/SKILL.md` 的层级：
+### 推荐：作为 ZCode 插件安装
+
+仓库根就是插件，三个技能、四条斜杠命令、出图后自动机检、MCP server 一次装齐：
+
+```bash
+git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
+```
+
+在 ZCode 里打开 **插件市场 → 添加 → 添加插件市场**，粘贴克隆下来的目录，然后在**个人**里安装 `ecom-prompt-studio`。
+
+只拷单个技能目录也能用，但那会丢掉 `tools/`：机检、规则引擎、语料检索、MCP 工具都不在技能目录里，SKILL.md 提到脚本的地方只能人工代劳。要完整能力就走插件。
+
+### 手动：只拷技能
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
@@ -104,20 +116,37 @@ atomize  compose  slop     check    visual   fix_stats
 | `tools/visual_audit.py` | 视觉验收：主体一致性（感知哈希 + 颜色直方图）与 AI 感启发式，只提示不判定 |
 | `tools/fix_stats.py` | 从 manifest 统计每条修复句的真实生效率，用来判断措辞要不要改 |
 | `tools/corpus.py` | 正样本语料：录入、相似度检索、编译成 few-shot 范例段 |
+| `tools/vlm_review.py` | 生成视觉复核单：启发式分只提示，结论由人给 |
+| `tools/mcp_server.py` | MCP server：把原子库与判据暴露成四个可调用工具 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
+| `tools/check_plugin.py` | 插件清单自校验：字段、资源存在性、路径越界、事件名合法性 |
 
-八个工具带 `--selftest`，离线可验，不依赖密钥与网络。除 `check_image.py` 与 `visual_audit.py` 用到 Pillow 外全是标准库。
+除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。
+
+## 装机后自带的能力
+
+装成插件之后，下面这些不靠模型自觉，是运行时机制：
+
+| 机制 | 触发 | 效果 |
+|---|---|---|
+| 出图后自动机检 | 任何工具调用在 `out/` 下落了图，且命令里带 `--platform` | 跑平台机检，不通过就把结果回注给模型，提示修正重出 |
+| MCP 四个工具 | 模型自行调用 | `query_atom` 定位原子、`get_template` 取模板、`validate_prompt` 校验、`check_output` 机检 |
+| 斜杠命令 | 用户输入 `/ecom:main` 等 | 不用记五工位术语，直接进对应工位流程 |
+
+MCP 工具的意义在于把「读文档 → 判工位 → 读原子 → 挑模板」四步压成一次调用。不接 MCP 时这四步全靠模型自己走。
 
 `check_image.py` 的 OCR 会自己找 tesseract：不在 PATH 时扫常见安装路径，默认语言目录缺中文时去找用户级 tessdata。缺依赖就标 `skipped`，不会假装通过。
 
 ## 判据规则与语料
 
-SOP 给的是「方法」，下面两样给的是「判据与范例」：
+SOP 给的是「方法」，下面几样给的是「判据与范例」：
 
 - `references/_rules/`：平台（12）、品类（9）、场景（11）三份 JSON，把硬判据变成可校验规则——白底与占比阈值、禁用宣称、必填槽位、画面禁项、AI 标注义务
+- `references/_rules/aigc-disclosure.json`：AIGC 标注义务与法律依据，五地法条、图类型四分类、四条红线
+- `references/_brand-lock.md`：品牌锁十个必锁字段与 prepend 写法，解跨图漂移
 - `references/_corpus/`：验证过并出过好图的提示词样本，按相似度检索、编译成 few-shot
 
-规则管「不能写什么」，语料管「写成什么样才算够」。
+规则管「不能写什么」，语料管「写成什么样才算够」，品牌锁管「一套图看着像不像同一家」。
 
 ## 出图与授权
 
@@ -131,9 +160,11 @@ SOP 给的是「方法」，下面两样给的是「判据与范例」：
 
 技能选错是用户最容易感知的问题，所以触发回归是评测主线。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + 九个工具自检 + promptfoo 配置结构校验，不需要密钥
+1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + `check_plugin.py` + 十一个工具自检 + promptfoo 配置结构校验，不需要密钥
 2. **触发回归**（每次 push / PR）：promptfoo 跑 30 条提示，断言命中的技能名与**原子编号**。评测输入直接读三个 `SKILL.md`，路由表一改立刻生效
 3. **文本质量抽检**（每周一 + 手动）：按原子编号读 `source_text` 生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分
+
+三层之外还有一套**真实触发评测**（`evals/real_trigger.py`），只在里程碑手动跑：把技能目录交给真实引擎，看它是否自行加载并走到正确原子。前两层抓不到「装了但不触发」，这一层能，代价是慢且可能计费。
 
 三个技能各带一份 `EVAL.md` 答案键（能力边界题 / 生产决策题 / 应用任务 + 评分口径）。答案键不链接进 `SKILL.md`，`lint_skills.py` 会校验它存在且未被入口引用——避免被评的 agent 直接读到答案。
 
@@ -143,7 +174,9 @@ SOP 给的是「方法」，下面两样给的是「判据与范例」：
 
 ```bash
 python tools/lint_skills.py
+python tools/check_plugin.py
 python evals/check_cases.py
+python evals/real_trigger.py --dry-run        # 看真实评测会跑哪些用例
 npx promptfoo@0.124.1 eval -c evals/promptfooconfig.yaml
 npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
 ```
@@ -154,19 +187,28 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
 
 ```text
 .
+├─ .zcode-plugin/plugin.json        # 插件清单：技能 + 命令 + hooks + MCP
+├─ .mcp.json                        # MCP server 声明（四个工具）
+├─ hooks/
+│  ├─ hooks.json                    # PostToolUse 匹配出图调用
+│  └─ check_after_image.py          # 出图后自动机检并回注结果
+├─ commands/                        # /ecom:main /detail /sku /reverse
 ├─ ecom-prompt-sop/
 │  ├─ SKILL.md                      # 五工作室入口：判工位 → 定位原子 → 取模板与规则
 │  ├─ EVAL.md                       # 评测答案键（评测者用，不被 SKILL.md 引用）
 │  └─ references/
 │     ├─ _atoms/                    # 原子库 + 索引 + 语义层 + 机械层
-│     ├─ _rules/                    # 平台 / 品类 / 场景判据
+│     ├─ _rules/                    # 平台 / 品类 / 场景判据 + AIGC 标注义务
 │     ├─ _corpus/                   # 正样本语料
 │     ├─ _index.json                # 篇目索引（槽位映射）
+│     ├─ _brand-lock.md             # 品牌锁十个字段
 │     └─ _prompt-slots.md           # 五槽位规范
 ├─ ecom-main-image-prompts/
 ├─ ecom-detail-page-prompts/
-├─ tools/                           # 拆解、组装、机检、闭环、验收、统计
-├─ evals/                           # promptfoo 配置、用例与断言脚本
+├─ tools/                           # 拆解、组装、机检、验收、统计、MCP、插件校验
+├─ evals/                           # promptfoo 配置、用例、断言脚本、真实触发评测
+├─ CHANGELOG.md
+├─ README.en.md
 └─ .github/workflows/skill-eval.yml # CI（三个 job：静态 / 触发回归 / 质量抽检）
 ```
 
@@ -175,6 +217,8 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml
 ## 已知限制
 
 - **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度这些判据，还没用真实的好图 / AI 图批次标定过，当提示用，不当结论
-- **语料库只有 2 条种子**：检索质量取决于样本量，现在属于「能用但不够准」
+- **语料库只有 2 条种子**：检索质量取决于样本量，现在属于「能用但不够准」。它靠真实出图积累，不能人工编造，所以这一步只能等实际使用
+- **VLM 复核不自动判图**：`vlm_review.py` 只生成复核单，不给结论。VLM 在「保留约束是否满足」这类细粒度判断上会失准，把它的分数当通过依据会把错误固化
 - **OCR 需要本地装 tesseract**：缺 pytesseract 或 tesseract 时这项走 skipped，不会误报通过；CI 环境没装，所以云端不检查图内文字
 - **模板抽取有少量噪声**：少数没有围栏代码块的篇目走裸段落规则，个别片段可能偏宽，未逐篇人工复核
+- **真实触发评测需自备引擎**：`evals/real_trigger.py` 只提供框架与判定逻辑，引擎命令与凭据由使用者提供，CI 里只跑它的离线自检
