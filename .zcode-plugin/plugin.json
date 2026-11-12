@@ -1,0 +1,17 @@
+{
+  "name": "ecom-prompt-studio",
+  "version": "2.1.0",
+  "description": "电商视觉五工作室提示词 SOP：34 个原子库、平台/品类/场景判据引擎、出图后平台机检与语料回流。",
+  "author": {
+    "name": "ADC1920"
+  },
+  "license": "MIT",
+  "skills": [
+    "./ecom-prompt-sop",
+    "./ecom-main-image-prompts",
+    "./ecom-detail-page-prompts"
+  ],
+  "commands": "./commands",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
+}
