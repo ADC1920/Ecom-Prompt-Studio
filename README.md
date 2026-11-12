@@ -12,13 +12,10 @@
 
 ## 快速开始
 
-三种运行方式，装法相同，都是把技能目录整体复制过去，保持 `<技能目录>/<技能名>/SKILL.md` 的层级：
+两种运行方式，装法相同，都是把技能目录整体复制过去，保持 `<技能目录>/<技能名>/SKILL.md` 的层级：
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
-
-# DeepSeek Harness
-cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.dsh/skills/
 
 # ZCode（或项目级 .agents/skills/）
 cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
