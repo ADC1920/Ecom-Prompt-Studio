@@ -140,17 +140,21 @@ def main():
 
     manifests = load_manifests(args.dir)
     if not manifests:
-        print(f"{args.dir} 下没有 manifest.json，先跑一次出图闭环", file=sys.stderr)
+        print(f"{args.dir} 下没有 manifest.json。", file=sys.stderr)
+        print("本版本不内置出图闭环，manifest 需由外部通道产出，格式："
+              "{\"result\": \"passed|exhausted\", \"rounds\": [{\"round\": 1, \"verdict\": \"fail\", "
+              "\"fails\": [\"background\"], \"fixes\": [{\"id\": \"background\", \"text\": \"背景纯白\"}]}]}。"
+              "至少两轮才能算出命中率。", file=sys.stderr)
         return 1
 
     got = analyze(manifests)
     if not got["fixes"]:
         if got["avg_rounds"] <= 1:
-            print("这些 manifest 都是单轮的（dry-run 只跑一轮），没有「下一轮」可比，判断不了修复句有没有效。"
-                  "\n要看修复统计，用 --generate 跑真闭环（缺授权时有授权闸门拦着，不会真的花钱）。", file=sys.stderr)
+            print("这些 manifest 都是单轮的，没有「下一轮」可比，判断不了修复句有没有效。"
+                  "\n需要至少两轮的 manifest：第二轮修完了第一轮失败的项，才谈得上命中率。", file=sys.stderr)
         else:
             print("manifest 里有轮次但没记修复句：可能是旧格式（fixes 是字符串而非 {id, text}）。"
-                  "\n当前版本闭环写的是带 id 的对象，重跑一次闭环即可。", file=sys.stderr)
+                  "\n当前格式写的是带 id 的对象，按 tools/README.md 的格式重记一次即可。", file=sys.stderr)
         return 1
 
     if args.json:

@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "note": "AIGC 标注义务与法律依据。这是跨境与国内出图的前置判据，与 platform.json 的机检阈值分开：那份管图上像素，这份管文案与披露义务。数值与金额来自公开法条，平台执行口径以官方卖家中心为准；本文件不是法律意见。",
+  "checked_at": "2026-11",
+  "regions": {
+    "us-federal": {
+      "label": "美国联邦（FTC）",
+      "authority": "Federal Trade Commission Act §5（不公平或欺骗性行为）",
+      "requirement": "AI 生成或 AI 修饰的产品图若造成实质误导（虚假呈现商品外观、材质、尺寸、效果），即属欺骗性行为。不要求逐图披露 AI，但禁止虚假呈现。",
+      "penalty": "民事罚款与责令改正；消费者集体诉讼风险",
+      "seller_action": "商品图必须与实物一致；不得用 AI 修出实物没有的效果（如把薄款修成厚款、改颜色、改结构）。"
+    },
+    "us-california": {
+      "label": "加州 SB 942（California AI Transparency Act）",
+      "authority": "California AI Transparency Act",
+      "requirement": "生成式 AI 提供方须提供 AI 检测工具与元数据披露；大型平台须提供可见标识。面向内容生成方的是元数据留存义务。",
+      "penalty": "每次违规民事罚款（按日累计），另有行政罚款上限",
+      "seller_action": "保留生成元数据（C2PA / SynthID 等），不要剥离；用于公开投放的 AI 图保留可追溯来源。"
+    },
+    "us-newyork": {
+      "label": "纽约 SB 8420-A（AI 人物披露）",
+      "authority": "New York Synthetic Performer Disclosure",
+      "requirement": "广告中使用合成人像（synthetic performer）须显著披露，且不得使用已故人物肖像未经授权。",
+      "penalty": "每次违规民事罚款；持续违规按日累计",
+      "seller_action": "含写实 AI 模特/人脸的广告须显式披露；Amazon 场景下用 XMP dc:subject 标记。"
+    },
+    "eu": {
+      "label": "欧盟 AI Act Article 50（透明度义务）",
+      "authority": "Regulation (EU) 2024/1689, Art. 50",
+      "requirement": "AI 生成或操纵的图像、音频、视频构成 deepfake 时，部署者须以清晰可辨的方式披露其为人工生成或操纵。纯艺术创作可豁免部分义务，商业广告不豁免。",
+      "penalty": "各成员国设定，上限可达全球营业额比例（与 GDPR 同档）",
+      "seller_action": "面向欧盟投放的 AI 生成人像广告须标注；机器可读水印与显式声明并行最稳。"
+    },
+    "cn": {
+      "label": "中国《人工智能生成合成内容标识办法》",
+      "authority": "《人工智能生成合成内容标识办法》（2025-09-01 施行）+《互联网信息服务深度合成管理规定》",
+      "requirement": "显式标识（用户可感知的文字、声音、图形提示）与隐式标识（文件元数据）并行。服务提供者与内容传播平台各有义务。",
+      "penalty": "由网信、公安等部门依职责责令改正、警告、罚款；平台另可按社区规则处置",
+      "seller_action": "国内平台投放的 AI 图做双标识：画面/描述显式说明 + 文件元数据保留生成信息。"
+    }
+  },
+  "image_classes": {
+    "A": {
+      "label": "实拍无人",
+      "description": "真实拍摄、未经过 AI 生成，可含常规修图",
+      "disclosure": "无 AI 披露义务",
+      "note": "常规色彩、曝光、去瑕疵修图仍属 A；一旦用生成式模型补全或改变商品本身，升为 B 或 C。"
+    },
+    "B": {
+      "label": "常规修图",
+      "description": "实拍底图 + 非生成式处理（裁剪、校色、锐化、去背景）",
+      "disclosure": "通常无；投放地区有专门规则时从其规则",
+      "note": "去背景若用生成式模型补出原本不存在的边缘结构，应升为 C。"
+    },
+    "C": {
+      "label": "写实 AI 人物",
+      "description": "AI 生成的写实人像或模特，含换脸、换装、合成模特",
+      "disclosure": "必须披露（纽约 SB 8420-A、EU AI Act Art.50、国内双标识）",
+      "note": "Amazon 场景写 XMP dc:subject = contains-synthetic-performer；画面水印与文件名不算披露。"
+    },
+    "D": {
+      "label": "复刻真人",
+      "description": "未经授权复刻可识别真人（明星脸、网红、他人肖像）",
+      "disclosure": "不得生成",
+      "note": "主动拦截。即使是「像某明星」的模糊指向也不做出。"
+    }
+  },
+  "red_lines": [
+    "不剥离 C2PA / SynthID 等来源水印或元数据",
+    "不教用户规避平台 AI 标注义务",
+    "不把 AI 图伪装成实拍图交付或宣传",
+    "不生成未经授权的可识别真人肖像"
+  ],
+  "usage": "出图前先定 image_class：A 与 B 按常规流程；C 必须在提示词与交付说明里带上披露义务；D 直接拒绝。跨境投放时按投放地区取 regions 中最严的一条执行。"
+}

@@ -62,6 +62,11 @@ jobs:
           python tools/corpus.py --selftest
           python tools/fix_stats.py --selftest
           python tools/atomize.py --selftest
+          python tools/mcp_server.py --selftest
+          python tools/vlm_review.py --selftest
+          python evals/real_trigger.py --selftest
+      - name: 插件清单与资源存在性
+        run: python tools/check_plugin.py
       - name: promptfoo 配置结构
         run: |
           npx --yes promptfoo@$PROMPTFOO_VERSION validate config \
