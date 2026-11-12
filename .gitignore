@@ -19,3 +19,7 @@ _work/
 
 # ZCode 平台项目规则与本机会话缓存
 .zcode/
+
+# 插件打包产物（tools/pack_plugin.py 生成，供本地市场安装）
+dist/
+marketplace.json
