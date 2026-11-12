@@ -12,6 +12,5 @@
     "./ecom-detail-page-prompts"
   ],
   "commands": "./commands",
-  "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }
