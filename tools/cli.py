@@ -176,6 +176,52 @@ def check_output(args):
     return _run_script("check_image.py", argv, timeout=120)
 
 
+def find_rule(args):
+    """按关键词或 id 查规则，返回规则全文与所属原子。
+
+    规则全文只在原子里存一份，rules.json 只做定位——这里按 id 回原子取正文。
+    """
+    if not args.query:
+        return {"error": "缺少 --query（关键词或规则 id）"}
+
+    path = ATOM_DIR / "rules.json"
+    if not path.exists():
+        return {"error": "规则索引缺失，先跑 python tools/atomize.py merge"}
+
+    items = json.loads(path.read_text(encoding="utf-8")).get("items") or []
+    q = args.query.strip()
+    hits = [r for r in items if q in r["id"]] if q.startswith("a") and ".r" in q else items
+
+    if not (q.startswith("a") and ".r" in q):
+        # 关键词模式：回原子取正文后匹配，而不是只匹配索引字段
+        found = []
+        cache = {}
+        for r in items:
+            aid = r["atom"]
+            if aid not in cache:
+                ap = ATOM_DIR / f"{aid}.json"
+                cache[aid] = json.loads(ap.read_text(encoding="utf-8")) if ap.exists() else {}
+            text = next((x["text"] for x in cache[aid].get("rules") or [] if x["id"] == r["id"]), "")
+            if q in text:
+                found.append({**r, "text": text})
+        hits = found
+
+    out = []
+    for r in hits[: args.limit]:
+        aid = r["atom"]
+        ap = ATOM_DIR / f"{aid}.json"
+        text = r.get("text")
+        if text is None and ap.exists():
+            atom = json.loads(ap.read_text(encoding="utf-8"))
+            text = next((x["text"] for x in atom.get("rules") or [] if x["id"] == r["id"]), "")
+        out.append({
+            "id": r["id"], "atom": aid, "atom_title": r.get("title"),
+            "line": r.get("line"), "stations": r.get("stations"),
+            "categories": r.get("categories"), "text": text,
+        })
+    return {"query": q, "hits": out, "total_matched": len(hits)}
+
+
 def build_parser():
     ap = argparse.ArgumentParser(
         prog="cli.py",
@@ -210,6 +256,11 @@ def build_parser():
     p.add_argument("--strict", action="store_true", help="严格模式：警告也算失败")
     p.set_defaults(func=check_output)
 
+    p = sub.add_parser("find-rule", help="按关键词或规则 id 查规则全文与所属原子")
+    p.add_argument("--query", required=True, help="关键词，或规则 id（如 a21.re5d4b02d34f3）")
+    p.add_argument("--limit", type=int, default=5, help="最多返回几条，默认 5")
+    p.set_defaults(func=find_rule)
+
     return ap
 
 
@@ -243,6 +294,20 @@ def selftest():
     stdout = (v["slop"].get("stdout") or "")
     if "空洞堆词" not in stdout and '"warn": 4' not in stdout.replace(",", "").replace(" ", ""):
         fails.append("堆词提示词应被 slop_check 报出空洞堆词")
+
+    # 规则索引：571 条必须全在，且能按关键词回查正文
+    rules_json = ATOM_DIR / "rules.json"
+    if not rules_json.exists():
+        fails.append("规则索引 rules.json 缺失，跑 atomize.py merge")
+    else:
+        idx = json.loads(rules_json.read_text(encoding="utf-8"))
+        if idx.get("count") != 571:
+            fails.append(f"规则索引应 571 条，实际 {idx.get('count')}")
+        got = find_rule(argparse.Namespace(query="白底", limit=3))
+        if not got.get("hits"):
+            fails.append("find-rule 对「白底」无命中")
+        elif not any("白底" in (h.get("text") or "") for h in got["hits"]):
+            fails.append("find-rule 返回的规则正文不含关键词")
 
     if fails:
         for f in fails:
