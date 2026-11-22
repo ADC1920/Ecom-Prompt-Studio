@@ -412,9 +412,18 @@ def cmd_check(_args):
         if len(atom["rules"]) != len(parsed["prose_rules"]):
             problems.append(f"{aid} 规则数 {len(atom['rules'])} ≠ 自解析 {len(parsed['prose_rules'])}")
         else:
-            # id 必须能从规则文本复算出来：文本改了却没重跑 merge，id 就会与文本脱节
+            # 两条都要验，缺一不可：
+            # ① 规则文本必须真能在 source_text 里找到——防止有人绕过 merge 手改 rules，
+            #    那样 rules 与 source_text 就脱节了，而 source_text 才是自包含的真源。
+            # ② id 必须能从文本复算出来——防止文本改了没重跑 merge 导致 id 与文本不符。
             expect = _tag_rules(aid, parsed["prose_rules"])
             for got, want in zip(atom["rules"], expect):
+                if got.get("text") not in text:
+                    problems.append(
+                        f"{aid} 规则文本在 source_text 里找不到：{got.get('text', '')[:24]}…"
+                        f"（原子与原文脱节，重跑 merge）"
+                    )
+                    break
                 if got.get("id") != want["id"]:
                     problems.append(
                         f"{aid} 规则 id 与文本不符（{got.get('text', '')[:20]}…）："
@@ -508,11 +517,22 @@ def selftest():
         if len(r.get("sha", "")) != 12:
             fails.append(f"sha 计算异常：{r.get('sha')}")
 
+        # 规则 id 的两条语义：行号漂移不变，文本改动要换
+        base = [{"text": "必须保持产品外观一致", "line": 10}]
+        tagged = _tag_rules("a01", base)
+        if tagged[0]["id"] != _tag_rules("a01", [{"text": base[0]["text"], "line": 99}])[0]["id"]:
+            fails.append("规则 id 应随文本稳定，不随行号变化")
+        if tagged[0]["id"] == _tag_rules("a01", [{"text": "必须保持产品外观完全一致", "line": 10}])[0]["id"]:
+            fails.append("规则文本改动后 id 应随之变化")
+        dup = _tag_rules("a01", base + base)
+        if dup[0]["id"] == dup[1]["id"]:
+            fails.append("同一原子内重复规则应加序号区分")
+
     if fails:
         for f in fails:
             print("FAIL", f)
         return 1
-    print("selftest: 5 组用例全部通过")
+    print("selftest: 6 组用例全部通过（含规则 id 三向语义）")
     return 0
 
 

@@ -317,7 +317,10 @@ def check_rules(root: Path, problems: list, warnings: list) -> None:
 
 
 def main() -> int:
-    root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
+    # 本脚本的「自检」就是拿仓库根跑一遍完整检查。显式收下 --selftest，
+    # 避免它被当成路径参数——否则会去 --selftest 这个不存在的目录里找技能。
+    args = [a for a in sys.argv[1:] if a != "--selftest"]
+    root = Path(args[0]).resolve() if args else Path(__file__).resolve().parent.parent
     problems: list = []
     warnings: list = []
     for name in SKILLS:
