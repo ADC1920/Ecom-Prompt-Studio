@@ -4,19 +4,19 @@
 
 模型已经会写提示词，真正缺的是三样东西——**判据、范例、反馈**，这个仓库就是围着这三样长起来的：
 
-- **判据**：整套 SOP 拆成 197 个提示词模板、571 条规则句、181 条检查项、122 个占位符，每一条都能被程序读
+- **判据**：34 篇 SOP 拆成 197 个提示词模板、571 条规则句、22 份检查清单、122 个占位符，每条规则带稳定 id 可单独引用与溯源
 - **范例**：正样本语料库，按相似度检索出已经出过好图的写法
-- **反馈**：出图后按平台机检，不过的不上架；修复句回写进提示词再跑一轮
+- **反馈**：出图后按平台机检，不过的不上架；机检规则本身有失败夹具守着，不会被悄悄放宽
 
-`skills/` 下三个目录各是一个完整技能，拷进本地技能目录即可使用；`tools/` 里是配套的原子检索、规则校验与出图机检，任何 agent 平台或纯终端都能跑。
+`skills/` 下三个目录各是一个完整技能，拷进本地技能目录即可使用；`tools/` 里是配套的工具链，任何 agent 平台或纯终端都能跑。
 
 ## 快速开始
 
-### 方式一：只取提示词（不装技能）
+### 方式一：只取提示词
 
-不需要 Python，也不需要任何 agent：直接浏览 [`skills/ecom-prompt-sop/references/_atoms/`](skills/ecom-prompt-sop/references/_atoms/)，34 个原子各是一个 JSON，`source_text` 字段是完整原文，`templates` 里是可直接复制的提示词模板。
+不需要 Python，也不需要任何 agent。直接浏览 [`skills/ecom-prompt-sop/references/_atoms/`](skills/ecom-prompt-sop/references/_atoms/)：34 个原子各是一个 JSON，`source_text` 字段是完整原文，`templates` 里是可直接复制的提示词模板。
 
-### 方式二：装成技能（ZCode / Claude Code / Cursor 等）
+### 方式二：装成技能
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
@@ -24,6 +24,12 @@ git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
 # 三个技能要一起装：它们之间有转交判据，缺一个会指向不存在的技能
 cp -r Ecom-Prompt-Studio/skills/* ~/.agents/skills/     # ZCode
 cp -r Ecom-Prompt-Studio/skills/* ~/.claude/skills/     # Claude Code
+```
+
+也可以用安装器直接装（`skills/<name>/SKILL.md` 布局符合 vercel-labs/skills 的扫描规则）：
+
+```bash
+npx skills add ADC1920/Ecom-Prompt-Studio --all
 ```
 
 重开会话后技能自动生效，直接用自然语言触发，不需要提「SOP」：
@@ -38,16 +44,17 @@ cp -r Ecom-Prompt-Studio/skills/* ~/.claude/skills/     # Claude Code
 
 ### 方式三：技能 + 工具链
 
-在方式二基础上，把整个仓库留在本地，脚本就在 `tools/` 下直接用：
+在方式二基础上把整个仓库留在本地，脚本就在 `tools/` 下直接用：
 
 ```bash
 python tools/cli.py query-atom --category 杯壶 --output 主图   # 定位原子，返回编号与依据
 python tools/cli.py get-template --atom a21                    # 取该原子的模板、规则、清单
+python tools/cli.py find-rule --query 白底                      # 按关键词或规则 id 查规则
 python tools/cli.py validate-prompt --file p.txt --platform amazon   # 反 AI 感与合规自查
 python tools/cli.py check-output out/main-01.png --platform amazon   # 出图后平台机检
 ```
 
-其余脚本（原子拆分、规则引擎、语料检索、视觉验收等）见下方[工具链](#工具链)。只拷技能目录不带 `tools/` 时，SKILL.md 里提到脚本的地方按文中清单人工过一遍即可。
+只拷技能目录不带 `tools/` 时，SKILL.md 里提到脚本的地方按文中清单人工过一遍即可——每条引用处都写了降级做法。
 
 ## 三个技能
 
@@ -73,7 +80,7 @@ SOP 库按五个工位组织，先判工位，再定位到唯一一个原子：
 
 判工位按优先级自上而下：反推翻新 → 反推台；批量变体 → SKU 台；真人或视频 → 模特与视频台；产物是详情页 → 详情页台；其余 → 主图台。买家秀虽名为「批量」，属同一产品同场景出图，留在主图台。
 
-混合篇目（品类专项、通用总纲、多 SKU）同时挂在两个台，整份共用、两处指向，不拆分复制——避免同一份提示词出现两个版本。改稿按「改了什么 → 回哪台 → 下游重做什么」回流。
+混合篇目（品类专项、通用总纲、多 SKU）同时挂在两个台，整份共用、两处指向，不拆分复制——避免同一份提示词出现两个版本。
 
 ## 为什么是原子
 
@@ -84,18 +91,32 @@ SOP 内容里混着五样东西：解释、提示词模板、规则条款、检�
 | 字段 | 内容 | 怎么用 |
 |---|---|---|
 | `templates` | 提示词模板，代码块型与裸段落型都收，带行号 | 直接取 `text` 投喂 |
-| `rules` | 正文里的规则条款，带行号 | 自查合规 |
+| `rules` | 正文里的规则条款，带稳定 id 与行号 | 自查合规，可按 id 单独引用 |
 | `checklists` | 验收清单、板块要求 | 交付前逐条过 |
 | `placeholders` | 需替换的占位符 | 防止原样输出 |
 | `source_text` | 完整原文 | 需要上下文与示例时读 |
 
-拆解总账：**模板 197 个 · 规则句 571 条 · 检查项 181 条 · 占位符 122 个**，全部可按编号取出。
+拆解总账：**模板 197 · 规则 571 · 检查清单 22 份 · 占位符 122 个（去重）**，全部可按编号取出。
 
 ```bash
 python tools/atomize.py check     # 自包含校验：source_text、模板、规则、清单是否自洽
-python tools/atomize.py merge     # 改完 semantic.json 后重建原子与索引
+python tools/atomize.py merge     # 改完语义层后重建原子、索引与规则总索引
 python tools/atomize.py restore   # 从原子的完整内容导出可读文本
 ```
+
+### 规则带稳定 id
+
+每条规则形如 `a21.re5d4b02d34f3`：原子号 + 文本指纹。**刻意不用行号**——上文任何增删都会让行号漂移，引用它的文档与评测就全断了；文本改动才换 id，规则被改写本来就该是另一条规则。
+
+`atomize.py check` 会做两件事：复算 id 与记录比对，以及确认规则文本真能在 `source_text` 里找到。后者防的是有人绕过 `merge` 直接改原子的 `rules` 字段——那样原子与原文就脱节了。
+
+规则总索引在 `references/_atoms/rules.json`，只放定位字段（id → 原子/工位/品类），规则全文仍只存在原子里一份，避免双份漂移。
+
+## 输出契约
+
+`skills/ecom-prompt-sop/references/_output-contracts.md` 规定五个工位交付物**必须包含哪些段**：主图规划表 7 列、逐张提示词 5 段、详情页规划 6 列、SKU 变体 5 列等。
+
+模板决定内容，契约决定结构。缺段就是未完成，不是「简化版」。
 
 ## 工具链
 
@@ -109,7 +130,8 @@ atomize  compose  slop     check    visual   fix_stats
 
 | 工具 | 做什么 |
 |---|---|
-| `tools/atomize.py` | 拆解与自包含校验：规则带稳定 id（文本指纹，行号漂移不变）、生成 `rules.json` 规则总索引 |
+| `tools/cli.py` | 统一入口：`query-atom` 定位原子、`get-template` 取模板、`find-rule` 查规则、`validate-prompt` 校验、`check-output` 机检 |
+| `tools/atomize.py` | 拆解与自包含校验：规则带稳定 id、生成规则总索引、复算校验 |
 | `tools/compose_prompt.py` | 五槽位组装：保真段 → 场景 → 主体 → 细节 → 用途 → 约束，自动补平台约束、跑必填校验 |
 | `tools/slop_check.py` | 提示词定稿前查 SD 时代堆词、绝对化用语、虚假促销、功效宣称、AI 痕迹 |
 | `tools/rules_engine.py` | 按平台、品类、场景三份判据规则校验槽位，可 `--inject` 补默认约束 |
@@ -119,7 +141,6 @@ atomize  compose  slop     check    visual   fix_stats
 | `tools/vlm_review.py` | 生成视觉复核单：启发式分只提示，结论由人给 |
 | `tools/fix_stats.py` | 从 manifest 统计每条修复句的真实生效率 |
 | `tools/corpus.py` | 正样本语料：录入、相似度检索、编译成 few-shot 范例段 |
-| `tools/cli.py` | 统一入口：`query-atom` 定位原子、`get-template` 取模板、`find-rule` 查规则、`validate-prompt` 校验、`check-output` 机检 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
 
 除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。
@@ -145,18 +166,21 @@ SOP 给的是「方法」，下面几样给的是「判据与范例」：
 
 技能选错是用户最容易感知的问题，触发回归是评测主线。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + 工具自检 + promptfoo 配置结构校验，不需要密钥
-2. **触发回归**（每次 push / PR）：promptfoo 跑 30 条提示，断言命中的技能名与**原子编号**；评测输入直接读三个 `SKILL.md`，路由表一改立刻生效
+1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + 机检失败夹具 + 十二个脚本自检 + promptfoo 配置结构校验，不需要密钥
+2. **触发回归**（每次 push / PR）：promptfoo 跑 34 条提示，断言命中的技能名与**原子编号**；评测输入直接读三个 `SKILL.md`，路由表一改立刻生效
 3. **文本质量抽检**（每周一 + 手动）：按原子编号读 `source_text` 生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分
 
 三层之外还有**真实触发评测**（`evals/real_trigger.py`），只在里程碑手动跑：把技能交给真实引擎，看它是否自行加载并走到正确原子。前两层抓不到「装了但不触发」，这一层能，代价是慢且可能计费。
+
+用例集 34 条，含 4 条英文输入——三个技能的 description 都写了 `English keywords`，这几条用例就是验证它是否真生效。另有 7 条**机检失败夹具**：故意造不合规图（灰底、主体过小、低分辨率、错误比例），断言 checker 必定报出对应问题，反向对照则验证不误判。夹具的预期值就是验收标准——新增平台规则时先加夹具再改 checker，顺序反了就是拿实现当规范。
 
 三个技能各带一份 `EVAL.md` 答案键，`lint_skills.py` 校验它存在且未被 `SKILL.md` 引用——避免被评的 agent 直接读到答案。评测模型经 DeepSeek 官方 provider 接入，密钥走仓库 Secret，不落任何文件；未配置时触发回归显式失败并报错，不会出现「没跑测试却全绿」。
 
 ```bash
 python tools/lint_skills.py
 python evals/check_cases.py
-python evals/real_trigger.py --dry-run                        # 看真实评测会跑哪些用例
+python tools/gen_fixtures.py --verify                          # 机检失败夹具
+python evals/real_trigger.py --dry-run                         # 看真实评测会跑哪些用例
 npx promptfoo@0.124.1 eval -c evals/promptfooconfig.yaml
 npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密钥
 ```
@@ -172,15 +196,16 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密�
 │  │  ├─ SKILL.md                   # 五工作室入口：判工位 → 定位原子 → 取模板与规则
 │  │  ├─ EVAL.md                    # 评测答案键（评测者用，不被 SKILL.md 引用）
 │  │  └─ references/
-│  │     ├─ _atoms/                 # 34 个原子 + 索引
+│  │     ├─ _atoms/                 # 34 个原子 + 篇目索引 + 规则总索引
 │  │     ├─ _rules/                 # 平台 / 品类 / 场景判据 + AIGC 标注义务
 │  │     ├─ _corpus/                # 正样本语料
 │  │     ├─ _brand-lock.md          # 品牌锁十个字段
+│  │     ├─ _output-contracts.md    # 五工位交付物必含段
 │  │     └─ _prompt-slots.md        # 五槽位规范
 │  ├─ ecom-main-image-prompts/      # 主图导演技能
 │  └─ ecom-detail-page-prompts/     # 详情页导演技能
-├─ tools/                           # 统一 CLI、拆解、组装、机检、验收、统计
-├─ evals/                           # promptfoo 配置、用例、真实触发评测
+├─ tools/                           # 统一 CLI、拆解、组装、机检、夹具、验收、统计
+├─ evals/                           # promptfoo 配置、34 条用例、真实触发评测
 ├─ CHANGELOG.md
 ├─ README.en.md
 └─ .github/workflows/skill-eval.yml # CI（静态 / 触发回归 / 质量抽检）
@@ -188,13 +213,9 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密�
 
 ## 已知限制
 
-- **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度判据还没用真实好图 / AI 图批次标定，当提示用，不当结论
 - **语料库只有 2 条种子**：检索质量取决于样本量，靠真实出图积累，不能人工编造，现在属于「能用但不够准」
+- **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度判据还没用真实好图 / AI 图批次标定，当提示用，不当结论
 - **VLM 复核不自动判图**：`vlm_review.py` 只生成复核单；VLM 在「保留约束是否满足」这类细粒度判断上会失准，分数不当通过依据
 - **OCR 需本地装 tesseract**：缺依赖走 `skipped` 不误报通过；CI 环境未装，云端不检查图内文字
 - **模板抽取有少量噪声**：无围栏代码块的篇目走裸段落规则，个别片段可能偏宽，未逐篇人工复核
 - **真实触发评测需自备引擎**：`evals/real_trigger.py` 只提供框架与判定逻辑，引擎命令与凭据由使用者提供
-
-## License
-
-MIT
