@@ -1,0 +1,6052 @@
+{
+ "version": 1,
+ "note": "规则总索引：id → 所在原子与工位。规则全文看原子的 rules 字段，这里只做定位。按 id 搜索可反查哪条规则属于哪台、哪个品类。",
+ "count": 571,
+ "items": [
+  {
+   "id": "a01.rb82b38335614",
+   "atom": "a01",
+   "line": 31,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r048eacc998fb",
+   "atom": "a01",
+   "line": 33,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r91ed3256dc9d",
+   "atom": "a01",
+   "line": 35,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rd62b5f6b6229",
+   "atom": "a01",
+   "line": 35,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r63783dded414",
+   "atom": "a01",
+   "line": 97,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rc32f263eeccf",
+   "atom": "a01",
+   "line": 111,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.re1a52d3a9964",
+   "atom": "a01",
+   "line": 113,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rda13e9e01dad",
+   "atom": "a01",
+   "line": 156,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r175b511fd0c7",
+   "atom": "a01",
+   "line": 158,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r30ab90a2ff16",
+   "atom": "a01",
+   "line": 161,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r67d8fe20b20b",
+   "atom": "a01",
+   "line": 163,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rf9109c0f66b9",
+   "atom": "a01",
+   "line": 164,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rc8996870731c",
+   "atom": "a01",
+   "line": 166,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r8b9328088e80",
+   "atom": "a01",
+   "line": 167,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rcdcb4206e74f",
+   "atom": "a01",
+   "line": 168,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rf96b4f4a00bf",
+   "atom": "a01",
+   "line": 169,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r65ddecdc9050",
+   "atom": "a01",
+   "line": 169,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r250a66309f54",
+   "atom": "a01",
+   "line": 170,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rda51a5f67885",
+   "atom": "a01",
+   "line": 171,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.re62d7ea5954a",
+   "atom": "a01",
+   "line": 177,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.ra3ab535f915f",
+   "atom": "a01",
+   "line": 178,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r654c99fbc51b",
+   "atom": "a01",
+   "line": 179,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rbdfa0b48d8b8",
+   "atom": "a01",
+   "line": 180,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r65d618660281",
+   "atom": "a01",
+   "line": 181,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r2321c900582f",
+   "atom": "a01",
+   "line": 182,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rb1b8a4a7893b",
+   "atom": "a01",
+   "line": 183,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r409eadbb75d4",
+   "atom": "a01",
+   "line": 186,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r3e92075bbed9",
+   "atom": "a01",
+   "line": 187,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r4fd7dbb6a4ce",
+   "atom": "a01",
+   "line": 189,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r86c7c99530a5",
+   "atom": "a01",
+   "line": 190,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r10529ce38ecd",
+   "atom": "a01",
+   "line": 194,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r82307ec17954",
+   "atom": "a01",
+   "line": 195,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r23c9c44455bf",
+   "atom": "a01",
+   "line": 197,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r8e9df2d29ef3",
+   "atom": "a01",
+   "line": 198,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r0ce270411f28",
+   "atom": "a01",
+   "line": 199,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rdbd3a5042f5a",
+   "atom": "a01",
+   "line": 200,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r79780282735b",
+   "atom": "a01",
+   "line": 200,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r46f88475e6fc",
+   "atom": "a01",
+   "line": 204,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r541d65e700e0",
+   "atom": "a01",
+   "line": 207,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r76002bbfcaad",
+   "atom": "a01",
+   "line": 207,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r540d3e9f598f",
+   "atom": "a01",
+   "line": 209,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r3b6dba26404f",
+   "atom": "a01",
+   "line": 213,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rd512e8cb6098",
+   "atom": "a01",
+   "line": 214,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r4b4c09aecf1e",
+   "atom": "a01",
+   "line": 217,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r22f098dc94e6",
+   "atom": "a01",
+   "line": 224,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r71d17bf7284d",
+   "atom": "a01",
+   "line": 225,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rad706b0e646e",
+   "atom": "a01",
+   "line": 228,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.re990c2c839b7",
+   "atom": "a01",
+   "line": 230,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rf68e88077bb9",
+   "atom": "a01",
+   "line": 231,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r399a72a9d84c",
+   "atom": "a01",
+   "line": 232,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r1ca67f110ed7",
+   "atom": "a01",
+   "line": 233,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.rf07daf96f1c7",
+   "atom": "a01",
+   "line": 274,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r2af285f40f5f",
+   "atom": "a01",
+   "line": 296,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a01.r564755e4b35d",
+   "atom": "a01",
+   "line": 358,
+   "title": "00 全平台品类主图详情页通用 SOP（含跨境）",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re10bf2d47a4d",
+   "atom": "a02",
+   "line": 27,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rf9bb3131674f",
+   "atom": "a02",
+   "line": 61,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r14978e700f7f",
+   "atom": "a02",
+   "line": 61,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r213fb8618b5d",
+   "atom": "a02",
+   "line": 65,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re8ab10128334",
+   "atom": "a02",
+   "line": 75,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rf6a76e70dc3d",
+   "atom": "a02",
+   "line": 77,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r89e341904634",
+   "atom": "a02",
+   "line": 77,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r78a27bd59973",
+   "atom": "a02",
+   "line": 81,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r1220db26a642",
+   "atom": "a02",
+   "line": 85,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r584acc631b65",
+   "atom": "a02",
+   "line": 85,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r7669a5cd682e",
+   "atom": "a02",
+   "line": 87,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r5029caafe2ba",
+   "atom": "a02",
+   "line": 103,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re7204b83adbe",
+   "atom": "a02",
+   "line": 105,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r833eea4606ac",
+   "atom": "a02",
+   "line": 109,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r7daf56eed491",
+   "atom": "a02",
+   "line": 111,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r929442034462",
+   "atom": "a02",
+   "line": 113,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r5143686fd29f",
+   "atom": "a02",
+   "line": 115,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r3f4a15f2d3c4",
+   "atom": "a02",
+   "line": 117,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rf0f2ae42059f",
+   "atom": "a02",
+   "line": 119,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r04d42f33ed7b",
+   "atom": "a02",
+   "line": 125,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r733d59122b1a",
+   "atom": "a02",
+   "line": 127,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rd2a8d5e3973e",
+   "atom": "a02",
+   "line": 129,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r568f6ab4bb54",
+   "atom": "a02",
+   "line": 131,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r99df3f7b2f7c",
+   "atom": "a02",
+   "line": 133,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r2321c900582f",
+   "atom": "a02",
+   "line": 135,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r620b83ee1d84",
+   "atom": "a02",
+   "line": 137,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rb1b8a4a7893b",
+   "atom": "a02",
+   "line": 139,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rc5c5774ca2fe",
+   "atom": "a02",
+   "line": 145,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r3e92075bbed9",
+   "atom": "a02",
+   "line": 147,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rc3ea1c2ba9ee",
+   "atom": "a02",
+   "line": 151,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rb2a7da0233b6",
+   "atom": "a02",
+   "line": 153,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r4f3fc8b21557",
+   "atom": "a02",
+   "line": 155,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rdf2cca0291c0",
+   "atom": "a02",
+   "line": 155,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re627f84845b7",
+   "atom": "a02",
+   "line": 157,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rccdbc105bbe2",
+   "atom": "a02",
+   "line": 159,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r59fd75e60e44",
+   "atom": "a02",
+   "line": 167,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r35940fea13fa",
+   "atom": "a02",
+   "line": 173,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re9dd70e068cf",
+   "atom": "a02",
+   "line": 187,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rcc090f93e928",
+   "atom": "a02",
+   "line": 187,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rca0162937adb",
+   "atom": "a02",
+   "line": 187,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.ref45de18d87a",
+   "atom": "a02",
+   "line": 187,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r29072c32ef92",
+   "atom": "a02",
+   "line": 189,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r7d91f3b4e9c3",
+   "atom": "a02",
+   "line": 195,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r117bbb03b0dd",
+   "atom": "a02",
+   "line": 197,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rf5bc6f239f87",
+   "atom": "a02",
+   "line": 199,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re6eb89539878",
+   "atom": "a02",
+   "line": 203,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re7e134602266",
+   "atom": "a02",
+   "line": 205,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r9d2d8d5e3a88",
+   "atom": "a02",
+   "line": 207,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r48c5b2ccc926",
+   "atom": "a02",
+   "line": 207,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.ra4d5b79dd71c",
+   "atom": "a02",
+   "line": 209,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r0e0b36ffa88a",
+   "atom": "a02",
+   "line": 217,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r847975ea65c9",
+   "atom": "a02",
+   "line": 223,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r7b3be795a45b",
+   "atom": "a02",
+   "line": 229,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r0f35442135b1",
+   "atom": "a02",
+   "line": 233,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rf707e2528c46",
+   "atom": "a02",
+   "line": 235,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r60c485df0453",
+   "atom": "a02",
+   "line": 237,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r02f4895e44a8",
+   "atom": "a02",
+   "line": 239,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r7f2d9cf09dee",
+   "atom": "a02",
+   "line": 241,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r7a779e9cc712",
+   "atom": "a02",
+   "line": 241,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r0096e74a17fe",
+   "atom": "a02",
+   "line": 247,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rd1c61cacdc22",
+   "atom": "a02",
+   "line": 249,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.re2b22c053e15",
+   "atom": "a02",
+   "line": 251,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rb0833ad7850b",
+   "atom": "a02",
+   "line": 253,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r55f48ca058b6",
+   "atom": "a02",
+   "line": 259,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r4e25dd1f781e",
+   "atom": "a02",
+   "line": 261,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r30af49030e1a",
+   "atom": "a02",
+   "line": 263,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rf8f8b74e29ec",
+   "atom": "a02",
+   "line": 265,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r67ee8e87684c",
+   "atom": "a02",
+   "line": 269,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r39e91a1e2151",
+   "atom": "a02",
+   "line": 275,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r8d5ff1f38feb",
+   "atom": "a02",
+   "line": 304,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.rdb0ca55e1b65",
+   "atom": "a02",
+   "line": 306,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r245f31d1839e",
+   "atom": "a02",
+   "line": 308,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r3c38447db4ba",
+   "atom": "a02",
+   "line": 310,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r147c8b0803b4",
+   "atom": "a02",
+   "line": 312,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a02.r71b603dce2a7",
+   "atom": "a02",
+   "line": 314,
+   "title": "01 全平台品类详情页生成（含跨境电商）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rffc676b90314",
+   "atom": "a03",
+   "line": 19,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rce19d53fc084",
+   "atom": "a03",
+   "line": 23,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r5e88381cb21f",
+   "atom": "a03",
+   "line": 29,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.ra4f587587b59",
+   "atom": "a03",
+   "line": 39,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r8b555fbb1604",
+   "atom": "a03",
+   "line": 41,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r651ecb9393d5",
+   "atom": "a03",
+   "line": 43,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r7a0a6508a878",
+   "atom": "a03",
+   "line": 45,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.raf7b70e818a4",
+   "atom": "a03",
+   "line": 49,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r3534c867a8f6",
+   "atom": "a03",
+   "line": 51,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rc99ed3126836",
+   "atom": "a03",
+   "line": 53,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r6535b29b2bc8",
+   "atom": "a03",
+   "line": 55,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r5be2897087c7",
+   "atom": "a03",
+   "line": 59,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r77df525de1b2",
+   "atom": "a03",
+   "line": 61,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rdc09d575e322",
+   "atom": "a03",
+   "line": 63,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r1255c2310c63",
+   "atom": "a03",
+   "line": 65,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rd5fcdebd351a",
+   "atom": "a03",
+   "line": 71,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r29a893e1c12f",
+   "atom": "a03",
+   "line": 79,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.red32578ca924",
+   "atom": "a03",
+   "line": 83,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rf66de2316e5c",
+   "atom": "a03",
+   "line": 85,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r0c93d015e8c4",
+   "atom": "a03",
+   "line": 87,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r6a7c1119b650",
+   "atom": "a03",
+   "line": 89,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rb69e2f7fabbb",
+   "atom": "a03",
+   "line": 91,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r519549bde58a",
+   "atom": "a03",
+   "line": 95,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r2c8d4a069cd9",
+   "atom": "a03",
+   "line": 99,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.re0c14cddd734",
+   "atom": "a03",
+   "line": 103,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.ra79e52c6f5b0",
+   "atom": "a03",
+   "line": 107,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r46fc9a77fe78",
+   "atom": "a03",
+   "line": 109,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rd412109cacc3",
+   "atom": "a03",
+   "line": 111,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r0c83afc2a3b4",
+   "atom": "a03",
+   "line": 113,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r69c9ea564e79",
+   "atom": "a03",
+   "line": 265,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.rc7736e4c74d5",
+   "atom": "a03",
+   "line": 267,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r629dec08f2d6",
+   "atom": "a03",
+   "line": 269,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r725e547065ed",
+   "atom": "a03",
+   "line": 271,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a03.r9b7f255d563a",
+   "atom": "a03",
+   "line": 273,
+   "title": "02 全品类主图通用 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r2ea37c4f8342",
+   "atom": "a04",
+   "line": 5,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r1d2e963d2998",
+   "atom": "a04",
+   "line": 31,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r15e74eff4513",
+   "atom": "a04",
+   "line": 32,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.ra88d758e50f8",
+   "atom": "a04",
+   "line": 33,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r580467b894bf",
+   "atom": "a04",
+   "line": 34,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r8e49996ef857",
+   "atom": "a04",
+   "line": 37,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r37cead58db40",
+   "atom": "a04",
+   "line": 38,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r1e3a6c0e31af",
+   "atom": "a04",
+   "line": 71,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.ra22eee777edd",
+   "atom": "a04",
+   "line": 77,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r1bfa31754fc9",
+   "atom": "a04",
+   "line": 81,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.rce6bc5fc37c0",
+   "atom": "a04",
+   "line": 89,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r57bb1e93a90c",
+   "atom": "a04",
+   "line": 103,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r22d1df446f01",
+   "atom": "a04",
+   "line": 109,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.rb615daec4771",
+   "atom": "a04",
+   "line": 110,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r962fa33e04e2",
+   "atom": "a04",
+   "line": 111,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r736cecc1c181",
+   "atom": "a04",
+   "line": 113,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.rad2f84c24a99",
+   "atom": "a04",
+   "line": 115,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r15ec3a3aa378",
+   "atom": "a04",
+   "line": 385,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r7351c4c065de",
+   "atom": "a04",
+   "line": 388,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a04.r9deda7c2f3ab",
+   "atom": "a04",
+   "line": 400,
+   "title": "05 带五点式卖点的电商详情页生成 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r82204cc9912f",
+   "atom": "a05",
+   "line": 9,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r556c533aa00a",
+   "atom": "a05",
+   "line": 20,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.rbe6680ed00fc",
+   "atom": "a05",
+   "line": 40,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r897b5c576a7b",
+   "atom": "a05",
+   "line": 41,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r053525d03024",
+   "atom": "a05",
+   "line": 42,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.re3a829e67ba0",
+   "atom": "a05",
+   "line": 77,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r2a11e3f60686",
+   "atom": "a05",
+   "line": 80,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r3334f962c1d8",
+   "atom": "a05",
+   "line": 83,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r8ea34ed25cdb",
+   "atom": "a05",
+   "line": 84,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r30d6eacad738",
+   "atom": "a05",
+   "line": 85,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r07211fed3fd7",
+   "atom": "a05",
+   "line": 86,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r9aac98419b55",
+   "atom": "a05",
+   "line": 90,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r0cfa2215b875",
+   "atom": "a05",
+   "line": 91,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r8186b1985ec9",
+   "atom": "a05",
+   "line": 92,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r23d5b881c658",
+   "atom": "a05",
+   "line": 93,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r504050893cd4",
+   "atom": "a05",
+   "line": 94,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r756cd2ba63b4",
+   "atom": "a05",
+   "line": 96,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r47055854bc04",
+   "atom": "a05",
+   "line": 116,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r21b1d6487cc3",
+   "atom": "a05",
+   "line": 117,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.ra32f87685348",
+   "atom": "a05",
+   "line": 118,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.rbe655d295ce9",
+   "atom": "a05",
+   "line": 119,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.rbb1de94f53ea",
+   "atom": "a05",
+   "line": 120,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r623d4849414d",
+   "atom": "a05",
+   "line": 121,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.rba37e035d747",
+   "atom": "a05",
+   "line": 125,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.rebb8c550aca9",
+   "atom": "a05",
+   "line": 139,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r6fd388b36242",
+   "atom": "a05",
+   "line": 237,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.refe49fb5ff34",
+   "atom": "a05",
+   "line": 250,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.rac73d7dbe3c6",
+   "atom": "a05",
+   "line": 265,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r159b9d2c5ffd",
+   "atom": "a05",
+   "line": 266,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r5d5e0dce11c9",
+   "atom": "a05",
+   "line": 268,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r8ca6765b2567",
+   "atom": "a05",
+   "line": 439,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a05.r633d29168e58",
+   "atom": "a05",
+   "line": 453,
+   "title": "06 全平台品类详情页生成提示词 SOP（含模特局部不露脸）",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r60305b2e705f",
+   "atom": "a06",
+   "line": 20,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rd9478b1d6686",
+   "atom": "a06",
+   "line": 22,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r236d785d6f2a",
+   "atom": "a06",
+   "line": 23,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.re8adfaab5c49",
+   "atom": "a06",
+   "line": 24,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r8e6d0e2d420e",
+   "atom": "a06",
+   "line": 25,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r8475a391c3dd",
+   "atom": "a06",
+   "line": 26,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r8b15aad097b1",
+   "atom": "a06",
+   "line": 77,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.re7d95eeab5c3",
+   "atom": "a06",
+   "line": 77,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r787c13b6df27",
+   "atom": "a06",
+   "line": 78,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r9b1d4f1db8e8",
+   "atom": "a06",
+   "line": 79,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rbd90f6697821",
+   "atom": "a06",
+   "line": 97,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rbe2d1d63e47e",
+   "atom": "a06",
+   "line": 113,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r041dce317423",
+   "atom": "a06",
+   "line": 114,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.ra042ce337e90",
+   "atom": "a06",
+   "line": 114,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r5dd028e48471",
+   "atom": "a06",
+   "line": 115,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r1f4a0bf1989b",
+   "atom": "a06",
+   "line": 116,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r744365223883",
+   "atom": "a06",
+   "line": 139,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r7e1d039b514d",
+   "atom": "a06",
+   "line": 140,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r647184e3fdc2",
+   "atom": "a06",
+   "line": 141,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rf464c638542c",
+   "atom": "a06",
+   "line": 143,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rad7daa2294f4",
+   "atom": "a06",
+   "line": 144,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r4ffa41222d0a",
+   "atom": "a06",
+   "line": 148,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rd4ad3d14bb21",
+   "atom": "a06",
+   "line": 149,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r4ea6f435a474",
+   "atom": "a06",
+   "line": 153,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r2295d18de97e",
+   "atom": "a06",
+   "line": 154,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r880634c5d095",
+   "atom": "a06",
+   "line": 158,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.ra06b67590485",
+   "atom": "a06",
+   "line": 165,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r465fb0096cb6",
+   "atom": "a06",
+   "line": 166,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r9665952ca9bd",
+   "atom": "a06",
+   "line": 170,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r729643348a00",
+   "atom": "a06",
+   "line": 183,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r7e7f51718736",
+   "atom": "a06",
+   "line": 185,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rde61ce4e4479",
+   "atom": "a06",
+   "line": 191,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r62ed8d0ebccf",
+   "atom": "a06",
+   "line": 198,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r3e83dd1768e4",
+   "atom": "a06",
+   "line": 202,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rdb46a7575df4",
+   "atom": "a06",
+   "line": 202,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r576b72240933",
+   "atom": "a06",
+   "line": 206,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r6d32e25be48a",
+   "atom": "a06",
+   "line": 206,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.re736ee81b3cc",
+   "atom": "a06",
+   "line": 210,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rdf65e872693a",
+   "atom": "a06",
+   "line": 214,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.red8f66509341",
+   "atom": "a06",
+   "line": 218,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r7692193e0edc",
+   "atom": "a06",
+   "line": 222,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rc2eb48472186",
+   "atom": "a06",
+   "line": 222,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.ra7402485dcc4",
+   "atom": "a06",
+   "line": 226,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r6f49252e176e",
+   "atom": "a06",
+   "line": 226,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r49a317418676",
+   "atom": "a06",
+   "line": 230,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r3f03d9d7891c",
+   "atom": "a06",
+   "line": 234,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.rb8b643f7982b",
+   "atom": "a06",
+   "line": 422,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a06.r439dd7fd6f3b",
+   "atom": "a06",
+   "line": 426,
+   "title": "07 全平台品类主图提示词 SOP（可选模特与人脸规则）",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r07e76b488642",
+   "atom": "a07",
+   "line": 12,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.rb99029d916f5",
+   "atom": "a07",
+   "line": 24,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r46ffbe319bd0",
+   "atom": "a07",
+   "line": 28,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r282f1be8837e",
+   "atom": "a07",
+   "line": 29,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r8612a2730382",
+   "atom": "a07",
+   "line": 32,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.rb4e5d6d40b10",
+   "atom": "a07",
+   "line": 33,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r4bbf058dcdf9",
+   "atom": "a07",
+   "line": 34,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.rfcadef9d5119",
+   "atom": "a07",
+   "line": 48,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r95c3a2c5a65e",
+   "atom": "a07",
+   "line": 50,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r69438c41e92e",
+   "atom": "a07",
+   "line": 56,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r50b0c9451b7f",
+   "atom": "a07",
+   "line": 173,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r5d753a5e961e",
+   "atom": "a07",
+   "line": 175,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r9e5bebf766f9",
+   "atom": "a07",
+   "line": 185,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r1637a1333d00",
+   "atom": "a07",
+   "line": 195,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.re03a15c00858",
+   "atom": "a07",
+   "line": 200,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r88c8a7d102e6",
+   "atom": "a07",
+   "line": 201,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r3f0ae008ffb2",
+   "atom": "a07",
+   "line": 205,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.rb43593f56395",
+   "atom": "a07",
+   "line": 206,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r6e61e981e498",
+   "atom": "a07",
+   "line": 210,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r38e0003a38ff",
+   "atom": "a07",
+   "line": 211,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.ra87cc0dcdb17",
+   "atom": "a07",
+   "line": 215,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r3df426a33b9a",
+   "atom": "a07",
+   "line": 216,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a07.r9880b66bdf79",
+   "atom": "a07",
+   "line": 217,
+   "title": "上传产品批量生成相同场景真实手机买家秀 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r61dc409d9e1f",
+   "atom": "a08",
+   "line": 5,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.rb11a0c99141a",
+   "atom": "a08",
+   "line": 9,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.rb04343893912",
+   "atom": "a08",
+   "line": 12,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.rb4901cb36dd4",
+   "atom": "a08",
+   "line": 20,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r2818a32a0591",
+   "atom": "a08",
+   "line": 24,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r3b3a570cc0bb",
+   "atom": "a08",
+   "line": 33,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.rbf94399ccec6",
+   "atom": "a08",
+   "line": 37,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r7806396ef084",
+   "atom": "a08",
+   "line": 39,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.rdc174a97dd14",
+   "atom": "a08",
+   "line": 41,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r9d47b7a85e59",
+   "atom": "a08",
+   "line": 197,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r9a0de825594e",
+   "atom": "a08",
+   "line": 208,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r979e323e0b4d",
+   "atom": "a08",
+   "line": 226,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r874b26e3f917",
+   "atom": "a08",
+   "line": 230,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r03f9aa19fbe2",
+   "atom": "a08",
+   "line": 243,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a08.r7610d29ca142",
+   "atom": "a08",
+   "line": 249,
+   "title": "产品场景图单一核心场景生成 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r7685e973df81",
+   "atom": "a09",
+   "line": 11,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r4c2ffc3effd3",
+   "atom": "a09",
+   "line": 19,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r478f789e2461",
+   "atom": "a09",
+   "line": 21,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r180621088e38",
+   "atom": "a09",
+   "line": 23,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r5e11a8448e76",
+   "atom": "a09",
+   "line": 25,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rc30ffa8c594f",
+   "atom": "a09",
+   "line": 27,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rec4c02f4de92",
+   "atom": "a09",
+   "line": 29,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r7c7dd8fab62a",
+   "atom": "a09",
+   "line": 29,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r4bc8868c0baa",
+   "atom": "a09",
+   "line": 31,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r88cca4e7b053",
+   "atom": "a09",
+   "line": 33,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r7c3f01b00f6d",
+   "atom": "a09",
+   "line": 33,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rdb0e59d37728",
+   "atom": "a09",
+   "line": 35,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r897314854c00",
+   "atom": "a09",
+   "line": 35,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r636fec9ceb71",
+   "atom": "a09",
+   "line": 37,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r0784479730ba",
+   "atom": "a09",
+   "line": 41,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r467ce55294ef",
+   "atom": "a09",
+   "line": 45,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r39684f9a727e",
+   "atom": "a09",
+   "line": 47,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r05a29a684c14",
+   "atom": "a09",
+   "line": 49,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r64aaf27cd395",
+   "atom": "a09",
+   "line": 51,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rbce0a67e768d",
+   "atom": "a09",
+   "line": 51,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rec079294b40d",
+   "atom": "a09",
+   "line": 51,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r44ed96c70363",
+   "atom": "a09",
+   "line": 55,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r32fe437a30df",
+   "atom": "a09",
+   "line": 57,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r7ef44b5de1bf",
+   "atom": "a09",
+   "line": 59,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rcb629f67f34e",
+   "atom": "a09",
+   "line": 61,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r50f4061f6f54",
+   "atom": "a09",
+   "line": 63,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.ra7480257bd81",
+   "atom": "a09",
+   "line": 63,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r97fc793f19f5",
+   "atom": "a09",
+   "line": 63,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r2ef4427c0190",
+   "atom": "a09",
+   "line": 63,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r675187d0ea5e",
+   "atom": "a09",
+   "line": 63,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r32c543d46de8",
+   "atom": "a09",
+   "line": 63,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r02139a6f9afa",
+   "atom": "a09",
+   "line": 65,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.r3ab1da81ce8e",
+   "atom": "a09",
+   "line": 68,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a09.rcc5366abfe2a",
+   "atom": "a09",
+   "line": 73,
+   "title": "03 爆品详情页反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rff9cb06ca09d",
+   "atom": "a10",
+   "line": 17,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r32e824a82a05",
+   "atom": "a10",
+   "line": 19,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r575cd827123d",
+   "atom": "a10",
+   "line": 41,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r80e0af76b177",
+   "atom": "a10",
+   "line": 45,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r10115edd089a",
+   "atom": "a10",
+   "line": 49,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r60aea1a19997",
+   "atom": "a10",
+   "line": 51,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r59b5b6648b0b",
+   "atom": "a10",
+   "line": 53,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rc6c293d4d191",
+   "atom": "a10",
+   "line": 55,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rcb3391179044",
+   "atom": "a10",
+   "line": 57,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r12b6aa168d84",
+   "atom": "a10",
+   "line": 59,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r793fb0d8023b",
+   "atom": "a10",
+   "line": 63,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rfdf1561222c5",
+   "atom": "a10",
+   "line": 65,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rfdeb3172854d",
+   "atom": "a10",
+   "line": 67,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r678ff3572f53",
+   "atom": "a10",
+   "line": 69,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rcb2058b124ff",
+   "atom": "a10",
+   "line": 71,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r4eb73c7b2b8c",
+   "atom": "a10",
+   "line": 73,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.re9ae2286fda4",
+   "atom": "a10",
+   "line": 81,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r6da0fd536d09",
+   "atom": "a10",
+   "line": 83,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r515bd16ecef8",
+   "atom": "a10",
+   "line": 85,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r49cbce57baf5",
+   "atom": "a10",
+   "line": 87,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rb29b67492eeb",
+   "atom": "a10",
+   "line": 89,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rdb4d782914d8",
+   "atom": "a10",
+   "line": 93,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r9599b61f84fb",
+   "atom": "a10",
+   "line": 97,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.re858dd9bdfe4",
+   "atom": "a10",
+   "line": 103,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r88c767a45d2e",
+   "atom": "a10",
+   "line": 105,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r47b38bd5e8c8",
+   "atom": "a10",
+   "line": 113,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r47bd7d28e0c2",
+   "atom": "a10",
+   "line": 115,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.re7cbcb6ef059",
+   "atom": "a10",
+   "line": 117,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r928f000af25f",
+   "atom": "a10",
+   "line": 125,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rc14df397840d",
+   "atom": "a10",
+   "line": 127,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rdb4a32949ba6",
+   "atom": "a10",
+   "line": 131,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rc41dbc26c3e5",
+   "atom": "a10",
+   "line": 135,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rd237762c015b",
+   "atom": "a10",
+   "line": 137,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.rf259db8e09ad",
+   "atom": "a10",
+   "line": 147,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r2f0b97ec5f6e",
+   "atom": "a10",
+   "line": 149,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r9831093c984a",
+   "atom": "a10",
+   "line": 151,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r091f4c2f755b",
+   "atom": "a10",
+   "line": 153,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r955197ab279c",
+   "atom": "a10",
+   "line": 163,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r955197ab279c-2",
+   "atom": "a10",
+   "line": 169,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a10.r3d922454f26a",
+   "atom": "a10",
+   "line": 169,
+   "title": "04 爆品主图反推通用SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rf4545a20eae3",
+   "atom": "a11",
+   "line": 17,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r6061702d0cba",
+   "atom": "a11",
+   "line": 21,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rb63acf5bdc03",
+   "atom": "a11",
+   "line": 47,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r80e0af76b177",
+   "atom": "a11",
+   "line": 51,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r8edf4418b655",
+   "atom": "a11",
+   "line": 55,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r60aea1a19997",
+   "atom": "a11",
+   "line": 57,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rddb1402c7aa3",
+   "atom": "a11",
+   "line": 59,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rdf6e18462e48",
+   "atom": "a11",
+   "line": 61,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r7127541fef93",
+   "atom": "a11",
+   "line": 63,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r4d2cf4754f26",
+   "atom": "a11",
+   "line": 65,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r17586ad429f6",
+   "atom": "a11",
+   "line": 69,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r6082cbf715fd",
+   "atom": "a11",
+   "line": 71,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.raa110cf311f8",
+   "atom": "a11",
+   "line": 73,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r59a297fa5a60",
+   "atom": "a11",
+   "line": 75,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r7add5a194bf2",
+   "atom": "a11",
+   "line": 77,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rdf48762bf23f",
+   "atom": "a11",
+   "line": 79,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rf06b0d02e779",
+   "atom": "a11",
+   "line": 83,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r64dee840c40c",
+   "atom": "a11",
+   "line": 87,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rc797d218d1f9",
+   "atom": "a11",
+   "line": 91,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r87d09ee0a95c",
+   "atom": "a11",
+   "line": 95,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r5e4094561c96",
+   "atom": "a11",
+   "line": 99,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rcd506f6c4fd4",
+   "atom": "a11",
+   "line": 103,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r405db4cd51c2",
+   "atom": "a11",
+   "line": 109,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r31478412f527",
+   "atom": "a11",
+   "line": 119,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rd6585cbb1328",
+   "atom": "a11",
+   "line": 121,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r214b77221b25",
+   "atom": "a11",
+   "line": 123,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.rbe0cbaf09084",
+   "atom": "a11",
+   "line": 127,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r20e81df7dff2",
+   "atom": "a11",
+   "line": 131,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r6b8171645f7b",
+   "atom": "a11",
+   "line": 133,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r59815c49f3e6",
+   "atom": "a11",
+   "line": 135,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r96570fb03468",
+   "atom": "a11",
+   "line": 147,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r05043eb1d4a6",
+   "atom": "a11",
+   "line": 149,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r9ca9f599d3cc",
+   "atom": "a11",
+   "line": 151,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r2ed9eaa3ae7d",
+   "atom": "a11",
+   "line": 153,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a11.r4cb4bc0b688f",
+   "atom": "a11",
+   "line": 163,
+   "title": "反推对标场景并批量生成",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a12.rcd6be24322ab",
+   "atom": "a12",
+   "line": 13,
+   "title": "小白图翻新成大师图 SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a12.rb23cf32aec36",
+   "atom": "a12",
+   "line": 67,
+   "title": "小白图翻新成大师图 SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a14.r19d4086c97d7",
+   "atom": "a14",
+   "line": 116,
+   "title": "详情页设计风格构图色彩反推提示词 SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a14.r2790edca5488",
+   "atom": "a14",
+   "line": 150,
+   "title": "详情页设计风格构图色彩反推提示词 SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a14.r7794f4024c30",
+   "atom": "a14",
+   "line": 158,
+   "title": "详情页设计风格构图色彩反推提示词 SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a15.r1748a8784e81",
+   "atom": "a15",
+   "line": 236,
+   "title": "3C数码类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "3C数码"
+   ]
+  },
+  {
+   "id": "a16.r25df2291a375",
+   "atom": "a16",
+   "line": 11,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r25601906cdea",
+   "atom": "a16",
+   "line": 32,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rc47c6a4d5fcb",
+   "atom": "a16",
+   "line": 49,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r11553e1da4f4",
+   "atom": "a16",
+   "line": 58,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r8a9a1170defb",
+   "atom": "a16",
+   "line": 62,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r21d3dcf5e675",
+   "atom": "a16",
+   "line": 82,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r6f68198f537c",
+   "atom": "a16",
+   "line": 83,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rf20f60deb95d",
+   "atom": "a16",
+   "line": 102,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r1c593e94bc9e",
+   "atom": "a16",
+   "line": 102,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r9d29e9219c9d",
+   "atom": "a16",
+   "line": 104,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r7fcfcdfe9c23",
+   "atom": "a16",
+   "line": 119,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rd705f047d057",
+   "atom": "a16",
+   "line": 127,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r5c0c6b465bd8",
+   "atom": "a16",
+   "line": 145,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r068b0ca02a3a",
+   "atom": "a16",
+   "line": 149,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rdd3b1915bb41",
+   "atom": "a16",
+   "line": 153,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r0f5491987e18",
+   "atom": "a16",
+   "line": 154,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r8c6a96f82684",
+   "atom": "a16",
+   "line": 208,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.re35fb3ca5a7a",
+   "atom": "a16",
+   "line": 222,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.ra2d818efc1f3",
+   "atom": "a16",
+   "line": 223,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r75d3f7707277",
+   "atom": "a16",
+   "line": 558,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.reabee0a50990",
+   "atom": "a16",
+   "line": 585,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.ref30f2f1f93c",
+   "atom": "a16",
+   "line": 610,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r879503c62b11",
+   "atom": "a16",
+   "line": 622,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.radc6b63382c6",
+   "atom": "a16",
+   "line": 634,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rafb099c39b03",
+   "atom": "a16",
+   "line": 703,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rbe02788200c3",
+   "atom": "a16",
+   "line": 739,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r6c2492bafb7f",
+   "atom": "a16",
+   "line": 744,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r38b99df89d3a",
+   "atom": "a16",
+   "line": 747,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r3288a72a3de4",
+   "atom": "a16",
+   "line": 761,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r29f0d1de0675",
+   "atom": "a16",
+   "line": 762,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r66ec6e0c2b3c",
+   "atom": "a16",
+   "line": 763,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.redd06a30f194",
+   "atom": "a16",
+   "line": 775,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rb92f94160c4d",
+   "atom": "a16",
+   "line": 785,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r5f46f7429c6a",
+   "atom": "a16",
+   "line": 790,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.re2c34f4c0d72",
+   "atom": "a16",
+   "line": 808,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r33862ddc98a6",
+   "atom": "a16",
+   "line": 810,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.rf5cadf83664a",
+   "atom": "a16",
+   "line": 853,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r18239b964add",
+   "atom": "a16",
+   "line": 969,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r565fd395e2ee",
+   "atom": "a16",
+   "line": 979,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a16.r9353b6783a60",
+   "atom": "a16",
+   "line": 996,
+   "title": "包包类通用主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "包包"
+   ]
+  },
+  {
+   "id": "a17.r631a0ddcbb38",
+   "atom": "a17",
+   "line": 17,
+   "title": "家具类纯视觉主图生图 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a17.r880af9a60403",
+   "atom": "a17",
+   "line": 59,
+   "title": "家具类纯视觉主图生图 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a17.r8536191635ea",
+   "atom": "a17",
+   "line": 183,
+   "title": "家具类纯视觉主图生图 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a17.ra8805911f33a",
+   "atom": "a17",
+   "line": 187,
+   "title": "家具类纯视觉主图生图 SOP",
+   "stations": [
+    "主图台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a18.r5970d3bb24e3",
+   "atom": "a18",
+   "line": 33,
+   "title": "家具类详情页生图 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a18.r00c274608b9b",
+   "atom": "a18",
+   "line": 167,
+   "title": "家具类详情页生图 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a18.r1dcd9c256ec2",
+   "atom": "a18",
+   "line": 181,
+   "title": "家具类详情页生图 SOP",
+   "stations": [
+    "详情页台"
+   ],
+   "categories": [
+    "家具"
+   ]
+  },
+  {
+   "id": "a19.r9629de5ab270",
+   "atom": "a19",
+   "line": 246,
+   "title": "服饰类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "服饰"
+   ]
+  },
+  {
+   "id": "a20.r77d180c79974",
+   "atom": "a20",
+   "line": 31,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rb1f2066a8b97",
+   "atom": "a20",
+   "line": 33,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rf99fdb0b8704",
+   "atom": "a20",
+   "line": 35,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.r20376be52d32",
+   "atom": "a20",
+   "line": 37,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.r3250cfed93cc",
+   "atom": "a20",
+   "line": 39,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.r473c29c714fa",
+   "atom": "a20",
+   "line": 41,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.r05ea95d04a41",
+   "atom": "a20",
+   "line": 109,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rb59b06fe0c42",
+   "atom": "a20",
+   "line": 119,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rdb1c25e4539a",
+   "atom": "a20",
+   "line": 444,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rc164878a42b4",
+   "atom": "a20",
+   "line": 450,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rd8a25c597bb1",
+   "atom": "a20",
+   "line": 452,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.r819beb94598b",
+   "atom": "a20",
+   "line": 462,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.r10d57ef30354",
+   "atom": "a20",
+   "line": 524,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a20.rac739eb83b92",
+   "atom": "a20",
+   "line": 598,
+   "title": "海产品类主图与详情页生图提示词 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "海产品"
+   ]
+  },
+  {
+   "id": "a21.re5d4b02d34f3",
+   "atom": "a21",
+   "line": 231,
+   "title": "百货杯壶类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "百货杯壶"
+   ]
+  },
+  {
+   "id": "a22.rce19d53fc084",
+   "atom": "a22",
+   "line": 153,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rc6cd1b082cfa",
+   "atom": "a22",
+   "line": 155,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r3e8b03073cc1",
+   "atom": "a22",
+   "line": 162,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r74bd4a99e554",
+   "atom": "a22",
+   "line": 163,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r4da108f187d6",
+   "atom": "a22",
+   "line": 164,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rc5c5774ca2fe",
+   "atom": "a22",
+   "line": 167,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r7eb39bc7b5ac",
+   "atom": "a22",
+   "line": 168,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rec5098c2a49e",
+   "atom": "a22",
+   "line": 169,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rf70135fecbb1",
+   "atom": "a22",
+   "line": 170,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r0ad39b262a28",
+   "atom": "a22",
+   "line": 174,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rf950a7d1c5e2",
+   "atom": "a22",
+   "line": 175,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r36a916601364",
+   "atom": "a22",
+   "line": 176,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r6331588acdbd",
+   "atom": "a22",
+   "line": 180,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r9a3414f822b9",
+   "atom": "a22",
+   "line": 181,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r26ec206c1510",
+   "atom": "a22",
+   "line": 182,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r2c4903a74811",
+   "atom": "a22",
+   "line": 185,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r7434c0deec4a",
+   "atom": "a22",
+   "line": 186,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r9b4522565b5a",
+   "atom": "a22",
+   "line": 187,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r95824cb29070",
+   "atom": "a22",
+   "line": 193,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r4dcdb8175a53",
+   "atom": "a22",
+   "line": 193,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rc316cd246921",
+   "atom": "a22",
+   "line": 197,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r81f44633e78b",
+   "atom": "a22",
+   "line": 197,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r23a1c7297734",
+   "atom": "a22",
+   "line": 201,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.r6da034e43096",
+   "atom": "a22",
+   "line": 205,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.ree9d4f964e98",
+   "atom": "a22",
+   "line": 209,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rc0ae9c0132fc",
+   "atom": "a22",
+   "line": 213,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a22.rf194960aa7d7",
+   "atom": "a22",
+   "line": 217,
+   "title": "美妆日化类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美妆日化"
+   ]
+  },
+  {
+   "id": "a23.r410905f50e24",
+   "atom": "a23",
+   "line": 237,
+   "title": "美食类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "美食"
+   ]
+  },
+  {
+   "id": "a24.r0339badb5335",
+   "atom": "a24",
+   "line": 296,
+   "title": "老檀木串珠线香类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "檀木串珠线香"
+   ]
+  },
+  {
+   "id": "a24.ra3c3aac82f6f",
+   "atom": "a24",
+   "line": 300,
+   "title": "老檀木串珠线香类主图与详情页生图 SOP",
+   "stations": [
+    "主图台",
+    "详情页台"
+   ],
+   "categories": [
+    "檀木串珠线香"
+   ]
+  },
+  {
+   "id": "a25.r6f99902d149d",
+   "atom": "a25",
+   "line": 5,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a25.r4182a5979681",
+   "atom": "a25",
+   "line": 106,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a25.re29e1c9cb955",
+   "atom": "a25",
+   "line": 108,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a25.r1907c9bb8b54",
+   "atom": "a25",
+   "line": 110,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a25.r02e0b4ed9a20",
+   "atom": "a25",
+   "line": 112,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a25.r5cac6795a7ad",
+   "atom": "a25",
+   "line": 114,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a25.rf9c956c05404",
+   "atom": "a25",
+   "line": 116,
+   "title": "同产品不同数量的sku图批量生成",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a26.rbe49a5840fbe",
+   "atom": "a26",
+   "line": 19,
+   "title": "多SKU产品图以及详情页生成SOP",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a26.re199115a2778",
+   "atom": "a26",
+   "line": 65,
+   "title": "多SKU产品图以及详情页生成SOP",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a26.rea94401045ef",
+   "atom": "a26",
+   "line": 76,
+   "title": "多SKU产品图以及详情页生成SOP",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a26.r26df1f0ff216",
+   "atom": "a26",
+   "line": 199,
+   "title": "多SKU产品图以及详情页生成SOP",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a26.r3603cd231e9c",
+   "atom": "a26",
+   "line": 209,
+   "title": "多SKU产品图以及详情页生成SOP",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a26.r28c21b82abf1",
+   "atom": "a26",
+   "line": 211,
+   "title": "多SKU产品图以及详情页生成SOP",
+   "stations": [
+    "SKU台",
+    "详情页台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r40e7814a980f",
+   "atom": "a28",
+   "line": 11,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r78d05df285fd",
+   "atom": "a28",
+   "line": 11,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r1f7062b2a03a",
+   "atom": "a28",
+   "line": 13,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r6393fb574411",
+   "atom": "a28",
+   "line": 13,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r079765ff9745",
+   "atom": "a28",
+   "line": 13,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.rcc2ce18547d5",
+   "atom": "a28",
+   "line": 15,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r731e75521769",
+   "atom": "a28",
+   "line": 15,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.rd9c71571c057",
+   "atom": "a28",
+   "line": 17,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r26fe01fe5210",
+   "atom": "a28",
+   "line": 21,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.ra966fb243169",
+   "atom": "a28",
+   "line": 29,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r78d05df285fd-2",
+   "atom": "a28",
+   "line": 29,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r3143813bdbe9",
+   "atom": "a28",
+   "line": 31,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r6393fb574411-2",
+   "atom": "a28",
+   "line": 31,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r4dc9329daf97",
+   "atom": "a28",
+   "line": 31,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.rcc2ce18547d5-2",
+   "atom": "a28",
+   "line": 33,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r731e75521769-2",
+   "atom": "a28",
+   "line": 33,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.ra62e5bc26d15",
+   "atom": "a28",
+   "line": 35,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a28.r8ecb7574035e",
+   "atom": "a28",
+   "line": 39,
+   "title": "批量3：4主图转1：1",
+   "stations": [
+    "SKU台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a30.r8dce2693cae3",
+   "atom": "a30",
+   "line": 11,
+   "title": "全品类产品电商视频生成sop",
+   "stations": [
+    "模特与视频台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a30.rd34deda09f52",
+   "atom": "a30",
+   "line": 13,
+   "title": "全品类产品电商视频生成sop",
+   "stations": [
+    "模特与视频台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a30.r65c45ddc7a91",
+   "atom": "a30",
+   "line": 15,
+   "title": "全品类产品电商视频生成sop",
+   "stations": [
+    "模特与视频台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a31.r7082f6e9540d",
+   "atom": "a31",
+   "line": 15,
+   "title": "模特换头换装&批量不同姿势模特图教程",
+   "stations": [
+    "模特与视频台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a32.r4ddd559c9490",
+   "atom": "a32",
+   "line": 7,
+   "title": "视频反推SOP-无需产品",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a32.r8d72c1ad5a0b",
+   "atom": "a32",
+   "line": 9,
+   "title": "视频反推SOP-无需产品",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a32.r4394e06a2e28",
+   "atom": "a32",
+   "line": 17,
+   "title": "视频反推SOP-无需产品",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a33.r8c768f57ed16",
+   "atom": "a33",
+   "line": 9,
+   "title": "视频反推提示词替换产品SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a33.r0a8e4e0d18ee",
+   "atom": "a33",
+   "line": 25,
+   "title": "视频反推提示词替换产品SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a33.r6676e70e1afc",
+   "atom": "a33",
+   "line": 39,
+   "title": "视频反推提示词替换产品SOP",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r8c768f57ed16",
+   "atom": "a34",
+   "line": 11,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r0a8e4e0d18ee",
+   "atom": "a34",
+   "line": 27,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r6676e70e1afc",
+   "atom": "a34",
+   "line": 41,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r1895e7333daa",
+   "atom": "a34",
+   "line": 51,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.rc49c4854aa34",
+   "atom": "a34",
+   "line": 53,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r21c7ae21f085",
+   "atom": "a34",
+   "line": 57,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r26535727a16d",
+   "atom": "a34",
+   "line": 59,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r77191598305c",
+   "atom": "a34",
+   "line": 59,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r6b3719e672bd",
+   "atom": "a34",
+   "line": 69,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.rba610cb722b2",
+   "atom": "a34",
+   "line": 77,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r76115699caa9",
+   "atom": "a34",
+   "line": 91,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r9f11eaba8eca",
+   "atom": "a34",
+   "line": 101,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r773fd408ae93",
+   "atom": "a34",
+   "line": 107,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.rc6652b63cab9",
+   "atom": "a34",
+   "line": 111,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.re705ff24b58d",
+   "atom": "a34",
+   "line": 121,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.rb472bbc656c7",
+   "atom": "a34",
+   "line": 123,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r5af4d0678fa5",
+   "atom": "a34",
+   "line": 125,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.rd9525f3ca745",
+   "atom": "a34",
+   "line": 127,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.rfd671d9333fb",
+   "atom": "a34",
+   "line": 133,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r92a75077b108",
+   "atom": "a34",
+   "line": 149,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  },
+  {
+   "id": "a34.r8cd5aa154ace",
+   "atom": "a34",
+   "line": 159,
+   "title": "视频反推提示词替换产品SOP（带故事板）",
+   "stations": [
+    "反推台"
+   ],
+   "categories": []
+  }
+ ]
+}

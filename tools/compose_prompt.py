@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """五槽位提示词组装器：把结构化槽位编译成可直接投喂的提示词。
 
-槽位规范见 ecom-prompt-sop/references/prompt-slots.md。
+槽位规范见 skills/ecom-prompt-sop/references/_prompt-slots.md。
 本脚本只负责顺序、完整度校验与平台约束补充，内容仍由 SOP 与用户产品信息决定。
 
 用法：

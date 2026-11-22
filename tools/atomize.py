@@ -32,7 +32,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REF_ROOT = HERE.parent / "ecom-prompt-sop" / "references"
+REF_ROOT = HERE.parent / "skills" / "ecom-prompt-sop" / "references"
 ATOM_DIR = REF_ROOT / "_atoms"
 MECH_DIR = ATOM_DIR / "_mech"
 INDEX_JSON = REF_ROOT / "_index.json"
@@ -49,6 +49,31 @@ SENT_SPLIT = re.compile(r"[。；;！？\n]")
 
 def sha(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
+
+
+def rule_id(atom, text, ordinal):
+    """规则稳定标识：原子号 + 文本指纹。
+
+    刻意不用行号——上文任何增删都会让行号漂移，id 就跟着变，引用它的文档与评测全断。
+    文本改动时 id 才会变，这是想要的语义：规则被改写就该是另一条规则。
+    ordinal 只用于同一原子内的同文去重，同一条规则重复出现时靠它区分。
+    """
+    return f"{atom}.r{sha(text)}" + (f"-{ordinal}" if ordinal > 1 else "")
+
+
+def _tag_rules(aid, rules):
+    """给规则补稳定 id 与来源锚点。id 由文本决定，行号只作为可回查的线索。"""
+    counts = {}
+    tagged = []
+    for r in rules:
+        text = r["text"]
+        counts[text] = counts.get(text, 0) + 1
+        tagged.append({
+            "id": rule_id(aid, text, counts[text]),
+            "text": text,
+            "line": r["line"],
+        })
+    return tagged
 
 
 LOOSE_KEYS = ["提示词", "复制", "第一步", "第二步", "第三步", "第四步", "反推", "生成", "转"]
@@ -296,7 +321,7 @@ def cmd_merge(_args):
                  "line": b["line"], "chars": b["chars"], "text": b["text"]}
                 for k, b in enumerate(m.get("loose_templates", []))
             ],
-            "rules": m["prose_rules"],
+            "rules": _tag_rules(aid, m["prose_rules"]),
             "checklists": m.get("checklists", []),
             "placeholders": m["placeholders"],
             "source": {"line_count": m["line_count"], "sha": m["source_sha"]},
@@ -319,7 +344,30 @@ def cmd_merge(_args):
         "count": len(summary),
         "items": summary,
     }, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
-    print(f"merge: 生成 {len(summary)} 个原子 + index.json")
+
+    # 规则总索引：571 条规则散在 34 个原子里无法整体检索。这里只放定位与分类字段，
+    # 规则全文仍在原子的 rules 里——避免同一条规则存两份，那是漂移的源头。
+    flat = []
+    for aid in (atom_id(i) for i in range(1, len(items) + 1)):
+        ap = ATOM_DIR / f"{aid}.json"
+        if not ap.exists():
+            continue
+        atom = json.loads(ap.read_text(encoding="utf-8"))
+        for r in atom.get("rules") or []:
+            flat.append({
+                "id": r["id"], "atom": aid, "line": r["line"],
+                "title": atom.get("title"),
+                "stations": atom.get("stations", []),
+                "categories": atom.get("categories", []),
+            })
+    (ATOM_DIR / "rules.json").write_text(json.dumps({
+        "version": 1,
+        "note": "规则总索引：id → 所在原子与工位。规则全文看原子的 rules 字段，这里只做定位。按 id 搜索可反查哪条规则属于哪台、哪个品类。",
+        "count": len(flat),
+        "items": flat,
+    }, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
+
+    print(f"merge: 生成 {len(summary)} 个原子 + index.json + rules.json（{len(flat)} 条规则索引）")
     return 0
 
 
@@ -363,6 +411,16 @@ def cmd_check(_args):
                 problems.append(f"{aid} 模板 {t.get('index')} 在 source_text 里找不到")
         if len(atom["rules"]) != len(parsed["prose_rules"]):
             problems.append(f"{aid} 规则数 {len(atom['rules'])} ≠ 自解析 {len(parsed['prose_rules'])}")
+        else:
+            # id 必须能从规则文本复算出来：文本改了却没重跑 merge，id 就会与文本脱节
+            expect = _tag_rules(aid, parsed["prose_rules"])
+            for got, want in zip(atom["rules"], expect):
+                if got.get("id") != want["id"]:
+                    problems.append(
+                        f"{aid} 规则 id 与文本不符（{got.get('text', '')[:20]}…）："
+                        f"记录的 {got.get('id')} ≠ 复算 {want['id']}，重跑 merge"
+                    )
+                    break
         if not atom.get("task"):
             problems.append(f"{aid} 缺 task（语义层没写）")
 

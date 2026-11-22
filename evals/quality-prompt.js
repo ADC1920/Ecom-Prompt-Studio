@@ -7,7 +7,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 module.exports = async function ({ vars }) {
   const id = String(vars.atom || '').trim();
-  const file = path.join(ROOT, 'ecom-prompt-sop', 'references', '_atoms', `${id}.json`);
+  const file = path.join(ROOT, 'skills', 'ecom-prompt-sop', 'references', '_atoms', `${id}.json`);
   const atom = JSON.parse(fs.readFileSync(file, 'utf8'));
   const sop = atom.source_text || '';
   if (!sop) {

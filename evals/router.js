@@ -21,7 +21,7 @@ function splitFrontmatter(text) {
 }
 
 function loadSkill(name) {
-  return splitFrontmatter(read(`${name}/SKILL.md`));
+  return splitFrontmatter(read(`skills/${name}/SKILL.md`));
 }
 
 module.exports = async function ({ vars }) {

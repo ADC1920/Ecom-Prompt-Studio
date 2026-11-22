@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "note": "机检失败夹具。每条给构造参数与预期判负项，tools/gen_fixtures.py --verify 逐条断言。预期值就是验收标准：新增平台规则时先加夹具再改 checker，顺序反了就是拿实现当规范。",
+  "fixtures": [
+    {
+      "id": "amazon-grey-bg",
+      "why": "Amazon 主图必须纯白底，灰底是最常见的硬伤",
+      "platform": "amazon",
+      "size": [
+        1600,
+        1600
+      ],
+      "bg": [
+        208,
+        208,
+        208
+      ],
+      "subject": {
+        "occupancy": 0.9,
+        "color": [
+          30,
+          60,
+          120
+        ]
+      },
+      "expect_fail": [
+        "background"
+      ],
+      "expect_pass": [
+        "ratio",
+        "pixels"
+      ]
+    },
+    {
+      "id": "amazon-tiny-subject",
+      "why": "主体占比不足 85% 会被平台判为留白过多",
+      "platform": "amazon",
+      "size": [
+        1600,
+        1600
+      ],
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "subject": {
+        "occupancy": 0.3,
+        "color": [
+          40,
+          90,
+          160
+        ]
+      },
+      "expect_fail": [
+        "occupancy"
+      ],
+      "expect_pass": [
+        "background"
+      ]
+    },
+    {
+      "id": "amazon-low-res",
+      "why": "长边不足 1600px，平台会拒绝或压缩降质",
+      "platform": "amazon",
+      "size": [
+        800,
+        800
+      ],
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "subject": {
+        "occupancy": 0.9,
+        "color": [
+          40,
+          90,
+          160
+        ]
+      },
+      "expect_fail": [
+        "size"
+      ],
+      "expect_pass": [
+        "ratio",
+        "background"
+      ]
+    },
+    {
+      "id": "amazon-tall-ratio",
+      "why": "3:4 竖图投到要求 1:1 的平台，会被自动裁切或加白边",
+      "platform": "amazon",
+      "size": [
+        1200,
+        1600
+      ],
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "subject": {
+        "occupancy": 0.85,
+        "color": [
+          40,
+          90,
+          160
+        ]
+      },
+      "expect_fail": [
+        "ratio"
+      ],
+      "expect_pass": [
+        "background"
+      ]
+    },
+    {
+      "id": "tiktok-tall-ok",
+      "why": "反向对照：3:4 在抖音是合规比例，不该被误判 fail",
+      "platform": "douyin",
+      "size": [
+        900,
+        1200
+      ],
+      "bg": [
+        250,
+        248,
+        245
+      ],
+      "subject": {
+        "occupancy": 0.8,
+        "color": [
+          30,
+          60,
+          120
+        ]
+      },
+      "expect_fail": [],
+      "expect_pass": [
+        "ratio"
+      ]
+    },
+    {
+      "id": "taobao-white-bg-allowed",
+      "why": "反向对照：淘宝不强制纯白底，白底不该被误判 fail",
+      "platform": "taobao",
+      "size": [
+        800,
+        800
+      ],
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "subject": {
+        "occupancy": 0.8,
+        "color": [
+          40,
+          90,
+          160
+        ]
+      },
+      "expect_fail": [],
+      "expect_pass": [
+        "background",
+        "ratio"
+      ]
+    },
+    {
+      "id": "amazon-square-tiny-occupancy-edge",
+      "why": "刚好卡在阈值边缘（略高于 85%）应通过，验证阈值不被写松",
+      "platform": "amazon",
+      "size": [
+        1600,
+        1600
+      ],
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "subject": {
+        "occupancy": 0.88,
+        "color": [
+          40,
+          90,
+          160
+        ]
+      },
+      "expect_fail": [],
+      "expect_pass": [
+        "background",
+        "occupancy",
+        "ratio"
+      ]
+    }
+  ]
+}

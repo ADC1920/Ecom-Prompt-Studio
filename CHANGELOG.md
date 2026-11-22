@@ -1,6 +1,48 @@
 # 变更记录
 
-本文件记录对外可见的形态变更。内部重构细节见 git log。
+本文件记录对外可见的形态变更。内部细节见 git log。
+
+## 2.3.0 — 2026-11-22
+
+按 GitHub 同类项目补三项工程能力。内容库本身没动，补的是「可追溯、可验证、有格式契约」。
+
+### 新增
+
+- **规则资产化**：571 条规则全部带稳定 id（`a21.re5d4b02d34f3` 形态，由原子号 + 文本指纹组成）。id 刻意不用行号——上文增删会让行号漂移，引用它的文档与评测就全断了；文本改动才换 id，这是想要的语义。另生成 `rules.json` 规则总索引（id → 原子/工位/品类），规则全文仍只存在原子里一份，避免双份漂移。`atomize.py check` 现在会复算 id 并与记录比对，文本改了却没重跑 merge 会直接报错。
+- **规则检索 CLI**：`python tools/cli.py find-rule --query 白底` 按关键词查规则全文与所属原子，也可按 id 精确反查。
+- **机检失败夹具**（`tools/gen_fixtures.py` + `fixtures.json`）：7 条故意不合规的图（灰底、主体过小、低分辨率、错误比例、以及三条反向对照），断言 checker 必定报出对应问题。夹具的预期值就是验收标准——新增平台规则时先加夹具再改 checker，顺序反了就是拿实现当规范。CI 已接入。
+- **输出契约**（`references/_output-contracts.md`）：规定五个工位交付物必含哪些段。主图规划表 7 列、逐张提示词 5 段、详情页规划 6 列等。模板决定内容，契约决定结构，缺段即未完成。
+
+### 变更
+
+- **英文触发用例**：用例集从 30 条扩到 34 条，新增 4 条英文输入（覆盖 SOP 品类命中、裸主图转交、详情页命中、英文工程请求不触发）。此前三个 SKILL.md 都写了 `English keywords` 却从未验证过它是否生效。
+- **技能加 `license` 字段**：三个 SKILL.md 的 frontmatter 补 `license: MIT`，技能被单独拷走时许可信息不再丢失。
+
+### 依据
+
+调研了 12 个 GitHub 同类项目后确定这三项。规则资产化参考 `kangise/ecommerce-ai-skills` 的 ontology 单一源模式，失败夹具参考 `heqiangdiao/AI-Cross-Border-Ecommerce-Agent-Toolkit` 的合成夹具做法，输出契约参考 `feichanggege/ecommerce-visual-copywriting-skill` 的 output-contracts。
+
+## 2.2.0 — 2026-11-22
+
+去掉 ZCode 插件形态，回归平台无关的内容库。核心资产零改动，只拆掉外面那层包装。
+
+### 破坏性变更
+
+- **移除插件清单与市场声明**：`.zcode-plugin/plugin.json`、`marketplace.json`、`dist/`、`tools/pack_plugin.py`、`tools/check_plugin.py` 全部删除。仓库不再声明任何插件元数据，任何支持 Agent Skills 规范的平台（Claude Code、ZCode、Cursor 等）都按「拷 `skills/` 目录」安装。
+- **技能目录收进 `skills/`**：三个技能从仓库根移到 `skills/` 下，与 Agent Skills 生态惯例一致。安装命令由逐目录拷贝改为 `cp -r skills/* <目标目录>`。三个技能互相转交，必须一起装。
+- **移除斜杠命令与出图 hook**：`commands/`（4 条）与 `hooks/`（PostToolUse 自动机检）删除。这两项只在插件运行时可用，脱离插件后不成立；机检改由 `tools/check_image.py` 手动或脚本调用。
+- **移除 MCP server**：`.mcp.json` 与 `tools/mcp_server.py` 删除。原四个 MCP 工具（`query_atom`、`get_template`、`validate_prompt`、`check_output`）迁移为 `tools/cli.py` 的四个子命令，检索打分逻辑与判定结果完全一致。
+
+### 新增
+
+- **统一 CLI**（`tools/cli.py`）：`query-atom` 定位原子、`get-template` 取模板与规则、`validate-prompt` 跑反 AI 感与规则引擎、`check-output` 出图后平台机检。输出 JSON，人或任意 agent 可直接消费。
+- **三种使用路径**：只取提示词（浏览 `_atoms/` 下的 JSON）、装成技能（拷 `skills/`）、技能加工具链（保留整仓跑 CLI）。此前只有「插件」与「只拷技能」两条路。
+
+### 变更
+
+- **CI 调整**：去掉 `pack_plugin.py`、`check_plugin.py`、`mcp_server.py` 三步自检，加入 `cli.py --selftest`；workflow 路径过滤由三个技能目录合成 `skills/**`。
+- **README 中英双版重写安装节**：删除插件安装说明与打包理由，改为三种使用路径。
+- **单技能安装说明修正**：原 README 只指导安装 `ecom-prompt-sop` 一个目录，但另外两个导演技能是它的转交目标，按原文装完会指向不存在的技能。现明确要求三个一起装。
 
 ## 2.1.0 — 2026-11-12
 
