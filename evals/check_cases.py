@@ -21,7 +21,7 @@ from pathlib import Path
 ROOT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
 CASES_JSON = ROOT / "evals" / "cases.json"
 CASES_MD = ROOT / "tools" / "trigger-cases.md"
-SOP_ROOT = ROOT / "ecom-prompt-sop"
+SOP_ROOT = ROOT / "skills" / "ecom-prompt-sop"
 
 ROW_RE = re.compile(r"^\|\s*(\d+)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*$")
 SKILLS = ["ecom-main-image-prompts", "ecom-detail-page-prompts", "ecom-prompt-sop"]

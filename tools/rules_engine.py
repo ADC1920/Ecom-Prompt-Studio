@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """判据规则引擎：用可校验的规则代替「读 SOP 记规则」。
 
-三个规则文件在 ecom-prompt-sop/references/_rules/：
+三个规则文件在 skills/ecom-prompt-sop/references/_rules/：
 - platform.json  平台阈值、文字与模特政策、AI 标注义务、文案禁项
 - category.json  品类禁用宣称、需要证据的说法、出图要点
 - scenario.json  场景必填槽位、画面禁项、详情页信息块下限
@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-RULES_DIR = HERE.parent / "ecom-prompt-sop" / "references" / "_rules"
+RULES_DIR = HERE.parent / "skills" / "ecom-prompt-sop" / "references" / "_rules"
 
 # 文案类关键词：平台禁文字时，槽位里出现这些词说明准备在画面里写字
 TEXT_HINTS = ["主标题", "副标题", "卖点文字", "图内文字", "文案", "促销语", "角标文字", "价格", "折扣"]

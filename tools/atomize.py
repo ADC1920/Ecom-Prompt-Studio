@@ -32,7 +32,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REF_ROOT = HERE.parent / "ecom-prompt-sop" / "references"
+REF_ROOT = HERE.parent / "skills" / "ecom-prompt-sop" / "references"
 ATOM_DIR = REF_ROOT / "_atoms"
 MECH_DIR = ATOM_DIR / "_mech"
 INDEX_JSON = REF_ROOT / "_index.json"

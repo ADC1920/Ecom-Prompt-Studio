@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 
 SKILLS = ["ecom-prompt-sop", "ecom-main-image-prompts", "ecom-detail-page-prompts"]
+SKILLS_ROOT = "skills"  # 三个技能都在仓库根的 skills/ 下
 
 SECRETS = [
     re.compile(r"sk-[A-Za-z0-9]{32,}"),
@@ -54,7 +55,7 @@ def read(p: Path) -> str:
 
 
 def check_skill(root: Path, name: str, problems: list, warnings: list) -> None:
-    skill_dir = root / name
+    skill_dir = root / SKILLS_ROOT / name
     f = skill_dir / "SKILL.md"
     if not f.exists():
         problems.append(f"[{name}] SKILL.md 缺失")
@@ -99,7 +100,7 @@ def check_skill(root: Path, name: str, problems: list, warnings: list) -> None:
 
 def check_atoms(root: Path, problems: list, warnings: list) -> None:
     """拆解原子：结构与索引一一对应。内容自洽性由 `python tools/atomize.py check` 负责。"""
-    skill_dir = root / "ecom-prompt-sop"
+    skill_dir = root / SKILLS_ROOT / "ecom-prompt-sop"
     idx_p = skill_dir / "references" / "_atoms" / "index.json"
     if not idx_p.exists():
         warnings.append("[ecom-prompt-sop] 缺少 _atoms/index.json（跑 python tools/atomize.py merge 生成）")
@@ -142,7 +143,7 @@ def check_atom_refs(root: Path, problems: list, warnings: list) -> None:
 
     这是「每个原子都能被找到」的唯一保证。
     """
-    skill_dir = root / "ecom-prompt-sop"
+    skill_dir = root / SKILLS_ROOT / "ecom-prompt-sop"
     f = skill_dir / "SKILL.md"
     if not f.exists():
         return
@@ -201,7 +202,7 @@ def check_index(root: Path, problems: list, warnings: list) -> None:
 
     索引是路由表的机器可读镜像，两边漂移会让检索与评测同时跑偏，所以卡在静态检查里。
     """
-    skill_dir = root / "ecom-prompt-sop"
+    skill_dir = root / SKILLS_ROOT / "ecom-prompt-sop"
     if not (skill_dir / "SKILL.md").exists():
         return
     idx = skill_dir / "references" / "_index.json"
@@ -257,7 +258,7 @@ def check_index(root: Path, problems: list, warnings: list) -> None:
 def check_tool_refs(root: Path, problems: list) -> None:
     """SKILL.md 里点名的 tools/ 文件必须存在，避免文档指向已删除的脚本。"""
     for name in SKILLS:
-        f = root / name / "SKILL.md"
+        f = root / SKILLS_ROOT / name / "SKILL.md"
         if not f.exists():
             continue
         for ref in sorted(set(TOOL_REF.findall(read(f)))):
@@ -268,7 +269,7 @@ def check_tool_refs(root: Path, problems: list) -> None:
 def check_eval(root: Path, problems: list, warnings: list) -> None:
     """EVAL.md 是评测答案键：必须存在，且不得被 SKILL.md 引用（否则被评 agent 直接看到答案）。"""
     for name in SKILLS:
-        skill_dir = root / name
+        skill_dir = root / SKILLS_ROOT / name
         if not (skill_dir / "SKILL.md").exists():
             continue
         if not (skill_dir / "EVAL.md").exists():
@@ -280,7 +281,7 @@ def check_eval(root: Path, problems: list, warnings: list) -> None:
 
 def check_rules(root: Path, problems: list, warnings: list) -> None:
     """判据规则与语料库：规则文件必须可解析且非空，语料每行必须是带 id/title/prompt 的合法 JSON。"""
-    skill_dir = root / "ecom-prompt-sop"
+    skill_dir = root / SKILLS_ROOT / "ecom-prompt-sop"
     rdir = skill_dir / "references" / "_rules"
     if not rdir.exists():
         warnings.append("[ecom-prompt-sop] 缺少判据规则目录 _rules/")

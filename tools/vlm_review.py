@@ -23,7 +23,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent
-ATOM_DIR = REPO_ROOT / "ecom-prompt-sop" / "references" / "_atoms"
+ATOM_DIR = REPO_ROOT / "skills" / "ecom-prompt-sop" / "references" / "_atoms"
 
 
 def load_atom(atom_id):

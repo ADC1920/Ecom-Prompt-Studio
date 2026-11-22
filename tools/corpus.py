@@ -5,7 +5,7 @@
 把验证过的提示词连同平台、品类、场景、机检结果、人工评分一起存下来，下次同类任务先检索 top-k
 作为 few-shot 范例，比让模型从零想更稳。
 
-语料存在 ecom-prompt-sop/references/_corpus/entries.jsonl，一行一条。
+语料存在 skills/ecom-prompt-sop/references/_corpus/entries.jsonl，一行一条。
 
 用法：
   python tools/corpus.py add --title "保温杯 Amazon 白底首图" --prompt-file p.txt \\
@@ -24,7 +24,7 @@ import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-CORPUS_DIR = HERE.parent / "ecom-prompt-sop" / "references" / "_corpus"
+CORPUS_DIR = HERE.parent / "skills" / "ecom-prompt-sop" / "references" / "_corpus"
 ENTRIES = CORPUS_DIR / "entries.jsonl"
 
 
