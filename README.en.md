@@ -109,16 +109,17 @@ atomize     compose     slop        check      visual    fix_stats
 
 | Script | What it does |
 |---|---|
-| `tools/atomize.py` | decompose SOPs into self-contained atoms, with export |
+| `tools/atomize.py` | decompose SOPs into self-contained atoms; rules get stable IDs (text fingerprint — survives line drift) and a `rules.json` index is generated |
 | `tools/compose_prompt.py` | five-slot assembly: fidelity → scene → subject → details → purpose → constraints, adds platform constraints and checks required fields |
 | `tools/slop_check.py` | catches SD-era filler words, absolute claims, fake promotions, efficacy claims, AI tells before finalizing |
 | `tools/rules_engine.py` | validates slots against platform, category, and scenario rule files; `--inject` adds default constraints |
 | `tools/check_image.py` | platform machine check after generation: white background, subject occupancy, ratio, resolution, file size, alpha channel, in-image text |
+| `tools/gen_fixtures.py` | negative fixtures: builds deliberately non-compliant images and asserts the checker still flags them, so rules can't be quietly relaxed |
 | `tools/visual_audit.py` | consistency (perceptual hash + color histogram) and AI-feel heuristics — hints only, never a verdict |
 | `tools/vlm_review.py` | generates a structured human review sheet; conclusions are always human |
 | `tools/fix_stats.py` | repair-sentence effectiveness computed from manifests |
 | `tools/corpus.py` | positive-sample corpus: add, similarity search, compile few-shot blocks |
-| `tools/cli.py` | single entry point: `query-atom` locates atoms, `get-template` fetches templates, `validate-prompt` validates, `check-output` machine-checks |
+| `tools/cli.py` | single entry point: `query-atom` locates atoms, `get-template` fetches templates, `find-rule` searches rules, `validate-prompt` validates, `check-output` machine-checks |
 | `tools/lint_skills.py` | full static check, the first CI gate |
 
 Everything is stdlib except `check_image.py`, `visual_audit.py`, and `vlm_review.py` (Pillow). Scripts with `--selftest` verify offline, no keys or network.

@@ -1,5 +1,6 @@
 ---
 name: ecom-main-image-prompts
+license: MIT
 description: "全平台电商主图生图提示词导演：基于上传的产品图（1 张或多张同产品角度图）自动规划整套主图方案——按产品与买家决策链路动态选择首图/多角度/卖点/场景/模特/细节/规格/礼赠等模块，逐张输出可直接投喂 AI 生图工具的完整提示词，内置产品外观锁定、平台合规与 AI 标注、模特与人脸、图中文字、信息真实性五类硬规则。当用户要为产品生成电商主图提示词、主图规划、生图 prompt、上架图方案，或提到主图/首图/头图/主图组/Amazon/TikTok Shop/抖音/淘宝/天猫/京东/Temu/Shopee/独立站配图时使用。English keywords: e-commerce main image prompts, product hero image, listing image prompt generator, AI product photography prompt, platform-compliant product image."
 ---
 

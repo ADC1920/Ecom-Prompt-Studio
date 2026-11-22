@@ -109,16 +109,17 @@ atomize  compose  slop     check    visual   fix_stats
 
 | 工具 | 做什么 |
 |---|---|
-| `tools/atomize.py` | 拆解与自包含校验，含导出 |
+| `tools/atomize.py` | 拆解与自包含校验：规则带稳定 id（文本指纹，行号漂移不变）、生成 `rules.json` 规则总索引 |
 | `tools/compose_prompt.py` | 五槽位组装：保真段 → 场景 → 主体 → 细节 → 用途 → 约束，自动补平台约束、跑必填校验 |
 | `tools/slop_check.py` | 提示词定稿前查 SD 时代堆词、绝对化用语、虚假促销、功效宣称、AI 痕迹 |
 | `tools/rules_engine.py` | 按平台、品类、场景三份判据规则校验槽位，可 `--inject` 补默认约束 |
 | `tools/check_image.py` | 出图后平台机检：白底纯度、主体占比、比例、分辨率、文件大小、透明通道、图内文字 |
+| `tools/gen_fixtures.py` | 机检失败夹具：按 `fixtures.json` 造不合规图，断言 checker 必报错，防止规则被放水 |
 | `tools/visual_audit.py` | 视觉验收：主体一致性（感知哈希 + 颜色直方图）与 AI 感启发式，只提示不判定 |
 | `tools/vlm_review.py` | 生成视觉复核单：启发式分只提示，结论由人给 |
 | `tools/fix_stats.py` | 从 manifest 统计每条修复句的真实生效率 |
 | `tools/corpus.py` | 正样本语料：录入、相似度检索、编译成 few-shot 范例段 |
-| `tools/cli.py` | 统一入口：`query-atom` 定位原子、`get-template` 取模板、`validate-prompt` 校验、`check-output` 机检 |
+| `tools/cli.py` | 统一入口：`query-atom` 定位原子、`get-template` 取模板、`find-rule` 查规则、`validate-prompt` 校验、`check-output` 机检 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
 
 除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。

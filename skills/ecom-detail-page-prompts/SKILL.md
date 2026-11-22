@@ -1,5 +1,6 @@
 ---
 name: ecom-detail-page-prompts
+license: MIT
 description: "电商详情页生图提示词导演：基于上传的产品实拍图（1 张或多张同产品视角图）自动策划整套详情页——页数、每页关键词、视觉风格、构图、信息密度全部按产品特性动态决定，不套固定模板，逐页输出可直接投喂 AI 生图工具的高设计感中文提示词，内置产品外观锁定、信息真实性与证据账本、防模板化自检、平台合规与 AI 标注等硬规则。当用户要为产品生成详情页提示词、详情页规划、详情页生图 prompt、详情页长图方案，或提到详情页/详情页设计/详情页页面/淘宝详情页时使用。English keywords: e-commerce detail page prompts, product detail page generator, listing long-page prompt, Taobao detail page design prompt, AI detail page visual."
 ---
 

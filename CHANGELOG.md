@@ -1,6 +1,26 @@
 # 变更记录
 
-本文件记录对外可见的形态变更。内部重构细节见 git log。
+本文件记录对外可见的形态变更。内部细节见 git log。
+
+## 2.3.0 — 2026-11-22
+
+按 GitHub 同类项目补三项工程能力。内容库本身没动，补的是「可追溯、可验证、有格式契约」。
+
+### 新增
+
+- **规则资产化**：571 条规则全部带稳定 id（`a21.re5d4b02d34f3` 形态，由原子号 + 文本指纹组成）。id 刻意不用行号——上文增删会让行号漂移，引用它的文档与评测就全断了；文本改动才换 id，这是想要的语义。另生成 `rules.json` 规则总索引（id → 原子/工位/品类），规则全文仍只存在原子里一份，避免双份漂移。`atomize.py check` 现在会复算 id 并与记录比对，文本改了却没重跑 merge 会直接报错。
+- **规则检索 CLI**：`python tools/cli.py find-rule --query 白底` 按关键词查规则全文与所属原子，也可按 id 精确反查。
+- **机检失败夹具**（`tools/gen_fixtures.py` + `fixtures.json`）：7 条故意不合规的图（灰底、主体过小、低分辨率、错误比例、以及三条反向对照），断言 checker 必定报出对应问题。夹具的预期值就是验收标准——新增平台规则时先加夹具再改 checker，顺序反了就是拿实现当规范。CI 已接入。
+- **输出契约**（`references/_output-contracts.md`）：规定五个工位交付物必含哪些段。主图规划表 7 列、逐张提示词 5 段、详情页规划 6 列等。模板决定内容，契约决定结构，缺段即未完成。
+
+### 变更
+
+- **英文触发用例**：用例集从 30 条扩到 34 条，新增 4 条英文输入（覆盖 SOP 品类命中、裸主图转交、详情页命中、英文工程请求不触发）。此前三个 SKILL.md 都写了 `English keywords` 却从未验证过它是否生效。
+- **技能加 `license` 字段**：三个 SKILL.md 的 frontmatter 补 `license: MIT`，技能被单独拷走时许可信息不再丢失。
+
+### 依据
+
+调研了 12 个 GitHub 同类项目后确定这三项。规则资产化参考 `kangise/ecommerce-ai-skills` 的 ontology 单一源模式，失败夹具参考 `heqiangdiao/AI-Cross-Border-Ecommerce-Agent-Toolkit` 的合成夹具做法，输出契约参考 `feichanggege/ecommerce-visual-copywriting-skill` 的 output-contracts。
 
 ## 2.2.0 — 2026-11-22
 

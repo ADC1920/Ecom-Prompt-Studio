@@ -63,6 +63,15 @@
 | 29 | 视频反推要带故事板 | ecom-prompt-sop → `_atoms/a34.json`（要分镜才选带故事板版） |
 | 30 | 详情页要带五点式卖点 | ecom-prompt-sop → `_atoms/a04.json`（卖点模块命中专用篇） |
 
+## 四、英文触发（验证 description 里的 English keywords 真的生效）
+
+| # | 输入 | 预期路由 |
+|---|---|---|
+| 31 | generate main image prompts for this thermos | ecom-prompt-sop → `_atoms/a21.json`（百货杯壶，英文品类词命中） |
+| 32 | give me a main image prompt set for this hoodie | ecom-main-image-prompts（裸主图，无品类专项线索） |
+| 33 | detail-page prompts for this lipstick | ecom-prompt-sop → `_atoms/a22.json`（美妆日化） |
+| 34 | write a Python script to batch rename files | 不触发（英文工程请求，不该命中任何技能） |
+
 ## 判读说明
 
 - 用例 17、18 是分流主判据：首轮响应应出现「转用/转交 ecom-main-image-prompts（或 detail-page）」的动作或直接按该导演流程执行。

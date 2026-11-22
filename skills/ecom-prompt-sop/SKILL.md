@@ -1,5 +1,6 @@
 ---
 name: ecom-prompt-sop
+license: MIT
 description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU 批量与跨平台台 / 模特与视频台 / 图片反推台）：电商生图提示词 SOP 的拆解库，按工位路由到对应原子，取出可直接投喂生图工具的中文提示词与分步操作指引。主图台做全平台主图/首图/轮播/白底/买家秀/场景图；详情页台做详情页长图与逐页策划；SKU 台做多色多件套批量、多产品替换、3:4 转 1:1、图内文字批量翻译；模特与视频台做模特换头换装、多姿势模特图、电商视频生成；反推台做爆款图与视频反推、对标场景复刻、旧图翻新、SKU 版式替换。覆盖跨境与国内平台、品类专项（服饰/3C 数码/美妆日化/美食/家具/包包/海产品/百货杯壶/檀木串珠线香）、视频反推故事板。当用户要为产品生成电商图提示词、做主图或详情页方案、反推对标图与对标视频、翻新旧图、批量处理 SKU 或图内文字、生成模特图或产品视频提示词时使用——用户未点名『SOP』也要用。English keywords: e-commerce image prompt SOP library, main image studio, detail page studio, SKU batch studio, model and video studio, reverse engineering studio, product hero image prompt, white background photo, buyer show, benchmark reverse engineering, SKU batch, image text translation, AI model swap, product video prompt, video reverse engineering storyboard."
 ---
 
@@ -37,6 +38,8 @@ description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU �
 `references/_index.json` 是篇目级索引（篇号、工位、品类、产物、触发词、槽位）；两个索引都由 `tools/atomize.py` 维护，改完跑 `merge` 与 `check`。
 
 要把某篇的内容组装成结构化提示词（而不是自由发挥）时，按 `references/_prompt-slots.md` 的五槽位规范组织：保真段 → 场景 → 主体 → 细节 → 用途 → 约束；可用 `tools/compose_prompt.py` 组装并跑必填与反 AI 感校验（技能单独安装时不带脚本，按该规范人工过）。
+
+交付前按 `references/_output-contracts.md` 核对结构：那份文件规定五个工位各自的交付物必含哪些段（主图规划表 7 列、逐张提示词 5 段、详情页规划 6 列等）。**缺段就是未完成**——模板决定内容，契约决定结构，两者都到位产物才能被下游直接接手。
 
 ## 使用流程
 
