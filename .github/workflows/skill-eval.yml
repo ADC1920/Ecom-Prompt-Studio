@@ -61,6 +61,8 @@ jobs:
           python tools/cli.py --selftest
           python tools/vlm_review.py --selftest
           python evals/real_trigger.py --selftest
+      - name: 机检失败夹具（断言 checker 仍认得硬伤）
+        run: python tools/gen_fixtures.py --verify
       - name: promptfoo 配置结构
         run: |
           npx --yes promptfoo@$PROMPTFOO_VERSION validate config \
