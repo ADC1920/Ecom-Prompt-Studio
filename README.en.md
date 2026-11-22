@@ -8,35 +8,23 @@ Models can already write prompts. What's missing is three things — **criteria,
 - **Examples**: a positive-sample corpus, retrieved by similarity, so you can borrow wording that has already produced good images.
 - **Feedback**: platform machine checks after generation. What fails doesn't ship; the fix sentence goes back into the prompt and the loop runs again.
 
-Each of the three subdirectories is a complete skill: copy it into your local skills directory and it works. Install as a ZCode plugin to get the tooling, the post-generation check hook, and the MCP server in one shot.
+Each directory under `skills/` is a complete skill: copy it into your local skills directory and it works. `tools/` holds the companion atom search, rule checks, and post-generation image checks — runnable from any agent platform or a plain terminal.
 
 ## Quick start
 
-### Recommended: as a ZCode plugin
+### Option 1: just the prompts (no skill install)
 
-```bash
-git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
-cd Ecom-Prompt-Studio
-python tools/pack_plugin.py
-```
+No Python, no agent needed: browse [`skills/ecom-prompt-sop/references/_atoms/`](skills/ecom-prompt-sop/references/_atoms/). Each of the 34 atoms is one JSON file — `source_text` holds the full original text, `templates` holds copy-ready prompt templates.
 
-This writes a marketplace manifest and a plugin directory into `dist/`. In ZCode: **Plugin Marketplace → Add → Add Plugin Marketplace**, paste the absolute path to `dist/`, then install `ecom-prompt-studio` from **Personal**.
-
-Pack instead of pointing at the repo root: ZCode installs a plugin by copying the whole source directory and does not consult `.gitignore`, so a cloner's locally created `docs/` and `memory/` would be carried into the install cache. `pack_plugin.py` copies only git-tracked files.
-
-### Manual: plain skills
+### Option 2: install as skills (ZCode / Claude Code / Cursor, etc.)
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
 
-# ZCode (or project-level .agents/skills/)
-cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
-
-# Claude Code
-cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.claude/skills/
+# Install all three: they hand off to each other, so a missing one breaks the routing
+cp -r Ecom-Prompt-Studio/skills/* ~/.agents/skills/     # ZCode
+cp -r Ecom-Prompt-Studio/skills/* ~/.claude/skills/     # Claude Code
 ```
-
-Copying only a skill directory ships the SOP text but not `tools/`: machine checks, the rule engine, corpus search, and the MCP server all live at the repo root. Use the plugin install for the full capability.
 
 Skills trigger on natural language after a session restart — no need to say "SOP":
 
@@ -48,7 +36,18 @@ Skills trigger on natural language after a session restart — no need to say "S
 | Model & video | "three poses for the model swap" / "a video prompt for this product" |
 | Reverse engineering | "reverse this competitor image into our prompt" / "break down this video's shots" |
 
-The plugin also adds four slash commands: `/ecom:main`, `/ecom:detail`, `/ecom:sku`, `/ecom:reverse`.
+### Option 3: skills + tooling
+
+Keep the whole repo locally on top of Option 2; the scripts under `tools/` run directly:
+
+```bash
+python tools/cli.py query-atom --category 杯壶 --output 主图        # locate atoms, returns IDs + rationale
+python tools/cli.py get-template --atom a21                        # fetch that atom's templates, rules, checklists
+python tools/cli.py validate-prompt --file p.txt --platform amazon # anti-slop and compliance self-check
+python tools/cli.py check-output out/main-01.png --platform amazon # platform machine check on a generated image
+```
+
+The remaining scripts (atom decomposition, rule engine, corpus search, visual audit) are listed under [Toolchain](#toolchain). When only the skill directories are copied without `tools/`, the scripts mentioned in SKILL.md can be done by hand against the checklists given there.
 
 ## Three skills
 
@@ -58,7 +57,7 @@ The plugin also adds four slash commands: `/ecom:main`, `/ecom:detail`, `/ecom:s
 | `ecom-main-image-prompts` | main-image director: bare main-image requests with no category cue, plans the whole set around the buyer decision path |
 | `ecom-detail-page-prompts` | detail-page director: bare detail-page requests with no category cue, plans page structure and per-page prompts by category |
 
-The only routing rule: **category, action, or scenario cue present → SOP atom library; bare main image or bare detail page → hand off to the director skill.** This rule lives in `ecom-prompt-sop/SKILL.md` and the eval suite watches it.
+The only routing rule: **category, action, or scenario cue present → SOP atom library; bare main image or bare detail page → hand off to the director skill.** This rule lives in `skills/ecom-prompt-sop/SKILL.md` and the eval suite watches it. The three skills hand off to each other, so install all three or none.
 
 ## The five studios
 
@@ -119,24 +118,10 @@ atomize     compose     slop        check      visual    fix_stats
 | `tools/vlm_review.py` | generates a structured human review sheet; conclusions are always human |
 | `tools/fix_stats.py` | repair-sentence effectiveness computed from manifests |
 | `tools/corpus.py` | positive-sample corpus: add, similarity search, compile few-shot blocks |
-| `tools/mcp_server.py` | MCP server exposing the atom library and checks as four tools |
+| `tools/cli.py` | single entry point: `query-atom` locates atoms, `get-template` fetches templates, `validate-prompt` validates, `check-output` machine-checks |
 | `tools/lint_skills.py` | full static check, the first CI gate |
-| `tools/check_plugin.py` | validates manifest fields, declared resources, path containment, event names |
-| `tools/pack_plugin.py` | builds a clean plugin bundle from git-tracked files only |
 
 Everything is stdlib except `check_image.py`, `visual_audit.py`, and `vlm_review.py` (Pillow). Scripts with `--selftest` verify offline, no keys or network.
-
-## Runtime mechanisms after install
-
-Installed as a plugin, these are runtime mechanisms, not model diligence:
-
-| Mechanism | Trigger | Effect |
-|---|---|---|
-| Post-generation machine check | any tool call writes an image under `out/` with `--platform` in the command | runs the platform check; failures are fed back to the model for a corrected retry |
-| Four MCP tools | invoked by the model | `query_atom` locates atoms, `get_template` fetches templates, `validate_prompt` validates, `check_output` machine-checks |
-| Slash commands | user types `/ecom:main` etc. | no studio jargon needed; jumps straight into the workflow |
-
-MCP collapses "read docs → pick studio → read atom → pick template" into one call. Without MCP those four steps are all on the model. `check_image.py` finds tesseract on its own — scanning common install paths when it is not on `PATH` — and marks the OCR row `skipped` when dependencies are missing, never a fake pass.
 
 ## Criteria rules and corpus
 
@@ -151,7 +136,7 @@ Rules say what you cannot write; the corpus says what good looks like; the brand
 
 ## Image generation boundary
 
-> **Authorization before generation (hard rule)**: before invoking any image-generation model (Qwen-Image family, wan, Seedream, Gemini, GPT-Image, FLUX, z-image, etc., including MCP tools and web UIs driven on the user's behalf), obtain explicit authorization stating the purpose, model, and image count. Without authorization, deliver prompt text only.
+> **Authorization before generation (hard rule)**: before invoking any image-generation model (Qwen-Image family, wan, Seedream, Gemini, GPT-Image, FLUX, z-image, etc., including tool calls and web UIs driven on the user's behalf), obtain explicit authorization stating the purpose, model, and image count. Without authorization, deliver prompt text only.
 
 This repo deliberately ships no image-generation CLI: prompts are fed as written, never rewritten by a model, so hard rules stay intact. Machine checks and visual audits verify output from any channel. Image-to-image is used for product locking and refresh: the real photo is the reference image, with keep/change lists stated in the prompt.
 
@@ -159,7 +144,7 @@ This repo deliberately ships no image-generation CLI: prompts are fed as written
 
 Skill mis-routing is the most user-visible failure, so routing regression is the eval backbone. Three CI layers:
 
-1. **Static checks** (every push / PR): `lint_skills.py` + `check_cases.py` + `atomize.py check` + `check_plugin.py` + script self-tests + promptfoo config validation — no keys needed
+1. **Static checks** (every push / PR): `lint_skills.py` + `check_cases.py` + `atomize.py check` + script self-tests + promptfoo config validation — no keys needed
 2. **Routing regression** (every push / PR): promptfoo runs 30 prompts, asserting the hit skill name and **atom id**; eval inputs read the three live `SKILL.md` files, so routing changes take effect immediately
 3. **Quality sampling** (weekly Monday + manual): generates prompts from atom `source_text` and scores them with `llm-rubric` against that SOP's hard rules
 
@@ -181,22 +166,19 @@ Requires Node.js 22+. Rationale and real baseline scores: [`evals/README.md`](ev
 
 ```text
 .
-├─ .zcode-plugin/plugin.json        # plugin manifest: skills + commands + MCP
-├─ .mcp.json                        # MCP server declaration (four tools)
-├─ hooks/                           # PostToolUse: machine-check after image calls, feed results back
-├─ commands/                        # /ecom:main /detail /sku /reverse
-├─ ecom-prompt-sop/
-│  ├─ SKILL.md                      # five-studio entry: pick studio → locate atom → take templates and rules
-│  ├─ EVAL.md                       # eval answer key (for graders, not referenced by SKILL.md)
-│  └─ references/
-│     ├─ _atoms/                    # 34 atoms + indexes
-│     ├─ _rules/                    # platform / category / scenario criteria + AIGC disclosure duties
-│     ├─ _corpus/                   # positive-sample corpus
-│     ├─ _brand-lock.md             # ten brand-lock fields
-│     └─ _prompt-slots.md           # five-slot spec
-├─ ecom-main-image-prompts/         # main-image director skill
-├─ ecom-detail-page-prompts/        # detail-page director skill
-├─ tools/                           # decompose, assemble, machine-check, audit, stats, MCP, packing
+├─ skills/
+│  ├─ ecom-prompt-sop/
+│  │  ├─ SKILL.md                   # five-studio entry: pick studio → locate atom → take templates and rules
+│  │  ├─ EVAL.md                    # eval answer key (for graders, not referenced by SKILL.md)
+│  │  └─ references/
+│  │     ├─ _atoms/                 # 34 atoms + indexes
+│  │     ├─ _rules/                 # platform / category / scenario criteria + AIGC disclosure duties
+│  │     ├─ _corpus/                # positive-sample corpus
+│  │     ├─ _brand-lock.md          # ten brand-lock fields
+│  │     └─ _prompt-slots.md        # five-slot spec
+│  ├─ ecom-main-image-prompts/      # main-image director skill
+│  └─ ecom-detail-page-prompts/     # detail-page director skill
+├─ tools/                           # unified CLI, decompose, assemble, machine-check, audit, stats
 ├─ evals/                           # promptfoo configs, cases, real trigger eval
 ├─ CHANGELOG.md
 ├─ README.en.md

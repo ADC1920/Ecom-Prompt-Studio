@@ -8,35 +8,23 @@
 - **范例**：正样本语料库，按相似度检索出已经出过好图的写法
 - **反馈**：出图后按平台机检，不过的不上架；修复句回写进提示词再跑一轮
 
-三个子目录各是一个完整技能，拷进本地技能目录即可使用；装成 ZCode 插件则连工具链、机检 hook 与 MCP server 一次装齐。
+`skills/` 下三个目录各是一个完整技能，拷进本地技能目录即可使用；`tools/` 里是配套的原子检索、规则校验与出图机检，任何 agent 平台或纯终端都能跑。
 
 ## 快速开始
 
-### 推荐：作为 ZCode 插件安装
+### 方式一：只取提示词（不装技能）
 
-```bash
-git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
-cd Ecom-Prompt-Studio
-python tools/pack_plugin.py
-```
+不需要 Python，也不需要任何 agent：直接浏览 [`skills/ecom-prompt-sop/references/_atoms/`](skills/ecom-prompt-sop/references/_atoms/)，34 个原子各是一个 JSON，`source_text` 字段是完整原文，`templates` 里是可直接复制的提示词模板。
 
-打包会在 `dist/` 生成市场清单与插件目录。在 ZCode 里打开 **插件市场 → 添加 → 添加插件市场**，粘贴 `dist/` 的**绝对路径**，然后在**个人**里安装 `ecom-prompt-studio`。
-
-安装必须走打包，不能把仓库根直接当市场：ZCode 装插件是整目录拷贝、不看 `.gitignore`，克隆者本机生成的 `docs/`、`memory/` 之类会被一起拷进安装缓存。`pack_plugin.py` 只复制 git 跟踪的文件，本机内容进不了包。
-
-### 手动：只拷技能
+### 方式二：装成技能（ZCode / Claude Code / Cursor 等）
 
 ```bash
 git clone https://github.com/ADC1920/Ecom-Prompt-Studio.git
 
-# ZCode（或项目级 .agents/skills/）
-cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.agents/skills/
-
-# Claude Code
-cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.claude/skills/
+# 三个技能要一起装：它们之间有转交判据，缺一个会指向不存在的技能
+cp -r Ecom-Prompt-Studio/skills/* ~/.agents/skills/     # ZCode
+cp -r Ecom-Prompt-Studio/skills/* ~/.claude/skills/     # Claude Code
 ```
-
-只拷技能目录会丢掉 `tools/`：机检、规则引擎、语料检索、MCP 工具都在仓库根，SKILL.md 提到脚本的地方只能人工代劳。要完整能力走插件安装。
 
 重开会话后技能自动生效，直接用自然语言触发，不需要提「SOP」：
 
@@ -48,7 +36,18 @@ cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.claude/skills/
 | 模特与视频台 | 模特换装做三个姿势 / 这个产品出条视频提示词 |
 | 反推台 | 把这张爆款图反推成我们自己的提示词 / 拆解这个视频的镜头提示词 |
 
-插件安装还带四条斜杠命令：`/ecom:main`、`/ecom:detail`、`/ecom:sku`、`/ecom:reverse`。
+### 方式三：技能 + 工具链
+
+在方式二基础上，把整个仓库留在本地，脚本就在 `tools/` 下直接用：
+
+```bash
+python tools/cli.py query-atom --category 杯壶 --output 主图   # 定位原子，返回编号与依据
+python tools/cli.py get-template --atom a21                    # 取该原子的模板、规则、清单
+python tools/cli.py validate-prompt --file p.txt --platform amazon   # 反 AI 感与合规自查
+python tools/cli.py check-output out/main-01.png --platform amazon   # 出图后平台机检
+```
+
+其余脚本（原子拆分、规则引擎、语料检索、视觉验收等）见下方[工具链](#工具链)。只拷技能目录不带 `tools/` 时，SKILL.md 里提到脚本的地方按文中清单人工过一遍即可。
 
 ## 三个技能
 
@@ -58,7 +57,7 @@ cp -r Ecom-Prompt-Studio/ecom-prompt-sop ~/.claude/skills/
 | `ecom-main-image-prompts` | 主图导演：接无品类线索的裸主图方案，按买家决策链路动态规划整套 |
 | `ecom-detail-page-prompts` | 详情页导演：接无品类线索的裸详情页方案，按品类规划页面结构与逐页提示词 |
 
-分工判据只有一条：**有品类、动作或细分场景线索 → 走 SOP 原子库；裸主图或裸详情页 → 转交导演技能**。这条规则写死在 `ecom-prompt-sop/SKILL.md` 的使用流程里，评测会盯着它。
+分工判据只有一条：**有品类、动作或细分场景线索 → 走 SOP 原子库；裸主图或裸详情页 → 转交导演技能**。这条规则写死在 `skills/ecom-prompt-sop/SKILL.md` 的使用流程里，评测会盯着它。三个技能互相转交，所以要么都装、要么都不装。
 
 ## 五工作室
 
@@ -119,24 +118,10 @@ atomize  compose  slop     check    visual   fix_stats
 | `tools/vlm_review.py` | 生成视觉复核单：启发式分只提示，结论由人给 |
 | `tools/fix_stats.py` | 从 manifest 统计每条修复句的真实生效率 |
 | `tools/corpus.py` | 正样本语料：录入、相似度检索、编译成 few-shot 范例段 |
-| `tools/mcp_server.py` | MCP server：原子库与判据暴露成四个可调用工具 |
+| `tools/cli.py` | 统一入口：`query-atom` 定位原子、`get-template` 取模板、`validate-prompt` 校验、`check-output` 机检 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
-| `tools/check_plugin.py` | 插件清单自校验：字段、资源存在性、路径越界、事件名合法性 |
-| `tools/pack_plugin.py` | 打干净的插件包：只复制 git 跟踪文件，本机内容不进安装缓存 |
 
 除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。
-
-## 装机后自带的运行时机制
-
-装成插件之后，下面这些不靠模型自觉，是运行时机制：
-
-| 机制 | 触发 | 效果 |
-|---|---|---|
-| 出图后自动机检 | 任何工具调用在 `out/` 下落了图，且命令里带 `--platform` | 跑平台机检，不通过就把结果回注给模型，提示修正重出 |
-| MCP 四个工具 | 模型自行调用 | `query_atom` 定位原子、`get_template` 取模板、`validate_prompt` 校验、`check_output` 机检 |
-| 斜杠命令 | 用户输入 `/ecom:main` 等 | 不用记五工位术语，直接进对应工位流程 |
-
-MCP 把「读文档 → 判工位 → 读原子 → 挑模板」四步压成一次调用；不接 MCP 时这四步全靠模型自己走。`check_image.py` 的 OCR 会自己找 tesseract：不在 PATH 时扫常见安装路径，缺依赖就标 `skipped`，不会假装通过。
 
 ## 判据规则与语料
 
@@ -151,7 +136,7 @@ SOP 给的是「方法」，下面几样给的是「判据与范例」：
 
 ## 出图边界
 
-> **出图先授权（硬性）**：任何图片生成模型（Qwen-Image 全系、万相、Seedream、Gemini、GPT-Image、FLUX、z-image 等，含 MCP 工具与网页端代操作）调用前必须先取得明确授权，说明用途、模型与张数；未获授权时只交付提示词文本，不调用任何出图模型。
+> **出图先授权（硬性）**：任何图片生成模型（Qwen-Image 全系、万相、Seedream、Gemini、GPT-Image、FLUX、z-image 等，含工具调用与网页端代操作）调用前必须先取得明确授权，说明用途、模型与张数；未获授权时只交付提示词文本，不调用任何出图模型。
 
 仓库刻意不内置命令行出图通道：提示词按内容投喂、不做模型改写，硬规则不会被稀释；机检与视觉验收对任意通道产出的图做后置校验。图生图用于产品锁定与翻新：实拍图作参考图，提示词里写清保留清单与改动清单。
 
@@ -159,7 +144,7 @@ SOP 给的是「方法」，下面几样给的是「判据与范例」：
 
 技能选错是用户最容易感知的问题，触发回归是评测主线。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + `check_plugin.py` + 工具自检 + promptfoo 配置结构校验，不需要密钥
+1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + 工具自检 + promptfoo 配置结构校验，不需要密钥
 2. **触发回归**（每次 push / PR）：promptfoo 跑 30 条提示，断言命中的技能名与**原子编号**；评测输入直接读三个 `SKILL.md`，路由表一改立刻生效
 3. **文本质量抽检**（每周一 + 手动）：按原子编号读 `source_text` 生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分
 
@@ -181,22 +166,19 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密�
 
 ```text
 .
-├─ .zcode-plugin/plugin.json        # 插件清单：技能 + 命令 + MCP
-├─ .mcp.json                        # MCP server 声明（四个工具）
-├─ hooks/                           # PostToolUse：出图后自动机检并回注结果
-├─ commands/                        # /ecom:main /detail /sku /reverse
-├─ ecom-prompt-sop/
-│  ├─ SKILL.md                      # 五工作室入口：判工位 → 定位原子 → 取模板与规则
-│  ├─ EVAL.md                       # 评测答案键（评测者用，不被 SKILL.md 引用）
-│  └─ references/
-│     ├─ _atoms/                    # 34 个原子 + 索引
-│     ├─ _rules/                    # 平台 / 品类 / 场景判据 + AIGC 标注义务
-│     ├─ _corpus/                   # 正样本语料
-│     ├─ _brand-lock.md             # 品牌锁十个字段
-│     └─ _prompt-slots.md           # 五槽位规范
-├─ ecom-main-image-prompts/         # 主图导演技能
-├─ ecom-detail-page-prompts/        # 详情页导演技能
-├─ tools/                           # 拆解、组装、机检、验收、统计、MCP、打包
+├─ skills/
+│  ├─ ecom-prompt-sop/
+│  │  ├─ SKILL.md                   # 五工作室入口：判工位 → 定位原子 → 取模板与规则
+│  │  ├─ EVAL.md                    # 评测答案键（评测者用，不被 SKILL.md 引用）
+│  │  └─ references/
+│  │     ├─ _atoms/                 # 34 个原子 + 索引
+│  │     ├─ _rules/                 # 平台 / 品类 / 场景判据 + AIGC 标注义务
+│  │     ├─ _corpus/                # 正样本语料
+│  │     ├─ _brand-lock.md          # 品牌锁十个字段
+│  │     └─ _prompt-slots.md        # 五槽位规范
+│  ├─ ecom-main-image-prompts/      # 主图导演技能
+│  └─ ecom-detail-page-prompts/     # 详情页导演技能
+├─ tools/                           # 统一 CLI、拆解、组装、机检、验收、统计
 ├─ evals/                           # promptfoo 配置、用例、真实触发评测
 ├─ CHANGELOG.md
 ├─ README.en.md

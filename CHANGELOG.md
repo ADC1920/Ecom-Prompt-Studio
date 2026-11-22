@@ -2,6 +2,28 @@
 
 本文件记录对外可见的形态变更。内部重构细节见 git log。
 
+## 2.2.0 — 2026-11-22
+
+去掉 ZCode 插件形态，回归平台无关的内容库。核心资产零改动，只拆掉外面那层包装。
+
+### 破坏性变更
+
+- **移除插件清单与市场声明**：`.zcode-plugin/plugin.json`、`marketplace.json`、`dist/`、`tools/pack_plugin.py`、`tools/check_plugin.py` 全部删除。仓库不再声明任何插件元数据，任何支持 Agent Skills 规范的平台（Claude Code、ZCode、Cursor 等）都按「拷 `skills/` 目录」安装。
+- **技能目录收进 `skills/`**：三个技能从仓库根移到 `skills/` 下，与 Agent Skills 生态惯例一致。安装命令由逐目录拷贝改为 `cp -r skills/* <目标目录>`。三个技能互相转交，必须一起装。
+- **移除斜杠命令与出图 hook**：`commands/`（4 条）与 `hooks/`（PostToolUse 自动机检）删除。这两项只在插件运行时可用，脱离插件后不成立；机检改由 `tools/check_image.py` 手动或脚本调用。
+- **移除 MCP server**：`.mcp.json` 与 `tools/mcp_server.py` 删除。原四个 MCP 工具（`query_atom`、`get_template`、`validate_prompt`、`check_output`）迁移为 `tools/cli.py` 的四个子命令，检索打分逻辑与判定结果完全一致。
+
+### 新增
+
+- **统一 CLI**（`tools/cli.py`）：`query-atom` 定位原子、`get-template` 取模板与规则、`validate-prompt` 跑反 AI 感与规则引擎、`check-output` 出图后平台机检。输出 JSON，人或任意 agent 可直接消费。
+- **三种使用路径**：只取提示词（浏览 `_atoms/` 下的 JSON）、装成技能（拷 `skills/`）、技能加工具链（保留整仓跑 CLI）。此前只有「插件」与「只拷技能」两条路。
+
+### 变更
+
+- **CI 调整**：去掉 `pack_plugin.py`、`check_plugin.py`、`mcp_server.py` 三步自检，加入 `cli.py --selftest`；workflow 路径过滤由三个技能目录合成 `skills/**`。
+- **README 中英双版重写安装节**：删除插件安装说明与打包理由，改为三种使用路径。
+- **单技能安装说明修正**：原 README 只指导安装 `ecom-prompt-sop` 一个目录，但另外两个导演技能是它的转交目标，按原文装完会指向不存在的技能。现明确要求三个一起装。
+
 ## 2.1.0 — 2026-11-12
 
 从「可读的 SOP 库」变成「装机即用的生产流程」。这一版跨了两批改动：原子化重构把散文拆成可执行零件，插件化把零件送到用户机器上。
