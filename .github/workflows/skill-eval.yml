@@ -45,6 +45,10 @@ jobs:
         run: python tools/lint_skills.py
       - name: 触发用例与 Markdown 视图一致性
         run: python evals/check_cases.py
+      - name: 离线触发评测（零模型调用，无需密钥）
+        run: |
+          python evals/offline_trigger.py --selftest
+          python evals/offline_trigger.py
       - name: 拆解原子与原文同步
         run: python tools/atomize.py check
       - name: 工具脚本离线自检
@@ -60,6 +64,9 @@ jobs:
           python tools/atomize.py --selftest
           python tools/cli.py --selftest
           python tools/vlm_review.py --selftest
+          python tools/package_skill.py --selftest
+          python tools/fidelity_score.py --selftest
+          python tools/brand_lock.py --selftest
           python evals/real_trigger.py --selftest
       - name: 机检失败夹具（断言 checker 仍认得硬伤）
         run: python tools/gen_fixtures.py --verify
