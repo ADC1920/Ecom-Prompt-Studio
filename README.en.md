@@ -6,9 +6,27 @@ Models can already write prompts. What's missing is three things — **criteria,
 
 - **Criteria**: 34 SOPs decomposed into 197 prompt templates, 571 rule clauses, 22 checklists, and 122 placeholders. Every rule carries a stable ID so it can be cited and traced on its own.
 - **Examples**: a positive-sample corpus, retrieved by similarity, so you can borrow wording that has already produced good images.
-- **Feedback**: platform machine checks after generation. What fails doesn't ship; the checks themselves are guarded by failure fixtures so they can't be quietly relaxed.
+- **Feedback**: platform machine checks after generation, then a fidelity scorecard. What fails doesn't ship; the checks themselves are guarded by failure fixtures so they can't be quietly relaxed.
 
-Each directory under `skills/` is a complete skill: copy it into your local skills directory and it works. `tools/` holds the companion toolchain, runnable from any agent platform or a plain terminal.
+Each directory under `skills/` is a complete skill: copy it into your local skills directory and it works. `tools/` holds the companion toolchain, runnable from any agent platform or a plain terminal. The two can be used separately, or bundled together — see [Package with the toolchain included](#package-with-the-toolchain-included).
+
+## For agents
+
+The skill bodies are written for humans to read, but an agent needs something it can call directly. That layer is separate:
+
+```bash
+python tools/cli.py query-atom --category 杯壶 --output 主图 --action 生成   # locate the atom
+python tools/cli.py get-template --atom a21                                  # templates+rules+checklists at once
+python tools/cli.py find-rule --query 白底                                    # trace a rule to its source
+python tools/cli.py validate-prompt --file p.txt --platform amazon           # pre-flight check
+python tools/cli.py check-output out/main-01.png --platform amazon           # post-generation check
+```
+
+All five emit JSON, and the exit code agrees with the result — a failed check is never reported as success.
+
+Every SKILL.md documents this layer, and alongside it the **manual path when the scripts aren't available**: same criteria, just a few more steps by hand. So a skill installed without the toolchain still works.
+
+`skills/ecom-prompt-sop/interface.json` answers "should I take this task at all": input/output contracts, exclusions, callable commands, delivery gates, and degradation paths. Atom routing is deliberately not duplicated there — `references/_index.json` remains the single authority.
 
 ## Quick start
 
@@ -141,9 +159,48 @@ atomize      compose        slop           check_image      visual     fix_stats
 | `tools/vlm_review.py` | generates a structured human review sheet; conclusions are always human |
 | `tools/fix_stats.py` | repair-sentence effectiveness computed from manifests |
 | `tools/corpus.py` | positive-sample corpus: add, similarity search, compile few-shot blocks |
+| `tools/fidelity_score.py` | nine-question fidelity scorecard: the agent answers, the script scores and applies eight veto codes; `cannot_tell` on a fidelity item blocks a pass |
+| `tools/brand_lock.py` | compiles the ten brand-lock fields into a fixed prompt prefix, so the wording can't drift between images |
+| `tools/package_skill.py` | builds a self-contained zip; `--verify` extracts it and actually runs the toolchain |
 | `tools/lint_skills.py` | full static check, the first CI gate |
 
 Everything is stdlib except `check_image.py`, `visual_audit.py`, and `vlm_review.py` (Pillow). Scripts with `--selftest` verify offline, no keys or network.
+
+### Two checks after generation
+
+The machine check and the fidelity score answer different questions, and skipping either leaves a gap:
+
+```bash
+# First: geometry and compliance, decided by code
+python tools/check_image.py out/main-01.png --platform amazon
+
+# Second: fidelity — the agent answers nine fixed questions, the script does the arithmetic
+python tools/fidelity_score.py --template > card.json   # blank card; fill answers and defects
+python tools/fidelity_score.py card.json                # exit 0 on pass
+
+# Both must pass for the image to be usable
+python tools/check_image.py out/main-01.png --platform amazon --require-review card.json
+```
+
+The machine check can prove white background, occupancy, aspect ratio, and dimensions are right. It cannot prove it is still the same product. Conversely, the scorecard cannot see that white-background purity is off. So both are required.
+
+Three design points in the scorecard:
+
+- **`cannot_tell` on a fidelity item blocks a pass** — not seeing clearly is not the same as being fine, and guessing must not carry it through
+- **Eight veto codes ignore the score**: a missing part, an extra part, or someone else's hand fails the image even at 10/10
+- **`rubric_version` is recorded with every verdict** — change a threshold and the version must change too, or past scores become incomparable
+
+The scorecard is a first screen, not a certificate. Look at the original yourself before publishing.
+
+### Package with the toolchain included
+
+Copying a skill directory carries only `SKILL.md` and `references/`; `tools/` lives at the repo root and would be left behind, turning every command in `SKILL.md` into a dead reference. To install with the tooling:
+
+```bash
+python tools/package_skill.py --verify
+```
+
+Produces `dist/Ecom-Prompt-Studio.zip`. After extraction `tools/` and `skills/` sit side by side, so the commands run as written. `--verify` extracts to a temp directory and actually runs lint, atom validation, and each script's self-test; any failure means no package.
 
 ## Criteria rules and corpus
 
@@ -166,11 +223,16 @@ The repo deliberately ships no command-line generation channel: prompts are fed 
 
 Picking the wrong skill is the most visible failure mode, so routing regression is the main line. CI runs three layers:
 
-1. **Static checks** (every push / PR): `lint_skills.py` + `check_cases.py` + `atomize.py check` + machine-check failure fixtures + twelve script self-tests + promptfoo config validation — no keys needed
+1. **Static checks** (every push / PR): `lint_skills.py` + `check_cases.py` + `atomize.py check` + offline trigger eval + machine-check failure fixtures + all script self-tests + promptfoo config validation — no keys needed
 2. **Routing regression** (every push / PR): promptfoo runs 34 prompts and asserts the matched skill name and **atom ID**; eval input reads the three `SKILL.md` files directly, so a routing-table edit takes effect immediately
 3. **Text quality sampling** (weekly + manual): generates prompts by atom ID from `source_text` and scores them with `llm-rubric` against that SOP's hard rules
 
-Beyond the three layers there's **real trigger evaluation** (`evals/real_trigger.py`), run manually at milestones: hand the skills to a real engine and see whether it loads them unprompted and reaches the right atom. The first two layers can't catch "installed but never triggered"; this one can, at the cost of being slow and potentially billable.
+Trigger quality has two tiers, one cheap and one expensive; day to day the cheap one carries it:
+
+- **Offline trigger eval** (`evals/offline_trigger.py`, zero cost, every PR): pure lexical + structured index, judged in the same order as the SKILL.md workflow — out-of-scope and injected requests first, then a user-named document number, then index scoring. It catches degradation like "the description lost its trigger terms" or "the index drifted from the cases"; it cannot catch paraphrase, which is promptfoo's job.
+- **Real trigger evaluation** (`evals/real_trigger.py`, manual at milestones): hand the skills to a real engine and see whether it loads them unprompted and reaches the right atom. Neither of the other two catches "installed but never triggered"; this one can, at the cost of being slow and potentially billable.
+
+The offline eval's self-test carries **always-true and always-false probes**: unrelated input must resolve to `none`, and an obviously in-scope request must match. Validating only positives lets the criteria silently widen or narrow.
 
 The case set has 34 entries including 4 English inputs — all three skills declare `English keywords` in their description, and these cases verify it actually works. There are also 7 **machine-check failure fixtures**: deliberately non-compliant images (grey background, undersized subject, low resolution, wrong aspect ratio) with assertions that the checker flags them, plus reverse controls confirming it doesn't over-flag. The fixture expectations are the acceptance criteria — when adding a platform rule, add the fixture first, change the checker second. Reversed order means treating the implementation as the spec.
 
@@ -194,18 +256,21 @@ Requires Node.js 22+. Selection rationale and real score baselines are in [`eval
 ├─ skills/
 │  ├─ ecom-prompt-sop/
 │  │  ├─ SKILL.md                   # five-studio entry: pick studio → locate atom → take templates and rules
+│  │  ├─ interface.json             # machine-readable interface: contracts / exclusions / tools / degradation
 │  │  ├─ EVAL.md                    # eval answer key (for graders, not referenced by SKILL.md)
 │  │  └─ references/
 │  │     ├─ _atoms/                 # 34 atoms + document index + rule index
-│  │     ├─ _rules/                 # platform / category / scenario criteria + AIGC disclosure duties
+│  │     ├─ _rules/                 # platform / category / scenario criteria + AIGC disclosure (single source for thresholds)
 │  │     ├─ _corpus/                # positive-sample corpus
 │  │     ├─ _brand-lock.md          # ten brand-lock fields
+│  │     ├─ _brand-lock.schema.json # brand-lock validation (hex colour, numeric K temperature)
 │  │     ├─ _output-contracts.md    # required sections per studio deliverable
 │  │     └─ _prompt-slots.md        # five-slot spec
 │  ├─ ecom-main-image-prompts/      # main-image director skill
-│  └─ ecom-detail-page-prompts/     # detail-page director skill
-├─ tools/                           # unified CLI, decompose, assemble, machine-check, fixtures, audit, stats
-├─ evals/                           # promptfoo configs, 34 cases, real trigger eval
+│  │  └─ references/tools/          # per-model syntax notes (gemini / gpt-image / seedream / qwen)
+│  └─ ecom-detail-page-prompts/     # detail-page director skill (ships the same references/tools/)
+├─ tools/                           # CLI, decompose, assemble, machine-check, fixtures, scorecard, packaging
+├─ evals/                           # promptfoo configs, 34 cases, offline and real trigger evals
 ├─ CHANGELOG.md
 ├─ README.en.md
 └─ .github/workflows/skill-eval.yml # CI (static / routing regression / quality sampling)
@@ -214,8 +279,11 @@ Requires Node.js 22+. Selection rationale and real score baselines are in [`eval
 ## Known limitations
 
 - **The corpus has only 2 seeds**: retrieval quality depends on sample size and must come from real generations — it can't be fabricated. Usable today, not yet accurate.
+- **Fidelity thresholds are uncalibrated**: `fidelity_score.py`'s pass line (fidelity 2/2, total ≥8) is a starting value, not yet checked against human-labelled images. Marked `rubric_version: 1.0-draft`; use it as a screen, not a certificate.
+- **Offline trigger eval can't catch paraphrase**: it verifies wording and index consistency; whether a rephrased request still triggers requires promptfoo (needs a key).
 - **AI-feel thresholds are empirical**: `visual_audit.py`'s saturation, smoothness, dead-white and edge-density criteria haven't been calibrated against batches of real good images vs AI images. Treat as hints, not verdicts.
 - **VLM review doesn't judge images**: `vlm_review.py` only generates a review sheet; VLMs are unreliable on fine-grained questions like "are the retention constraints satisfied", so scores are not pass criteria.
 - **OCR needs local tesseract**: missing dependencies yield `skipped`, never a fake pass; CI doesn't have it installed, so in-image text isn't checked in the cloud.
 - **Template extraction has minor noise**: documents without fenced code blocks go through bare-paragraph rules, so a few fragments may be broad and haven't been manually reviewed line by line.
 - **Real trigger evaluation needs your own engine**: `evals/real_trigger.py` provides only the framework and judging logic; engine command and credentials come from the user.
+- **Platform rules expire**: thresholds are conservative baselines and each platform carries a `checked_at`; `python tools/check_image.py --rules-stale 6` lists platforms overdue for review, but the review itself still means reading the official docs.

@@ -6,9 +6,27 @@
 
 - **判据**：34 篇 SOP 拆成 197 个提示词模板、571 条规则句、22 份检查清单、122 个占位符，每条规则带稳定 id 可单独引用与溯源
 - **范例**：正样本语料库，按相似度检索出已经出过好图的写法
-- **反馈**：出图后按平台机检，不过的不上架；机检规则本身有失败夹具守着，不会被悄悄放宽
+- **反馈**：出图后按平台机检，再过一道保真评分卡；机检规则本身有失败夹具守着，不会被悄悄放宽
 
-`skills/` 下三个目录各是一个完整技能，拷进本地技能目录即可使用；`tools/` 里是配套的工具链，任何 agent 平台或纯终端都能跑。
+`skills/` 下三个目录各是一个完整技能，拷进本地技能目录即可使用；`tools/` 里是配套的工具链，任何 agent 平台或纯终端都能跑。两者可以分开用，也可以打成自带工具链的包——见[装成自带工具链的包](#装成自带工具链的包)。
+
+## 给 agent 用
+
+技能正文是给人读的说明，但 agent 需要的是能直接调的东西。这一层单独准备了：
+
+```bash
+python tools/cli.py query-atom --category 杯壶 --output 主图 --action 生成   # 定位原子
+python tools/cli.py get-template --atom a21                                  # 一次取到模板+规则+清单
+python tools/cli.py find-rule --query 白底                                    # 反查规则出处
+python tools/cli.py validate-prompt --file p.txt --platform amazon           # 定稿前自查
+python tools/cli.py check-output out/main-01.png --platform amazon           # 出图后机检
+```
+
+五条命令都输出 JSON，结论与退出码一致——有问题时退出码非零，不会被当成通过。
+
+每个 SKILL.md 里都写了这层，并同时写了**没有脚本时怎么人工走**：判据完全一致，只是多几步手工。这样装了技能但没装工具链也不会卡住。
+
+`skills/ecom-prompt-sop/interface.json` 是给 agent 判断「该不该接这个技能」用的：输入输出契约、排除项、可调命令、交付门禁、降级路径都在里面。篇目路由不重复写在这份文件里，仍以 `references/_index.json` 为唯一权威。
 
 ## 快速开始
 
@@ -148,6 +166,32 @@ atomize  compose  slop     check    visual   fix_stats
 
 除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。
 
+### 出图后的两道验收
+
+机检和保真分的是两件事，缺一个都会漏：
+
+```bash
+# 第一道：几何与合规，脚本能自己判
+python tools/check_image.py out/main-01.png --platform amazon
+
+# 第二道：保真，agent 答九个固定问题，算分由脚本做
+python tools/fidelity_score.py --template > card.json   # 出空白卡，填 answers 与 defects
+python tools/fidelity_score.py card.json                # 通过则 exit 0
+
+# 两道一起过才算可用
+python tools/check_image.py out/main-01.png --platform amazon --require-review card.json
+```
+
+机检能证明「白底、占比、比例、尺寸都对」，证明不了「还是同一个产品」。反过来，保真评分卡看不见白底纯度不达标。所以两道都要过。
+
+评分卡的九问分五维：保真五项（轮廓/颜色/材质/文字/部件）、姿态、身份、瑕疵、比例。三个设计要点：
+
+- **保真项答 `cannot_tell` 直接阻断通过**——看不清不等于没问题，不能靠蒙过去
+- **八个否决码与分数无关**：少一个部件、多一个部件、出现别的手，即使总分 10/10 也判不通过
+- **`rubric_version` 随记录落盘**：阈值改动后版本号必须跟着改，否则历史评分不可比
+
+评分卡不给结论性背书，它是初筛。上架前自己再看一眼原图。
+
 ### 装成自带工具链的包
 
 按目录拷贝只带走 `SKILL.md` 与 `references/`，`tools/` 留在仓库根会全部失效。要连工具一起装：
@@ -179,11 +223,16 @@ SOP 给的是「方法」，下面几样给的是「判据与范例」：
 
 技能选错是用户最容易感知的问题，触发回归是评测主线。CI 分三层：
 
-1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + 机检失败夹具 + 十二个脚本自检 + promptfoo 配置结构校验，不需要密钥
+1. **静态检查**（每次 push / PR）：`lint_skills.py` + `check_cases.py` + `atomize.py check` + 离线触发评测 + 机检失败夹具 + 全部脚本自检 + promptfoo 配置结构校验，不需要密钥
 2. **触发回归**（每次 push / PR）：promptfoo 跑 34 条提示，断言命中的技能名与**原子编号**；评测输入直接读三个 `SKILL.md`，路由表一改立刻生效
 3. **文本质量抽检**（每周一 + 手动）：按原子编号读 `source_text` 生成提示词，用 `llm-rubric` 按该 SOP 的硬规则评分
 
-三层之外还有**真实触发评测**（`evals/real_trigger.py`），只在里程碑手动跑：把技能交给真实引擎，看它是否自行加载并走到正确原子。前两层抓不到「装了但不触发」，这一层能，代价是慢且可能计费。
+触发质量有两个层次，一贵一贱，日常靠前者：
+
+- **离线触发评测**（`evals/offline_trigger.py`，零成本，每次 PR 都跑）：纯词法 + 结构化索引，判据顺序对齐 SKILL.md 使用流程——越界注入先判 none，再按用户点名的篇号定位，最后走索引打分。抓的是「description 砍掉了触发词」「索引与用例脱节」这类退化；抓不到语义改写，那层归 promptfoo。
+- **真实触发评测**（`evals/real_trigger.py`，里程碑手动跑）：把技能交给真实引擎，看它是否自行加载并走到正确原子。前两者抓不到「装了但不触发」，这一层能，代价是慢且可能计费。
+
+离线评测的 selftest 带**恒真恒假探针**：无关输入必须判 none、明显电商请求必须命中。只验正例会让判据在无人察觉时变宽或变窄。
 
 用例集 34 条，含 4 条英文输入——三个技能的 description 都写了 `English keywords`，这几条用例就是验证它是否真生效。另有 7 条**机检失败夹具**：故意造不合规图（灰底、主体过小、低分辨率、错误比例），断言 checker 必定报出对应问题，反向对照则验证不误判。夹具的预期值就是验收标准——新增平台规则时先加夹具再改 checker，顺序反了就是拿实现当规范。
 
@@ -207,18 +256,21 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密�
 ├─ skills/
 │  ├─ ecom-prompt-sop/
 │  │  ├─ SKILL.md                   # 五工作室入口：判工位 → 定位原子 → 取模板与规则
+│  │  ├─ interface.json             # 机器可读接口层：输入输出 / 排除项 / 工具映射 / 降级路径
 │  │  ├─ EVAL.md                    # 评测答案键（评测者用，不被 SKILL.md 引用）
 │  │  └─ references/
 │  │     ├─ _atoms/                 # 34 个原子 + 篇目索引 + 规则总索引
-│  │     ├─ _rules/                 # 平台 / 品类 / 场景判据 + AIGC 标注义务
+│  │     ├─ _rules/                 # 平台 / 品类 / 场景判据 + AIGC 标注义务（平台阈值唯一源）
 │  │     ├─ _corpus/                # 正样本语料
 │  │     ├─ _brand-lock.md          # 品牌锁十个字段
+│  │     ├─ _brand-lock.schema.json # 品牌锁校验规则（色值必须十六进制、色温必须数值 K）
 │  │     ├─ _output-contracts.md    # 五工位交付物必含段
 │  │     └─ _prompt-slots.md        # 五槽位规范
 │  ├─ ecom-main-image-prompts/      # 主图导演技能
-│  └─ ecom-detail-page-prompts/     # 详情页导演技能
-├─ tools/                           # 统一 CLI、拆解、组装、机检、夹具、验收、统计
-├─ evals/                           # promptfoo 配置、34 条用例、真实触发评测
+│  │  └─ references/tools/          # 按模型拆的写法差异（gemini / gpt-image / seedream / qwen）
+│  └─ ecom-detail-page-prompts/     # 详情页导演技能（同样带 references/tools/）
+├─ tools/                           # CLI、拆解、组装、机检、夹具、评分卡、打包
+├─ evals/                           # promptfoo 配置、34 条用例、离线与真实触发评测
 ├─ CHANGELOG.md
 ├─ README.en.md
 └─ .github/workflows/skill-eval.yml # CI（静态 / 触发回归 / 质量抽检）
@@ -227,8 +279,11 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密�
 ## 已知限制
 
 - **语料库只有 2 条种子**：检索质量取决于样本量，靠真实出图积累，不能人工编造，现在属于「能用但不够准」
+- **保真评分阈值未校准**：`fidelity_score.py` 的通过线（保真 2/2、总分 ≥8）是起始值，还没用真人标注的图做对照，标在 `rubric_version: 1.0-draft`；当初筛用，不当证书
+- **离线触发评测抓不到语义改写**：它验的是词法与索引一致性，换个说法还能不能触发要靠 promptfoo（需密钥）
 - **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度判据还没用真实好图 / AI 图批次标定，当提示用，不当结论
 - **VLM 复核不自动判图**：`vlm_review.py` 只生成复核单；VLM 在「保留约束是否满足」这类细粒度判断上会失准，分数不当通过依据
 - **OCR 需本地装 tesseract**：缺依赖走 `skipped` 不误报通过；CI 环境未装，云端不检查图内文字
 - **模板抽取有少量噪声**：无围栏代码块的篇目走裸段落规则，个别片段可能偏宽，未逐篇人工复核
 - **真实触发评测需自备引擎**：`evals/real_trigger.py` 只提供框架与判定逻辑，引擎命令与凭据由使用者提供
+- **平台规则有复核期限**：阈值是保守基线，每个平台带 `checked_at`；`python tools/check_image.py --rules-stale 6` 可列出超期未复核的平台，但复核本身仍需人工查官方文档
