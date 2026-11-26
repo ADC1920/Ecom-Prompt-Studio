@@ -191,7 +191,7 @@ python tools/check_image.py out/aplus-hero.png --platform amazon-aplus
 python tools/cli.py check-output out/page-01.png --platform taobao   # 同上，经统一 CLI，输出 JSON
 ```
 
-图内文字多，建议装 OCR 依赖（pytesseract + tesseract）后检查错字与乱码；OCR 缺失时脚本标 skipped，不算通过。机检不过的页面不交付。
+图内文字多，机检时用 DeepSeek 视觉模型逐行读出文字，核对错字与乱码；需设 `DEEPSEEK_API_KEY`，没配时脚本标 skipped 并提示人工逐字核对，不算通过。机检不过的页面不交付。
 
 ## 输出格式
 

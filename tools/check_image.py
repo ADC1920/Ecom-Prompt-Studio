@@ -13,16 +13,19 @@
   python tools/check_image.py --selftest
 
 退出码：0 无 fail；1 有 fail（--strict 时 warn 也算失败）；2 缺 Pillow，只能做结构检查。
-仅依赖 Pillow；OCR 另需 pytesseract 与 tesseract，缺失时明确标 skipped，不算通过。
-tesseract 不在 PATH 时脚本会自己扫常见安装路径；默认 tessdata 缺中文时去找用户级 tessdata。
+仅依赖 Pillow（标准库以外无第三方包）。图内文字走 DeepSeek 视觉模型（deepseek-flash），
+需要 DEEPSEEK_API_KEY 环境变量；缺 key 或网络不通时该项标 skipped，不算通过。
+可用 DEEPSEEK_VISION_MODEL 更换模型、DEEPSEEK_ENDPOINT 指向兼容网关。
 """
 import argparse
+import base64
 import json
 import os
 import re
-import shutil
 import struct
 import sys
+import urllib.error
+import urllib.request
 import warnings
 from pathlib import Path
 
@@ -177,51 +180,117 @@ def corner_background(small):
     return (_median(p[0] for p in pixels), _median(p[1] for p in pixels), _median(p[2] for p in pixels))
 
 
-TESSERACT_CANDIDATES = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
-    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
-    r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe",
-    "/usr/bin/tesseract",
-    "/usr/local/bin/tesseract",
-    "/opt/homebrew/bin/tesseract",
-)
+DEEPSEEK_VISION_MODEL = os.environ.get("DEEPSEEK_VISION_MODEL", "deepseek-flash")
+DEEPSEEK_ENDPOINT = os.environ.get("DEEPSEEK_ENDPOINT", "https://api.deepseek.com/chat/completions")
+VISION_TIMEOUT = 90          # 秒；视觉推理比纯文本慢，给足但不无限等
+VISION_MAX_BYTES = 32 * 1024 * 1024   # DeepSeek 单图上限（base64 与外部 URL 同）
 
-TESSDATA_CANDIDATES = (
-    r"%LOCALAPPDATA%\tesseract\tessdata",
-    r"%APPDATA%\tesseract\tessdata",
-    "/usr/local/share/tessdata",
-    "/opt/homebrew/share/tessdata",
+# 只问「有没有字、写了什么」，不让模型评价画质——机检要的是可核对的事实，不是观感
+VISION_PROMPT = (
+    "请逐字读出这张电商商品图里出现的所有文字，包括标题、卖点、参数、Logo 上的字、"
+    "角标与水印文字。按行输出，每行原文照抄，不要翻译、不要改写、不要补全看不清的部分。"
+    "如果图中没有任何文字，只输出一个词：NONE。"
+    "不要输出任何解释、评价或前后缀。"
 )
 
 
-def resolve_ocr_env():
-    """pytesseract 只认 PATH 与 tesseract 自带 tessdata，Windows 装机版常两处都不到位。
+def resolve_vision_key():
+    """读 DeepSeek 密钥。只从环境变量取，绝不落文件。"""
+    key = (os.environ.get("DEEPSEEK_API_KEY") or "").strip()
+    return key or None
 
-    这里做一次兜底解析：先 PATH，再扫常见安装路径；默认 tessdata 缺中文时，
-    去找用户级的带中文 tessdata。显式设过 TESSDATA_PREFIX 就不覆盖。
-    返回 (二进制路径, tessdata 目录或 None)；二进制找不到时返回 (None, None)。
+
+def vision_ocr(path):
+    """用 DeepSeek 视觉模型读出图内文字。
+
+    返回 (lines, error)：
+      lines 非空、error 为 None → 识别成功
+      lines 为空列表、error 为 None → 成功且确认无文字
+      error 非 None → 没做成（缺 key、网络失败、额度问题等），调用方据此标 skipped
+
+    只用标准库，不引入 requests/openai；本仓库其余脚本也都是零第三方依赖。
     """
-    exe = shutil.which("tesseract")
-    if not exe:
-        for cand in TESSERACT_CANDIDATES:
-            path = os.path.expandvars(cand)
-            if os.path.isfile(path):
-                exe = path
-                break
-    if not exe:
-        return None, None
+    key = resolve_vision_key()
+    if not key:
+        return [], "未配置 DEEPSEEK_API_KEY"
 
-    if os.environ.get("TESSDATA_PREFIX"):
-        return exe, None
+    size = os.path.getsize(path)
+    if size > VISION_MAX_BYTES:
+        return [], f"图片 {size/1048576:.1f}MB 超过 DeepSeek 单图上限 32MB"
 
-    default_tessdata = os.path.join(os.path.dirname(exe), "tessdata")
-    if os.path.isfile(os.path.join(default_tessdata, "chi_sim.traineddata")):
-        return exe, None
-    for cand in TESSDATA_CANDIDATES:
-        path = os.path.expandvars(cand)
-        if os.path.isfile(os.path.join(path, "chi_sim.traineddata")):
-            return exe, path
-    return exe, None
+    try:
+        with open(path, "rb") as f:
+            raw = f.read()
+    except OSError as exc:
+        return [], f"读图失败：{exc}"
+
+    # 按实际字节判格式，不信扩展名——DeepSeek 也是按内容识别。
+    # 格式检查排在 key 检查之后是有意的：没 key 时先告诉用户配 key，
+    # 免得他先去换图再发现 key 没配。selftest 里两条路径分开验。
+    head = raw[:12]
+    if head[:8] == b"\x89PNG\r\n\x1a\n":
+        mime = "image/png"
+    elif head[:2] == b"\xff\xd8":
+        mime = "image/jpeg"
+    elif head[:6] in (b"GIF87a", b"GIF89a"):
+        mime = "image/gif"
+    elif head[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+        mime = "image/webp"
+    else:
+        return [], "格式不在 DeepSeek 支持范围（JPEG/PNG/GIF/WebP）"
+
+    payload = {
+        "model": DEEPSEEK_VISION_MODEL,
+        "messages": [{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": VISION_PROMPT},
+                {"type": "image_url",
+                 "image_url": {"url": f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"}},
+            ],
+        }],
+        "temperature": 0,
+        "stream": False,
+    }
+
+    req = urllib.request.Request(
+        DEEPSEEK_ENDPOINT,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=VISION_TIMEOUT) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        detail = ""
+        try:
+            detail = exc.read().decode("utf-8", "replace")[:200]
+        except Exception:
+            pass
+        if exc.code == 401:
+            return [], "DEEPSEEK_API_KEY 无效或已失效"
+        if exc.code == 402:
+            return [], "DeepSeek 账户余额不足"
+        if exc.code == 429:
+            return [], "DeepSeek 触发限流，稍后重试"
+        return [], f"HTTP {exc.code}：{detail}"
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        return [], f"网络失败：{exc}"
+    except json.JSONDecodeError:
+        return [], "响应不是合法 JSON"
+
+    try:
+        text = (body["choices"][0]["message"]["content"] or "").strip()
+    except (KeyError, IndexError, TypeError):
+        return [], "响应结构异常，未取到 content"
+
+    if text.upper() == "NONE" or not text:
+        return [], None
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    # 模型偶尔不听话带回解释，滤掉明显不是图内文字的行
+    lines = [ln for ln in lines if not ln.startswith(("如果", "图中", "这张", "以上"))]
+    return lines, None
 
 
 def analyze(path, spec, white_tol=None):
@@ -351,21 +420,15 @@ def analyze(path, spec, white_tol=None):
             add("occupancy", "fail", f"主体最长边仅占画布 {occ*100:.1f}%，低于 {spec['occupancy_min']*100:.0f}%",
                 "产品太小会被判不合格；用 --fix-occupancy 扩主体或重出")
 
-        # 图内文字（OCR 可选）
-        ocr = {"status": "skipped", "reason": "pytesseract 未安装"}
-        try:
-            import pytesseract
-
-            exe, tessdata = resolve_ocr_env()
-            if not exe:
-                raise ImportError("tesseract 二进制未找到")
-            pytesseract.pytesseract.tesseract_cmd = exe
-            if tessdata:
-                os.environ["TESSDATA_PREFIX"] = tessdata
-
-            text = pytesseract.image_to_string(im, lang="chi_sim+eng").strip()
-            visible = [line for line in text.splitlines() if line.strip() and len(line.strip()) > 1]
-            ocr = {"status": "done", "lines": len(visible), "sample": visible[:3]}
+        # 图内文字：走 DeepSeek 视觉模型。缺 key / 网络不通 → skipped，绝不当作通过
+        visible, ocr_err = vision_ocr(path)
+        if ocr_err:
+            ocr = {"status": "skipped", "reason": ocr_err}
+            add("text", "skipped", f"OCR 不可用：{ocr_err}",
+                "配置 DEEPSEEK_API_KEY 后重跑，或人工核对图内文字；skipped 不等于通过")
+        else:
+            ocr = {"status": "done", "lines": len(visible), "sample": visible[:3],
+                   "model": DEEPSEEK_VISION_MODEL}
             if visible and not spec["text_allowed"]:
                 add("text", "fail", f"检出 {len(visible)} 行文字，该平台首图不允许文字：{visible[0][:30]}",
                     "去掉图内文字后重出，文字挪到辅图或详情页")
@@ -373,11 +436,6 @@ def analyze(path, spec, white_tol=None):
                 add("text", "warn", f"检出 {len(visible)} 行文字", "该平台允许文字，但须真实可证，禁绝对化用语")
             else:
                 add("text", "pass", "未检出图内文字")
-        except ImportError:
-            add("text", "skipped", "OCR 不可用，图内文字未检查", "pip install pytesseract 并安装 tesseract；skipped 不等于通过")
-        except Exception as exc:
-            ocr = {"status": "skipped", "reason": f"OCR 执行失败: {exc}"}
-            add("text", "skipped", f"OCR 执行失败：{exc}", "检查 tesseract 与 chi_sim+eng 语言包是否可用")
         metrics["ocr"] = ocr
 
     return checks, metrics
@@ -500,11 +558,65 @@ def selftest():
         if not info or info[:2] != (900, 1200):
             fails.append(f"PNG 头解析异常: {info}")
 
+        # 5) 视觉 OCR 的判据不联网也要能验：缺 key 必须报错而不是假装无事发生
+        #    这几条挡住的是「OCR 悄悄失效却看不出来」，不是 DeepSeek 本身的表现。
+        saved_key = os.environ.pop("DEEPSEEK_API_KEY", None)
+        try:
+            lines, err = vision_ocr(str(p1))
+            if lines or not err:
+                fails.append("缺 DEEPSEEK_API_KEY 时 vision_ocr 应返回 error")
+            elif "DEEPSEEK_API_KEY" not in err:
+                fails.append(f"缺 key 的报错应点名该变量，实际：{err}")
+
+            # 不支持的格式必须提前拒绝，不能把非图片塞给 API。
+            # 格式判断在 key 之后，所以这里要先给个假 key 才能走到格式分支。
+            os.environ["DEEPSEEK_API_KEY"] = "selftest-not-a-real-key"
+            fake = tmp / "fake.bmp"
+            fake.write_bytes(b"BM" + b"\x00" * 64)
+            lines, err = vision_ocr(str(fake))
+            if not err or "格式" not in err:
+                fails.append(f"不支持的图片格式应被拒绝，实际：{err!r}")
+
+            # 用假响应验「无文字」与「有文字」两分支，避开联网与计费
+            real_urlopen = urllib.request.urlopen
+
+            def fake_reply(content):
+                def _open(req, timeout=None):
+                    payload = {"choices": [{"message": {"content": content}}]}
+                    body = json.dumps(payload).encode("utf-8")
+
+                    class _Resp:
+                        def read(self_inner):
+                            return body
+                        def __enter__(self_inner):
+                            return self_inner
+                        def __exit__(self_inner, *a):
+                            return False
+                    return _Resp()
+                return _open
+
+            try:
+                urllib.request.urlopen = fake_reply("NONE")
+                lines, err = vision_ocr(str(p1))
+                if err or lines:
+                    fails.append(f"模型答 NONE 时应判定无文字，实际 lines={lines} err={err!r}")
+
+                urllib.request.urlopen = fake_reply("夏日限定\n满199减30\n")
+                lines, err = vision_ocr(str(p1))
+                if err or len(lines) != 2 or lines[0] != "夏日限定":
+                    fails.append(f"模型返回两行文字时应原样取回，实际 lines={lines} err={err!r}")
+            finally:
+                urllib.request.urlopen = real_urlopen
+        finally:
+            os.environ.pop("DEEPSEEK_API_KEY", None)
+            if saved_key is not None:
+                os.environ["DEEPSEEK_API_KEY"] = saved_key
+
     if fails:
         for f in fails:
             print("FAIL", f)
         return 1
-    print("selftest: 4 组用例全部通过")
+    print("selftest: 5 组用例全部通过（含视觉 OCR 缺 key、格式拒绝、无文字、有文字）")
     return 0
 
 

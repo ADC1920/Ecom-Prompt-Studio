@@ -283,7 +283,7 @@ Requires Node.js 22+. Selection rationale and real score baselines are in [`eval
 - **Offline trigger eval can't catch paraphrase**: it verifies wording and index consistency; whether a rephrased request still triggers requires promptfoo (needs a key).
 - **AI-feel thresholds are empirical**: `visual_audit.py`'s saturation, smoothness, dead-white and edge-density criteria haven't been calibrated against batches of real good images vs AI images. Treat as hints, not verdicts.
 - **VLM review doesn't judge images**: `vlm_review.py` only generates a review sheet; VLMs are unreliable on fine-grained questions like "are the retention constraints satisfied", so scores are not pass criteria.
-- **OCR needs local tesseract**: missing dependencies yield `skipped`, never a fake pass; CI doesn't have it installed, so in-image text isn't checked in the cloud.
+- **In-image text recognition needs a DeepSeek key**: it uses `deepseek-flash` vision and requires `DEEPSEEK_API_KEY`. Without a key or network, the check is marked `skipped` with a prompt to verify by eye — never a fake pass. CI without that secret doesn't check in-image text in the cloud.
 - **Template extraction has minor noise**: documents without fenced code blocks go through bare-paragraph rules, so a few fragments may be broad and haven't been manually reviewed line by line.
 - **Real trigger evaluation needs your own engine**: `evals/real_trigger.py` provides only the framework and judging logic; engine command and credentials come from the user.
 - **Platform rules expire**: thresholds are conservative baselines and each platform carries a `checked_at`; `python tools/check_image.py --rules-stale 6` lists platforms overdue for review, but the review itself still means reading the official docs.
