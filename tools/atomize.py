@@ -34,7 +34,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REF_ROOT = HERE.parent / "skills" / "ecom-prompt-sop" / "references"
 ATOM_DIR = REF_ROOT / "_atoms"
-MECH_DIR = ATOM_DIR / "_mech"
+# 机械层是 merge 的中间产物，能从原子的 source_text 100% 重建（34/34 已实证），
+# 所以不随技能分发、不进版本库：放仓库根 .cache/，已在 .gitignore 内。
+MECH_DIR = HERE.parent / ".cache" / "_atoms_mech"
 INDEX_JSON = REF_ROOT / "_index.json"
 SEMANTIC_JSON = ATOM_DIR / "semantic.json"
 
@@ -241,6 +243,48 @@ def atom_id(idx):
     return f"a{idx:02d}"
 
 
+def rebuild_mech():
+    """从原子自带的 source_text 重算机械层，写进 MECH_DIR。
+
+    机械层只是缓存：原子是自包含的（source_text 全文在内），所以丢了能重建。
+    返回 (重建数, 缺 source_text 的原子编号)。
+    """
+    MECH_DIR.mkdir(parents=True, exist_ok=True)
+    items = load_index()
+    built, missing = 0, []
+    for i, item in enumerate(items, 1):
+        aid = atom_id(i)
+        ap = ATOM_DIR / f"{aid}.json"
+        if not ap.exists():
+            missing.append(aid)
+            continue
+        atom = json.loads(ap.read_text(encoding="utf-8"))
+        text = atom.get("source_text") or ""
+        if not text:
+            missing.append(aid)
+            continue
+        parsed = parse_text(text)
+        parsed.update({"id": aid, "no": item.get("no"),
+                       "source_sha": sha(text)})
+        (MECH_DIR / f"{aid}.json").write_text(
+            json.dumps(parsed, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
+        built += 1
+    return built, missing
+
+
+def ensure_mech():
+    """机械层缺失时自动重建，不让 merge 因为缓存被清而失败。"""
+    items = load_index()
+    if all((MECH_DIR / f"{atom_id(i)}.json").exists() for i in range(1, len(items) + 1)):
+        return True
+    built, missing = rebuild_mech()
+    if missing:
+        print(f"机械层重建失败，缺 source_text 的原子：{', '.join(missing)}", file=sys.stderr)
+        return False
+    print(f"机械层缓存缺失，已从 source_text 重建 {built} 个（缓存目录 {MECH_DIR}）")
+    return True
+
+
 def cmd_extract(_args):
     """已停用：索引不再带文件路径，机械层与原子均已就位。"""
     items = load_index()
@@ -268,6 +312,7 @@ def cmd_extract(_args):
 
 
 def cmd_summary(_args):
+    ensure_mech()
     items = load_index()
     for i, item in enumerate(items, 1):
         p = MECH_DIR / f"{atom_id(i)}.json"
@@ -286,6 +331,8 @@ def cmd_summary(_args):
 
 
 def cmd_merge(_args):
+    if not ensure_mech():
+        return 1
     items = load_index()
     semantic = {}
     if SEMANTIC_JSON.exists():

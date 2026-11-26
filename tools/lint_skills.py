@@ -10,6 +10,9 @@
 6. 密钥扫描：全库文本无常见密钥模式
 7. 索引覆盖：references/_index.json 与原子按编号对齐，工位名合法
 8. 工具引用：SKILL.md 提到的 tools/ 脚本必须真实存在
+9. 平台单源：platform.json 与 check_image 的平台集合、机检字段必须一致
+10. 构建产物：可再生的 _atoms/_mech 不得留在技能目录
+11. 文档计数：文档里写死的脚本/用例/原子数必须等于实际值
 
 用法: python tools/lint_skills.py [仓库根]（默认为脚本上级目录）
 0 错误退出码 0，否则 1；警告不阻断。
@@ -316,6 +319,175 @@ def check_rules(root: Path, problems: list, warnings: list) -> None:
                 problems.append(f"[corpus] 第 {i} 行缺字段 {field}")
 
 
+def check_platform_single_source(root: Path, problems: list) -> None:
+    """平台阈值只能有一个数据源：platform.json。
+
+    check_image 从该文件读阈值，自己只留机检兜底默认值。若 Python 侧又长出
+    一份完整平台表，两边迟早漂移，所以这里断言两边平台集合一致、机检字段齐全。
+    """
+    sys.path.insert(0, str(root / "tools"))
+    try:
+        import check_image
+    except ImportError as exc:
+        problems.append(f"[platform] 无法导入 check_image 校验单源: {exc}")
+        return
+
+    p = root / SKILLS_ROOT / "ecom-prompt-sop" / "references" / "_rules" / "platform.json"
+    try:
+        rules = json.loads(read(p))["platforms"]
+    except (OSError, json.JSONDecodeError, KeyError) as exc:
+        problems.append(f"[platform] 读 platform.json 失败: {exc}")
+        return
+
+    mech_fields = ("ratio", "ratio_tol", "white_bg", "white_tol", "border_white_min",
+                   "occupancy_min", "long_side_min", "max_bytes", "text_allowed")
+    for name, spec in rules.items():
+        # ratio 允许显式为 null（表示该平台不限比例），其余字段缺失即为配置漏洞
+        missing = [f for f in mech_fields if f not in spec or (spec[f] is None and f != "ratio")]
+        if missing:
+            problems.append(f"[platform] {name} 缺机检字段: {', '.join(missing)}")
+
+    only_json = set(rules) - set(check_image.PLATFORMS)
+    only_py = set(check_image.PLATFORMS) - set(rules)
+    if only_json:
+        problems.append(f"[platform] platform.json 有而 check_image 未加载: {sorted(only_json)}")
+    if only_py:
+        problems.append(f"[platform] check_image 有而 platform.json 没有: {sorted(only_py)}")
+
+
+def check_no_build_artifacts(root: Path, problems: list) -> None:
+    """可再生的构建产物不得留在技能目录里随包分发。
+
+    _atoms/_mech 曾是 merge 的中间产物：占 _atoms 目录约 47% 体积、无任何消费方、
+    也无校验，但能从原子的 source_text 完整重建。它现在放仓库根 .cache/，不进技能版图。
+    """
+    stale = root / SKILLS_ROOT / "ecom-prompt-sop" / "references" / "_atoms" / "_mech"
+    if stale.exists():
+        problems.append("[atoms] references/_atoms/_mech 是可再生缓存，不应留在技能目录"
+                        "（atomize.py 现在写仓库根 .cache/）")
+
+
+def check_doc_counts(root: Path, problems: list) -> None:
+    """文档里写死的计数必须等于实际文件数。
+
+    历史上 README 写 34 条用例、project-info 与 AGENTS.md 写 30 条，三处并存无校验，
+    改代码时没人跟，于是长期不一致。这里把能自动数出来的都验一遍。
+    """
+    cases = 0
+    cases_file = root / "evals" / "cases.json"
+    if cases_file.exists():
+        try:
+            cases = len(json.loads(read(cases_file)).get("cases") or [])
+        except json.JSONDecodeError:
+            problems.append("[docs] evals/cases.json 解析失败，无法核对用例数")
+            return
+
+    atoms_dir = root / SKILLS_ROOT / "ecom-prompt-sop" / "references" / "_atoms"
+    atoms = len(list(atoms_dir.glob("a[0-9][0-9].json"))) if atoms_dir.exists() else 0
+
+    expectations = [
+        # 脚本数已改为「全部脚本」的不写数字表述，不再校验；
+        # 保留仍写死数字的三项，能自动数出来就该自动验。
+        (root / "docs" / "project-info.md", "用例", cases, r"cases\.json\s*(\d+)\s*条"),
+        (root / "AGENTS.md", "用例", cases, r"(\d+)\s*条触发回归"),
+        (root / "README.md", "用例", cases, r"(\d+)\s*条用例"),
+        (root / "README.md", "原子", atoms, r"(\d+)\s*篇"),
+    ]
+    for path, label, actual, pattern in expectations:
+        if not path.exists():
+            continue
+        for found in sorted(set(re.findall(pattern, read(path)))):
+            if int(found) != actual:
+                problems.append(f"[docs] {path.name} 写{label} {found}，实际 {actual}")
+
+
+def check_interface(root: Path, problems: list) -> None:
+    """interface.json 是给 agent 看的接口层：引用的路径必须真实存在，工位名必须合法。
+
+    它的价值在于「不读全文就能判断该不该接」，所以一旦引用了不存在的文件，
+    比缺这个文件更糟——agent 会照着它去找，然后找不到。
+    """
+    skill_dir = root / SKILLS_ROOT / "ecom-prompt-sop"
+    path = skill_dir / "interface.json"
+    if not path.exists():
+        problems.append("[interface] 缺少 interface.json（agent 接口层）")
+        return
+    try:
+        data = json.loads(read(path))
+    except json.JSONDecodeError as exc:
+        problems.append(f"[interface] interface.json 解析失败: {exc}")
+        return
+
+    for key in ("intent", "routing", "tools", "gates", "degradation", "references"):
+        if not data.get(key):
+            problems.append(f"[interface] 缺字段 {key}")
+
+    intent = data.get("intent") or {}
+    for key in ("job_to_be_done", "inputs", "outputs", "exclusions"):
+        if not intent.get(key):
+            problems.append(f"[interface] intent 缺 {key}")
+
+    # 引用的参考文件必须存在（相对技能目录）
+    refs = data.get("references") or {}
+    for key, rel in refs.items():
+        if "{" in str(rel):
+            continue  # 花括号是并列写法，下面单独展开校验
+        if not (skill_dir / rel).exists() and not (root / rel).exists():
+            problems.append(f"[interface] references.{key} 指向不存在的路径: {rel}")
+    rules = str(refs.get("rules") or "")
+    for name in re.findall(r"\{([^}]+)\}", rules):
+        base = rules.split("{")[0]
+        for item in name.split(","):
+            target = (skill_dir / f"{base}{item}.json")
+            if not target.exists():
+                problems.append(f"[interface] references.rules 指向不存在的文件: {base}{item}.json")
+
+    # 工位名必须是五个之一，且与索引保持一致
+    order = (data.get("routing") or {}).get("station_order") or []
+    unknown = [s for s in order if s not in STATIONS]
+    if unknown:
+        problems.append(f"[interface] station_order 含非法工位: {unknown}")
+    if len(order) != len(STATIONS):
+        problems.append(f"[interface] station_order 应覆盖 {len(STATIONS)} 个工位，实际 {len(order)}")
+
+    # 工具命令里点名的脚本必须存在
+    for tool in data.get("tools") or []:
+        cmd = str(tool.get("command") or "")
+        for script in re.findall(r"tools/([A-Za-z0-9_]+\.py)", cmd):
+            if not (root / "tools" / script).exists():
+                problems.append(f"[interface] 工具命令引用了不存在的脚本: tools/{script}")
+
+
+def check_shared_tool_refs(root: Path, problems: list) -> None:
+    """两个技能各带一份 references/tools/，内容必须逐字节一致。
+
+    技能是独立安装单元，同一批模型写法不能只放一处（另一个技能装完就缺），
+    但又不能各改各的——复制两份必然漂移。折中：两边都带，用断言锁住相等。
+    """
+    main_dir = root / SKILLS_ROOT / "ecom-main-image-prompts" / "references" / "tools"
+    detail_dir = root / SKILLS_ROOT / "ecom-detail-page-prompts" / "references" / "tools"
+    if not main_dir.exists() and not detail_dir.exists():
+        problems.append("[tools] 两个技能都缺 references/tools/（模型写法库）")
+        return
+    if not main_dir.exists() or not detail_dir.exists():
+        problems.append("[tools] references/tools/ 只存在于一个技能，另一个装完会缺")
+        return
+
+    main_files = {p.name for p in main_dir.glob("*.md")}
+    detail_files = {p.name for p in detail_dir.glob("*.md")}
+    if main_files != detail_files:
+        problems.append(f"[tools] 两处模型库文件不一致：仅主图 {sorted(main_files - detail_files)}，"
+                        f"仅详情页 {sorted(detail_files - main_files)}")
+    for name in sorted(main_files & detail_files):
+        a = (main_dir / name).read_bytes()
+        b = (detail_dir / name).read_bytes()
+        if a != b:
+            problems.append(f"[tools] {name} 两处内容不同（复制后漂移）")
+
+    if "README.md" not in main_files:
+        problems.append("[tools] 模型库缺 README.md 索引")
+
+
 def main() -> int:
     # 本脚本的「自检」就是拿仓库根跑一遍完整检查。显式收下 --selftest，
     # 避免它被当成路径参数——否则会去 --selftest 这个不存在的目录里找技能。
@@ -333,6 +505,11 @@ def main() -> int:
     check_atom_refs(root, problems, warnings)
     check_placeholders(root, problems)
     check_secrets(root, problems)
+    check_platform_single_source(root, problems)
+    check_no_build_artifacts(root, problems)
+    check_doc_counts(root, problems)
+    check_interface(root, problems)
+    check_shared_tool_refs(root, problems)
     for w in warnings:
         print(f"警告: {w}")
     for p in problems:
