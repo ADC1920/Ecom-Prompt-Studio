@@ -139,11 +139,15 @@ def _run_script(script, argv, timeout=60):
 
 
 def validate_prompt(args):
-    prompt = args.prompt
+    # --file 优先；省略则从 stdin 读（管道或 heredoc 都能用），与 --help 的承诺一致。
     if args.file:
         prompt = Path(args.file).read_text(encoding="utf-8")
+    elif not sys.stdin.isatty():
+        prompt = sys.stdin.read()
+    else:
+        prompt = ""
     if not (prompt or "").strip():
-        return {"error": "缺少提示词：用 --file 指定文件或从 stdin 传入"}
+        return {"error": "缺少提示词：用 --file 指定文件，或从 stdin 管道传入"}
 
     with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as f:
         f.write(prompt)
@@ -288,12 +292,37 @@ def selftest():
     if not miss.get("error"):
         fails.append("不存在的原子应返回 error")
 
-    ns = argparse.Namespace(prompt="8k masterpiece 极致完美的保温杯主图", file=None,
-                            platform=None, scenario=None, category=None, slots=None)
-    v = validate_prompt(ns)
-    stdout = (v["slop"].get("stdout") or "")
-    if "空洞堆词" not in stdout and '"warn": 4' not in stdout.replace(",", "").replace(" ", ""):
-        fails.append("堆词提示词应被 slop_check 报出空洞堆词")
+    # validate-prompt 必须走真实入口：--file 与 stdin 两条路都得通。
+    # 这两条曾整体坏掉（args.prompt 不存在 → AttributeError），而 selftest 用
+    # 手工 Namespace 传参把它盖住了，所以这里改成落文件 + 子进程实跑。
+    with tempfile.TemporaryDirectory() as td:
+        probe = Path(td) / "p.txt"
+        probe.write_text("8k masterpiece 极致完美的保温杯主图", encoding="utf-8")
+        v = validate_prompt(argparse.Namespace(file=str(probe), platform=None, scenario=None,
+                                              category=None, slots=None))
+        stdout = (v["slop"].get("stdout") or "")
+        if "空洞堆词" not in stdout and '"warn": 4' not in stdout.replace(",", "").replace(" ", ""):
+            fails.append("堆词提示词应被 slop_check 报出空洞堆词")
+
+        # 退出码必须传递子脚本结论：绝对化用语是 error，CLI 整体必须非零
+        bad = Path(td) / "bad.txt"
+        bad.write_text("全网最低价，国家级品质。", encoding="utf-8")
+        rc = main(["validate-prompt", "--file", str(bad), "--platform", "amazon"])
+        if rc == 0:
+            fails.append("含绝对化用语的提示词应让 CLI 返回非零退出码（假绿）")
+
+    # check-output 的返回形态与 validate-prompt 不同：exit 在顶层而非子键。
+    # 这处曾漏判（子脚本 exit=1 但 CLI 返回 0），所以单独验一次灰度图。
+    try:
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as td:
+            grey = Path(td) / "grey.png"
+            Image.new("RGB", (1200, 1200), (208, 208, 208)).save(grey)
+            rc = main(["check-output", str(grey), "--platform", "amazon"])
+            if rc == 0:
+                fails.append("灰底图机检应让 CLI 返回非零退出码（假绿，顶层 exit 未传递）")
+    except ImportError:
+        pass  # 无 Pillow 时跳过这项；check_image 自己会标 skipped 并返回 2
 
     # 规则索引：571 条必须全在，且能按关键词回查正文
     rules_json = ATOM_DIR / "rules.json"
@@ -322,11 +351,21 @@ def main(argv=None):
         return selftest()
 
     args = build_parser().parse_args(argv)
-    if args.cmd == "validate-prompt" and not args.file:
-        args.prompt = sys.stdin.read()
     result = args.func(args)
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0 if not result.get("error") else 1
+    # 退出码必须反映真实结论，否则调用方（CI / agent）会把「检查发现问题」当成通过。
+    # 两种返回形态都要覆盖：
+    #   validate-prompt 把子脚本结果嵌在 slop / rules 键里
+    #   check-output 直接就是子脚本结果，exit 在顶层
+    if result.get("error"):
+        return 1
+    if result.get("exit") not in (None, 0):
+        return 1
+    for key in ("slop", "rules"):
+        part = result.get(key)
+        if isinstance(part, dict) and part.get("exit") not in (None, 0):
+            return 1
+    return 0
 
 
 if __name__ == "__main__":

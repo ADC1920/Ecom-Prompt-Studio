@@ -56,6 +56,28 @@ description: "电商视觉五工作室（AI 主图台 / AI 详情页台 / SKU �
 6. 严格按原子里的模板与步骤执行，并按该工位的门禁自查；原子里的硬规则（产品外观锁定、信息真实性、不露脸等）不得删减或弱化。
 7. 原子未覆盖的边缘品类，选最接近的品类专项或通用篇，并向用户说明选择依据。
 
+### 有仓库脚本时优先走 CLI
+
+如果本地有整个仓库（不是只拷了技能目录），第 4-5 步可以压成一条命令，不必自己翻索引再逐个读 JSON 字段：
+
+```bash
+python tools/cli.py query-atom --category 杯壶 --output 主图 --action 生成   # 定位原子，返回编号、标题、得分与依据
+python tools/cli.py get-template --atom a21                                  # 一次取到模板 + 规则 + 清单 + 占位符
+python tools/cli.py find-rule --query 白底                                    # 按关键词或规则 id 反查规则全文与所属原子
+```
+
+三条命令都输出 JSON，供任意 agent 直接消费。`query-atom` 只按索引里的结构化字段打分（品类 40 分、产物 25 分、动作 25 分），不做语义猜测，所以命中结果可复现、可复核。
+
+**没有脚本时**：按第 4-5 步人工走——读 `references/_index.json` 定位编号，再读 `references/_atoms/aNN.json` 取字段。判据完全一致，只是多几步手工。
+
+### 交付前校验
+
+```bash
+python tools/cli.py validate-prompt --file prompt.txt --platform amazon   # 反 AI 感 + 平台/场景/品类规则引擎
+```
+
+它把 `slop_check`（堆词、绝对化用语、AI 痕迹）与 `rules_engine`（平台阈值、禁文字、必填槽位、AI 标注义务）一起跑。**没有脚本时**：按 `references/_output-contracts.md` 的「通用要求」逐条人工过，重点是有没有绝对化用语、有没有残留占位符、平台的文字与模特政策是否核对过。
+
 ## 与既有技能的分工
 
 裸主图/裸详情页的通用方案由 `ecom-main-image-prompts`、`ecom-detail-page-prompts` 承接（第 3 步第一判据）。本技能的价值在**拆解后的模板与细分场景**：品类专项规则、爆款反推、SKU 批量、图翻译、模特与视频等，以及用户点名要完整 SOP 时。

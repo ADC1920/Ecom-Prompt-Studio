@@ -2,7 +2,9 @@
 """出图后平台机检：把 platform-rules.md 里能机检的硬约束落成检查。
 
 检查项：格式、尺寸、比例、文件大小、透明通道、背景纯度、主体占比、图内文字。
-平台基线见下方 PLATFORMS 表，取值是保守基线，不是平台审核结论；平台官方规则更新时以官方为准。
+平台阈值只有一个数据源：skills/ecom-prompt-sop/references/_rules/platform.json。
+本脚本不硬编码阈值，读不到该文件时退回内置 DEFAULT_PLATFORMS（仅保底，会打警告）。
+数值是保守基线，不是平台审核结论；平台官方规则更新时以官方为准。
 
 用法：
   python tools/check_image.py out/main-01.png --platform amazon
@@ -17,6 +19,7 @@ tesseract 不在 PATH 时脚本会自己扫常见安装路径；默认 tessdata 
 import argparse
 import json
 import os
+import re
 import shutil
 import struct
 import sys
@@ -30,9 +33,19 @@ try:
 except ImportError:  # 缺 Pillow 时降级为结构检查，不阻断
     HAS_PIL = False
 
-# 保守基线。ratio / ratio_tol：目标比例与容差；white_tol：与纯白的单通道容差；
-# occupancy_min：主体 bbox 面积比下限；long_side_min：长边像素下限；max_bytes：文件大小上限。
-PLATFORMS = {
+RULES_JSON = (Path(__file__).resolve().parent.parent
+              / "skills" / "ecom-prompt-sop" / "references" / "_rules" / "platform.json")
+
+# 机检专用字段的兜底默认值。platform.json 是权威源，这里只补缺失字段，不改已有值。
+MECH_DEFAULTS = {
+    "ratio_tol": 0.03,
+    "border_white_min": 0.88,
+    "max_bytes": 10 * 1024 * 1024,
+}
+
+# 读不到 platform.json 时的保底表（例如技能单独安装、脚本被拷走）。
+# 不是权威源：正常情况下永远读 platform.json，走到这里会打 stderr 警告。
+DEFAULT_PLATFORMS = {
     "amazon": dict(ratio=(1, 1), ratio_tol=0.02, white_bg=True, white_tol=6, border_white_min=0.98,
                    occupancy_min=0.85, long_side_min=1600, max_bytes=10 * 1024 * 1024, text_allowed=False),
     "amazon-aplus": dict(ratio=None, ratio_tol=0.05, white_bg=False, white_tol=12, border_white_min=0.90,
@@ -58,6 +71,38 @@ PLATFORMS = {
     "generic": dict(ratio=(1, 1), ratio_tol=0.03, white_bg=False, white_tol=12, border_white_min=0.88,
                     occupancy_min=0.65, long_side_min=800, max_bytes=20 * 1024 * 1024, text_allowed=True),
 }
+
+
+def load_platforms(path=None):
+    """从 platform.json 读平台阈值，转成机检要的形状。返回 (platforms, source)。
+
+    只取机检字段，忽略 ai_label / copy_forbidden 等文案类字段（那些归 rules_engine）。
+    ratio 统一转 tuple，与内部比较保持一致。
+    """
+    target = Path(path) if path else RULES_JSON
+    try:
+        raw = json.loads(target.read_text(encoding="utf-8"))["platforms"]
+    except (OSError, ValueError, KeyError):
+        return {k: dict(v) for k, v in DEFAULT_PLATFORMS.items()}, "builtin"
+
+    out = {}
+    for name, spec in raw.items():
+        if not isinstance(spec, dict):
+            continue
+        merged = dict(MECH_DEFAULTS)
+        for key in ("ratio", "ratio_tol", "white_bg", "white_tol", "border_white_min",
+                    "occupancy_min", "long_side_min", "max_bytes", "text_allowed"):
+            if key in spec and spec[key] is not None:
+                merged[key] = spec[key]
+            elif key == "ratio":
+                merged[key] = None
+        if isinstance(merged.get("ratio"), list):
+            merged["ratio"] = tuple(merged["ratio"])
+        out[name] = merged
+    return out or {k: dict(v) for k, v in DEFAULT_PLATFORMS.items()}, str(target)
+
+
+PLATFORMS, PLATFORM_SOURCE = load_platforms()
 
 ALIASES = {
     "amazon-us": "amazon", "amazon.com": "amazon", "亚马逊": "amazon",
@@ -463,6 +508,91 @@ def selftest():
     return 0
 
 
+def staleness_report(path=None, months=6):
+    """检查平台规则的复核时间是否过旧。
+
+    platform.json 每个平台都有 checked_at（如 "2026-10"）。平台规则会变，
+    「文档里提醒一句」不产生任何信号，所以把它算成可执行判断：
+    超过 months 个月未复核的平台列出来，CI 可据此提醒。
+    """
+    from datetime import date
+
+    target = Path(path) if path else RULES_JSON
+    try:
+        platforms = json.loads(target.read_text(encoding="utf-8"))["platforms"]
+    except (OSError, ValueError, KeyError):
+        return {"error": f"读不到 {target}"}
+
+    today = date.today()
+    stale, fresh, unknown = [], [], []
+    for name, spec in platforms.items():
+        stamp = str(spec.get("checked_at") or "").strip()
+        m = re.match(r"^(\d{4})-(\d{1,2})$", stamp)
+        if not m:
+            unknown.append({"platform": name, "checked_at": stamp or "(空)"})
+            continue
+        year, month = int(m.group(1)), int(m.group(2))
+        age_months = (today.year - year) * 12 + (today.month - month)
+        entry = {"platform": name, "checked_at": stamp, "age_months": age_months}
+        (stale if age_months > months else fresh).append(entry)
+
+    return {"limit_months": months, "stale": stale, "fresh": fresh,
+            "unknown": unknown, "source": str(target)}
+
+
+def review_gate(images, card_path, platform=None):
+    """验收闸门：机检通过还不够，得有一张通过的保真评分卡。
+
+    动机：批量出图时最容易出的问题是「几何全过、产品不对」——白底、占比、比例都对，
+    但商品被换了个样。机检看不出这个，只有保真评分能看。闸门的作用是逼出那张卡，
+    没卡就不放行，避免「一次跑一批全当过了」。
+
+    评分卡里 image_generated 必须与本次被检图对得上，防止拿旧卡复用。
+    """
+    import subprocess
+
+    card_file = Path(card_path)
+    if not card_file.exists():
+        return {"passed": False, "reason": f"评分卡不存在：{card_path}",
+                "hint": "先跑 python tools/fidelity_score.py --template > card.json 并填写"}
+
+    proc = subprocess.run(
+        [sys.executable, "-I", "-X", "utf8", str(Path(__file__).with_name("fidelity_score.py")),
+         str(card_file), "--json"],
+        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
+    try:
+        result = json.loads(proc.stdout or "{}")
+    except json.JSONDecodeError:
+        return {"passed": False, "reason": "评分卡输出无法解析",
+                "stderr": (proc.stderr or "").strip()[:200]}
+
+    if proc.returncode == 2:
+        return {"passed": False, "reason": "评分卡结构不合法", "detail": (proc.stderr or "").strip()[:300]}
+
+    # 卡上的待检图必须与本次被检图一致
+    try:
+        card = json.loads(card_file.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        card = {}
+    recorded = str(card.get("image_generated") or "").strip()
+    names = {Path(p).name for p in images}
+    if recorded and Path(recorded).name not in names:
+        return {"passed": False,
+                "reason": f"评分卡记录的是 {recorded}，与本次被检图 {sorted(names)} 不对应",
+                "hint": "一张卡只评一张图，换图请重新评分"}
+
+    ok = bool(result.get("verified"))
+    return {
+        "passed": ok,
+        "verified": ok,
+        "total": result.get("total"),
+        "fidelity": result.get("fidelity"),
+        "veto_codes": result.get("veto_codes"),
+        "blind_items": result.get("blind_items"),
+        "reasons": result.get("verdict_reasons"),
+    }
+
+
 def main():
     ap = argparse.ArgumentParser(description="出图后平台机检")
     ap.add_argument("images", nargs="*", help="待检图片路径，可多个")
@@ -472,10 +602,25 @@ def main():
     ap.add_argument("--fix", nargs="?", const="out/checked", help="自动修正并输出到目录，默认 out/checked")
     ap.add_argument("--fix-occupancy", action="store_true", help="修正时按目标占比放大主体（会裁掉边缘留白）")
     ap.add_argument("--selftest", action="store_true", help="离线自检，不读外部图片")
+    ap.add_argument("--rules-stale", type=int, nargs="?", const=6, metavar="月",
+                    help="检查平台规则多久未复核（默认 6 个月），不改图")
+    ap.add_argument("--require-review", metavar="评分卡",
+                    help="验收闸门：机检通过后还需这张保真评分卡通过，否则整体不通过")
     args = ap.parse_args()
 
     if args.selftest:
         return selftest()
+
+    if args.rules_stale is not None:
+        report = staleness_report(months=args.rules_stale)
+        if report.get("error"):
+            print(f"FAIL {report['error']}", file=sys.stderr)
+            return 1
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        if report["unknown"]:
+            print(f"注意：{len(report['unknown'])} 个平台缺 checked_at，无法判断新鲜度", file=sys.stderr)
+        # 过旧不是「检查失败」，是「该复核了」——用退出码 1 让 CI 能出告警而不阻断主流程
+        return 1 if report["stale"] else 0
 
     if not args.images:
         ap.print_help()
@@ -507,8 +652,21 @@ def main():
             entry["verdict"] = "pass"
         results.append(entry)
 
+    # 验收闸门：机检结论之上再加一道保真卡，缺卡或不通过都算整体失败
+    gate = None
+    if args.require_review:
+        gate = review_gate(args.images, args.require_review, platform)
+        if not gate.get("passed"):
+            has_fail = True
+
     if args.json:
-        print(json.dumps(results, ensure_ascii=False, indent=2))
+        # 无闸门时保持历史契约：纯数组，一次检多图就是一串结果。
+        # 带闸门时才升成对象，把机检结果与保真卡结论放在一起，且 results 键仍可直取。
+        if gate is None:
+            print(json.dumps(results, ensure_ascii=False, indent=2))
+        else:
+            print(json.dumps({"platform": platform, "results": results, "review_gate": gate},
+                             ensure_ascii=False, indent=2))
     else:
         icon = {"pass": "OK  ", "warn": "WARN", "fail": "FAIL", "skipped": "SKIP"}
         for r in results:
@@ -524,6 +682,22 @@ def main():
             if r.get("fixed"):
                 print(f"  已修正输出：{r['fixed']}")
 
+        if gate is not None:
+            status = "PASS" if gate.get("passed") else "FAIL"
+            print(f"\n验收闸门 · {status}")
+            if gate.get("passed"):
+                print(f"  保真 {gate.get('fidelity')}/2 · 总分 {gate.get('total')}")
+            else:
+                if gate.get("reason"):
+                    print(f"  {gate['reason']}")
+                for reason in gate.get("reasons") or []:
+                    print(f"  - {reason}")
+                if gate.get("veto_codes"):
+                    print(f"  否决码：{'、'.join(gate['veto_codes'])}")
+                if gate.get("blind_items"):
+                    print(f"  看不清：{'、'.join(gate['blind_items'])}")
+
+    # 缺 Pillow 时像素类检查全部 skipped，绝不能当作通过
     if degraded:
         print("\n注意：未安装 Pillow，背景/占比/文字项全部 skipped，结论不完整。", file=sys.stderr)
         return 2

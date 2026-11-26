@@ -41,7 +41,7 @@ description: "电商详情页生图提示词导演：基于上传的产品实拍
 13. 自行决定（或按用户填写）最适合当前产品的页面数量、页面关键词、页面顺序、页面任务和视觉表达方式。
 14. 定义一套**套图风格锁**——整套页面共用的色板、光影、字体气质、版式语言和装饰系统，每页原样复用。
 15. 为每一页输出可直接交给生图工具执行的提示词。
-16. 用户指定了生图工具的，读 `references/tool-adaptation.md`，把提示词调整为该工具偏好的写法；未指定则用通用写法。
+16. 用户指定了生图工具的，先读 `references/tool-adaptation.md` 拿通用写法，再按模型读 `references/tools/` 下对应文件，把提示词改成该模型偏好的语法；未指定则用通用写法。
 17. **不得自行出图**。本项目限制任何图片生成模型（Qwen-Image 全系、wan/万相、Seedream、Gemini/Nano Banana、GPT-Image、FLUX、z-image 等，含 MCP 工具与网页端代操作）在调用前必须先说明用途、模型、张数和预计花费，取得用户明确同意后才可调用；约束一律按本句执行。未获授权时只交付提示词文本。
 
 ## 硬规则
@@ -171,7 +171,15 @@ description: "电商详情页生图提示词导演：基于上传的产品实拍
 
 ### 十三、反 AI 感与生成后机检
 
-**文字层**：提示词里不堆空洞词（8k / masterpiece / hyperrealistic / 极致 / 完美 / 震撼）。详情页的说服力来自信息层级与证据，不来自形容词。定稿后可用仓库脚本 `tools/slop_check.py` 自查；单独安装技能目录时不带该脚本，按本段清单人工过一遍。
+**文字层**：提示词里不堆空洞词（8k / masterpiece / hyperrealistic / 极致 / 完美 / 震撼）。详情页的说服力来自信息层级与证据，不来自形容词。
+
+定稿前用一条命令跑完堆词、绝对化用语与平台规则：
+
+```bash
+python tools/cli.py validate-prompt --file prompt.txt --platform taobao   # 反 AI 感 + 规则引擎
+```
+
+**单独安装技能目录时不带脚本**：按本段清单人工过一遍——有没有堆词、有没有绝对化用语或未证实功效、平台是否禁文字、必填槽位是否齐全。
 
 **视觉层**：规避八类 AI 痕迹——过度光滑材质、塑料感高光、完美对称、悬浮无投影、不可能成立的反射、过饱和、主体边缘光晕、文字状伪影。用正向描述替代，不要在边界句里堆负面词。
 
@@ -180,6 +188,7 @@ description: "电商详情页生图提示词导演：基于上传的产品实拍
 ```bash
 python tools/check_image.py out/page-01.png --platform taobao
 python tools/check_image.py out/aplus-hero.png --platform amazon-aplus
+python tools/cli.py check-output out/page-01.png --platform taobao   # 同上，经统一 CLI，输出 JSON
 ```
 
 图内文字多，建议装 OCR 依赖（pytesseract + tesseract）后检查错字与乱码；OCR 缺失时脚本标 skipped，不算通过。机检不过的页面不交付。

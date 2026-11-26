@@ -141,9 +141,22 @@ atomize  compose  slop     check    visual   fix_stats
 | `tools/vlm_review.py` | 生成视觉复核单：启发式分只提示，结论由人给 |
 | `tools/fix_stats.py` | 从 manifest 统计每条修复句的真实生效率 |
 | `tools/corpus.py` | 正样本语料：录入、相似度检索、编译成 few-shot 范例段 |
+| `tools/fidelity_score.py` | 保真九问评分卡：agent 答固定九问，算分与八个否决码由脚本做；保真项答「看不清」直接阻断通过 |
+| `tools/brand_lock.py` | 品牌锁编译：把十个必锁字段编译成固定的提示词前缀，避免每张现编导致措辞漂移 |
+| `tools/package_skill.py` | 打自包含 zip：出包后解压实跑工具链校验，装完不会丢脚本 |
 | `tools/lint_skills.py` | 静态检查全集，CI 的第一道门 |
 
 除 `check_image.py`、`visual_audit.py`、`vlm_review.py` 用到 Pillow 外全是标准库；带 `--selftest` 的都能离线验，不依赖密钥与网络。
+
+### 装成自带工具链的包
+
+按目录拷贝只带走 `SKILL.md` 与 `references/`，`tools/` 留在仓库根会全部失效。要连工具一起装：
+
+```bash
+python tools/package_skill.py --verify
+```
+
+出 `dist/Ecom-Prompt-Studio.zip`，解压后 `tools/` 与 `skills/` 同级，`SKILL.md` 里的命令直接可跑。`--verify` 会解压到临时目录实跑 lint、原子校验与各脚本自检，任何一步失败即不出包。
 
 ## 判据规则与语料
 

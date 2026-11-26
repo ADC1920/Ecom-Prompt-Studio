@@ -19,3 +19,9 @@ _work/
 
 # ZCode 平台项目规则与本机会话缓存
 .zcode/
+
+# 构建缓存（可再生物，从原子的 source_text 重建）
+.cache/
+
+# 打包产物（python tools/package_skill.py 生成，需要时现打）
+dist/
