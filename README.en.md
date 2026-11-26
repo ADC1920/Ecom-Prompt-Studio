@@ -4,7 +4,7 @@ Prompt engineering for e-commerce visuals: turning "how to write a prompt" into 
 
 Models can already write prompts. What's missing is three things — **criteria, examples, feedback** — and this repo is built around exactly those:
 
-- **Criteria**: 34 SOPs decomposed into 197 prompt templates, 571 rule clauses, 22 checklists, and 122 placeholders. Every rule carries a stable ID so it can be cited and traced on its own.
+- **Criteria**: 197 prompt templates, 571 rule clauses, 22 checklists, and 122 placeholders. Every rule carries a stable ID so it can be cited and traced on its own.
 - **Examples**: a positive-sample corpus, retrieved by similarity, so you can borrow wording that has already produced good images.
 - **Feedback**: platform machine checks after generation, then a fidelity scorecard. What fails doesn't ship; the checks themselves are guarded by failure fixtures so they can't be quietly relaxed.
 
@@ -104,7 +104,7 @@ Mixed documents (category-specific, general-purpose, multi-SKU) are shared acros
 
 SOP content mixes five things: explanation, prompt templates, rule clauses, checklists, and placeholders. Dropped into context raw, the model has to pick them out of prose.
 
-`tools/atomize.py` separates them, and keeps the full original text in the atom (`source_text`), so one file is enough:
+`tools/atomize.py` sorts them into their own fields, and keeps the full original text in the atom (`source_text`), so one file is enough:
 
 | Field | Content | Use |
 |---|---|---|
@@ -114,7 +114,7 @@ SOP content mixes five things: explanation, prompt templates, rule clauses, chec
 | `placeholders` | placeholders to replace | prevent outputting them verbatim |
 | `source_text` | full original text | read when context or examples are needed |
 
-Totals: **197 templates · 571 rules · 22 checklists · 122 placeholders (deduplicated)**, all retrievable by ID.
+What's in the library: **197 templates · 571 rules · 22 checklists · 122 placeholders (deduplicated)**, every item retrievable by ID.
 
 ```bash
 python tools/atomize.py check     # self-containment: source_text, templates, rules, checklists agree
@@ -149,7 +149,7 @@ atomize      compose        slop           check_image      visual     fix_stats
 | Tool | What it does |
 |---|---|
 | `tools/cli.py` | single entry point: `query-atom` locates atoms, `get-template` fetches templates, `find-rule` searches rules, `validate-prompt` validates, `check-output` machine-checks |
-| `tools/atomize.py` | decomposition and self-containment checks: stable rule IDs, rule index generation, recompute verification |
+| `tools/atomize.py` | atom maintenance and self-containment checks: stable rule IDs, rule index generation, recompute verification |
 | `tools/compose_prompt.py` | five-slot assembly: fidelity → scene → subject → details → use case → constraints, adds platform constraints and runs required-field checks |
 | `tools/slop_check.py` | pre-final check for SD-era filler words, absolutes, fake promotions, efficacy claims, AI tells |
 | `tools/rules_engine.py` | validates slots against platform, category, and scenario rule files; `--inject` adds default constraints |
