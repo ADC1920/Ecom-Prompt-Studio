@@ -1,0 +1,99 @@
+{
+  "schema": "ecom-prompt-studio/skill-interface@1",
+  "name": "ecom-prompt-sop",
+  "version": "1.0.0",
+  "updated_at": "2026-11-26",
+  "note": "机器可读接口层：让 agent 不读全文就能判断「该不该接、要什么输入、调什么命令、没脚本怎么降级」。篇目路由不在这里——权威在 references/_index.json，本文件只 add-ref 不复制，避免两份漂移。",
+
+  "intent": {
+    "job_to_be_done": "把电商生图需求按工位路由到唯一原子，取出可直接投喂的中文提示词模板与配套规则、清单、占位符，并在交付前按输出契约与平台判据自检。",
+    "target_users": ["电商卖家与运营", "视觉设计师", "AI 生图使用者"],
+    "inputs": [
+      "产品信息：品类、可见卖点、参数（有图更好）",
+      "目标平台与站点（决定阈值、文字政策、AI 标注义务）",
+      "产物类型：主图 / 详情页 / 买家秀 / SKU 图 / 模特图 / 视频 / 反推",
+      "可选：现有产品图、参考图、品牌规范、禁止出现的内容"
+    ],
+    "outputs": [
+      "可直接投喂的完整中文提示词（逐张/逐屏）",
+      "规划表（产物结构由 references/_output-contracts.md 规定）",
+      "合规与真实性自查结论",
+      "不确定性标注（哪些是假设，哪些待补证）"
+    ],
+    "exclusions": [
+      "纯文案撰写、商品标题、Listing SEO",
+      "单纯抠图、修图、换背景、压缩图片",
+      "翻译非图内对象（邮件、文章、合同）",
+      "投放优化、店铺运营、销量分析",
+      "替用户直接出图（本项目只产提示词，不算图、不代付费用）",
+      "需要律师结论的法律判断"
+    ]
+  },
+
+  "routing": {
+    "authority": "references/_index.json",
+    "note": "篇目、工位、触发词、槽位、产物全部以 _index.json 为准，本文件不复制。要路由就查它，或用 tools/cli.py query-atom。",
+    "station_order": ["反推台", "SKU台", "模特与视频台", "详情页台", "主图台"],
+    "station_rule": "自上而下取第一个命中项：动作是反推/翻新/复刻/对标 → 反推台（不看产物）；要批量变体 → SKU台；要真人或视频 → 模特与视频台；产物是详情页 → 详情页台；其余 → 主图台。",
+    "bare_request_handoff": {
+      "note": "裸主图方案转主图导演技能，裸详情页方案转详情页导演技能。判据：无品类专项命中、不涉反推/翻新/复刻/SKU/比例转换/图内文字翻译/买家秀/场景图/模特换装/视频，且未点名本库 SOP。",
+      "main_image": "ecom-main-image-prompts",
+      "detail_page": "ecom-detail-page-prompts"
+    }
+  },
+
+  "tools": [
+    {
+      "command": "python tools/cli.py query-atom --category <品类> --output <产物> --action <动作>",
+      "returns": "JSON：命中的原子 id、标题、工位、得分与依据",
+      "when": "已识别品类/产物/动作三者之一后，定位唯一原子"
+    },
+    {
+      "command": "python tools/cli.py get-template --atom <aNN> [--index <n>]",
+      "returns": "JSON：该原子的模板、规则、清单、占位符",
+      "when": "已定位原子，要一次取全部可用内容，不必逐个读 JSON 字段"
+    },
+    {
+      "command": "python tools/cli.py find-rule --query <关键词或规则id>",
+      "returns": "JSON：规则全文与所属原子、工位",
+      "when": "要核对某条具体判据（如「白底」「露脸」）出自哪篇"
+    },
+    {
+      "command": "python tools/cli.py validate-prompt --file <路径> --platform <平台>",
+      "returns": "JSON：反 AI 感与规则引擎结论；有问题时退出码非零",
+      "when": "提示词定稿前自检"
+    },
+    {
+      "command": "python tools/cli.py check-output <图片> --platform <平台>",
+      "returns": "JSON：白底、占比、比例、尺寸、文件大小、OCR 文字各检查项",
+      "when": "出图后机检，不过的图不交付"
+    }
+  ],
+
+  "gates": [
+    "占位符全部替换，产物里不得残留【】、{{}}、[]",
+    "该原子的 rules 逐条过一遍，冲突处写明取舍理由",
+    "每条提示词以输出边界句收尾（禁止项、不得继承项）",
+    "推断的信息标注为假设，不得写成已确认事实",
+    "平台首图规范（白底、占比、比例、文字政策）已核对",
+    "卖点分「已确认 / 有依据 / 待补证 / 禁止」四级，只说前两级",
+    "涉及写实 AI 人物时，目标平台的 AI 标注义务已确认"
+  ],
+
+  "degradation": {
+    "no_repo_tools": "只装了技能目录、没有 tools/ 时：路由读 references/_index.json，内容读 references/_atoms/aNN.json，交付前按 references/_output-contracts.md 逐条人工过，机检项按 references/_rules/platform.json 的阈值人工核对。判据完全一致，只是多几步手工。",
+    "no_atoms_index": "若 _atoms/index.json 缺失，跑 python tools/atomize.py merge 重建（原子自带 source_text，索引可完全重算）。",
+    "no_pillow": "check_image / visual_audit 在无 Pillow 时只做结构检查，像素类检查标 skipped。skipped 不等于通过，不得当作已验收。",
+    "no_ocr": "OCR 不可用时图内文字项标 skipped，须人工核对文字与乱码，不得当作已通过。"
+  },
+
+  "references": {
+    "atoms_index": "references/_atoms/index.json",
+    "route_index": "references/_index.json",
+    "rules": "references/_rules/{platform,category,scenario,aigc-disclosure}.json",
+    "slots": "references/_prompt-slots.md",
+    "output_contracts": "references/_output-contracts.md",
+    "brand_lock": "references/_brand-lock.md",
+    "corpus": "references/_corpus/entries.jsonl"
+  }
+}

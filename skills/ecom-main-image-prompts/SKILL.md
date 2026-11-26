@@ -32,7 +32,7 @@ description: "全平台电商主图生图提示词导演：基于上传的产品
 6. 决定主图总数：用户填写了具体数量则严格按用户数量；未填写则根据产品复杂度、平台需求和购买决策链路自行决定，不要为凑数量重复。
 7. 为每张图规划产品专属职责（见下方"动态规划"），沿买家决策顺序展开；同时定义整套图共用的**套图风格锁**。
 8. 按"模特规则"和"图中文字规则"执行人物与文字约束。
-9. 用户指定了生图工具的，读 `references/tool-adaptation.md`，把提示词调整为该工具偏好的写法；未指定则用通用写法。
+9. 用户指定了生图工具的，先读 `references/tool-adaptation.md` 拿通用写法，再按模型读 `references/tools/` 下对应文件（gemini-nano-banana / gpt-image / seedream / qwen-image），把提示词改成该模型偏好的语法；未指定则用通用写法。
 10. **不得自行出图**。本项目限制任何图片生成模型（Qwen-Image 全系、wan/万相、Seedream、Gemini/Nano Banana、GPT-Image、FLUX、z-image 等，含 MCP 工具与网页端代操作）在调用前必须先说明用途、模型、张数和预计花费，取得用户明确同意后才可调用；约束一律按本句执行。未获授权时只交付提示词文本。
 
 ## 严格规则
@@ -113,7 +113,15 @@ description: "全平台电商主图生图提示词导演：基于上传的产品
 
 ### 九、反 AI 感与生成后机检
 
-**文字层**：提示词里不堆 SD 时代的空洞词（8k / 4k / masterpiece / best quality / hyperrealistic / ultra-detailed / 完美 / 极致 / 震撼）。现代模型不需要这些词，写了只会把成片推向塑料感；改用材质、光位、镜头与物理关系描述。定稿后可用仓库脚本 `tools/slop_check.py` 自查；单独安装技能目录时不带该脚本，按本段清单人工过一遍。
+**文字层**：提示词里不堆 SD 时代的空洞词（8k / 4k / masterpiece / best quality / hyperrealistic / ultra-detailed / 完美 / 极致 / 震撼）。现代模型不需要这些词，写了只会把成片推向塑料感；改用材质、光位、镜头与物理关系描述。
+
+定稿前用一条命令跑完堆词、绝对化用语与平台规则：
+
+```bash
+python tools/cli.py validate-prompt --file prompt.txt --platform amazon   # 反 AI 感 + 规则引擎
+```
+
+**单独安装技能目录时不带脚本**：按本段清单人工过一遍——有没有 8k/masterpiece 类堆词、有没有绝对化用语、平台是否禁文字、必填槽位是否齐全。
 
 **视觉层**：主动规避八类 AI 痕迹——过度光滑的皮肤与材质、塑料感高光、完美对称、主体悬浮无投影、不可能成立的反射、过饱和、主体边缘光晕、文字状伪影。用正向描述替代（"哑光织物纹理可见纤维""产品底部自然接触影"），不要在边界句里堆负面词。
 
@@ -122,9 +130,20 @@ description: "全平台电商主图生图提示词导演：基于上传的产品
 ```bash
 python tools/check_image.py out/main-01.png --platform amazon        # 白底 / 占比 / 比例 / 尺寸 / 文字
 python tools/check_image.py out/main-01.png --platform amazon --fix  # 白底归一 + 比例补齐 + 放大
+python tools/cli.py check-output out/main-01.png --platform amazon   # 同上，经统一 CLI，输出 JSON
 ```
 
 机检不过的图不上架。机检只覆盖可机检的子集（背景、占比、比例、分辨率、文件大小、OCR 文字），模特造型与 AI 标注义务仍需人工核对。
+
+**保真验收（机检管不了的那一项）**：机检能证明「几何对了」，证明不了「还是同一个产品」。要固化这项判断，用九问评分卡，结论由脚本算：
+
+```bash
+python tools/fidelity_score.py --template > card.json   # 出空白卡，填 answers 与 defects
+python tools/fidelity_score.py card.json                # 通过则 exit 0
+python tools/check_image.py out/main-01.png --platform amazon --require-review card.json  # 机检+保真一起过
+```
+
+评分卡问九个固定问题（保真五项：轮廓/颜色/材质/文字/部件；另加姿态、身份、瑕疵、比例）。**保真项答 `cannot_tell` 直接阻断通过**——看不清不等于没问题。八个否决码命中任一即不通过，与分数无关。一张卡只评一张图。
 
 ## 输出格式
 
