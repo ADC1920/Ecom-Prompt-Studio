@@ -81,7 +81,13 @@ jobs:
   routing:
     name: 触发回归（断言技能名与 SOP）
     needs: static
-    if: github.event_name != 'schedule'
+    # fork PR 拿不到 Secret（GitHub 平台规则：除 GITHUB_TOKEN 外不注入），
+    # 跑起来必然卡在凭据检查那步失败，而贡献者无权配置 Secret 也解决不了。
+    # 所以跳过；本仓库自己的分支和 main 推送照常跑。
+    if: >-
+      github.event_name != 'schedule'
+      && (github.event_name != 'pull_request'
+          || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
