@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "ecom-prompt-studio/brand-lock@1",
+  "title": "品牌锁（套图一致性）",
+  "description": "锁住跨图不漂移的十个视觉变量。字段取值必须是具体值，不能是形容词——「干净高级」在十次生成里能得到十种解读，这就失去了锁的意义。",
+  "type": "object",
+  "required": ["light_direction", "light_temp", "shadow_type", "bg_color", "bg_material",
+               "camera_height", "lens", "color_grading", "typography", "negative"],
+  "additionalProperties": false,
+  "properties": {
+    "light_direction": {
+      "type": "string",
+      "description": "主光方位角与高度。例：左上 45 度、略高于视线",
+      "minLength": 2
+    },
+    "light_temp": {
+      "type": "string",
+      "description": "色温。例：5500K 冷白 / 4800K 暖白。写数值，不写「暖」「冷」",
+      "pattern": "^\\s*\\d{4,5}\\s*K"
+    },
+    "shadow_type": {
+      "type": "string",
+      "description": "投影性质。例：自然接触影 / 无投射影 / 单侧硬光长影",
+      "minLength": 2
+    },
+    "bg_color": {
+      "type": "string",
+      "description": "背景色值，必须写十六进制。例：#FFFFFF / #EDE8E1",
+      "pattern": "^#(?:[0-9A-Fa-f]{6})$"
+    },
+    "bg_material": {
+      "type": "string",
+      "description": "背景材质。例：无缝纸 / 哑光布 / 木纹 / 拉丝铝",
+      "minLength": 2
+    },
+    "camera_height": {
+      "type": "string",
+      "description": "机位高度。例：平视 / 略俯 15 度 / 正上方 90 度",
+      "minLength": 2
+    },
+    "lens": {
+      "type": "string",
+      "description": "镜头焦距观感。例：50mm 标准 / 85mm 压缩 / 100mm 微距",
+      "minLength": 2
+    },
+    "color_grading": {
+      "type": "string",
+      "description": "调色倾向。例：中性无滤镜 / 低饱和暖调 / 冷调高对比",
+      "minLength": 2
+    },
+    "typography": {
+      "type": "string",
+      "description": "字体与排版规则。例：无衬线粗体，标题字高占画面 7%",
+      "minLength": 2
+    },
+    "negative": {
+      "type": "array",
+      "description": "输出边界：禁止出现的项。每条一个短句",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 2}
+    },
+    "name": {
+      "type": "string",
+      "description": "这套锁的名字，便于多套并存时区分。例：主图白底套 / 详情页暖调套"
+    },
+    "notes": {
+      "type": "string",
+      "description": "为什么这样锁的说明，供换产品时判断哪些不能动"
+    }
+  },
+  "examples": [
+    {
+      "name": "主图白底套",
+      "light_direction": "左上 45 度、略高于视线",
+      "light_temp": "5500K 冷白",
+      "shadow_type": "自然接触影",
+      "bg_color": "#FFFFFF",
+      "bg_material": "无缝纸",
+      "camera_height": "平视",
+      "lens": "50mm 标准",
+      "color_grading": "中性无滤镜",
+      "typography": "无衬线粗体，标题字高占画面 7%",
+      "negative": ["不出现文字", "不出现水印", "不出现边框", "不出现多余道具"]
+    }
+  ]
+}
