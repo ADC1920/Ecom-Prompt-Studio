@@ -283,7 +283,7 @@ npx promptfoo@0.124.1 eval -c evals/promptfooconfig.quality.yaml   # 需要密�
 - **离线触发评测抓不到语义改写**：它验的是词法与索引一致性，换个说法还能不能触发要靠 promptfoo（需密钥）
 - **AI 感阈值是经验值**：`visual_audit.py` 的饱和度、平滑度、死白、边缘密度判据还没用真实好图 / AI 图批次标定，当提示用，不当结论
 - **VLM 复核不自动判图**：`vlm_review.py` 只生成复核单；VLM 在「保留约束是否满足」这类细粒度判断上会失准，分数不当通过依据
-- **OCR 需本地装 tesseract**：缺依赖走 `skipped` 不误报通过；CI 环境未装，云端不检查图内文字
+- **图内文字识别需 DeepSeek 密钥**：走 `deepseek-flash` 的视觉能力，需 `DEEPSEEK_API_KEY`；没配 key 或网络不通时该项标 `skipped` 并提示人工核对，不误报通过。CI 未配该 Secret 时，云端不检查图内文字
 - **模板抽取有少量噪声**：无围栏代码块的篇目走裸段落规则，个别片段可能偏宽，未逐篇人工复核
 - **真实触发评测需自备引擎**：`evals/real_trigger.py` 只提供框架与判定逻辑，引擎命令与凭据由使用者提供
 - **平台规则有复核期限**：阈值是保守基线，每个平台带 `checked_at`；`python tools/check_image.py --rules-stale 6` 可列出超期未复核的平台，但复核本身仍需人工查官方文档
